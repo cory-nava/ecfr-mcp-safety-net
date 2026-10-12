@@ -35,12 +35,14 @@ one-liners instead of research projects.
   the server seeds a local cache from a versioned, checksummed release zip
   of the corpus — one download, then fully offline. Refresh is explicit,
   never background magic.
-- **BM25-first retrieval** (SQLite FTS5), with a clean seam for vector
-  hybrid if paraphrase queries ever underperform. Rationale: regulatory
-  text is terminology-dense, the corpus is already chunked at the citation
-  unit (one file per section), and BM25 has zero ML ops. See `build/` for
-  the optional vector index and `golden/` for the eval set that keeps both
-  honest.
+- **Retrieval: citation fast-path + vectors.** Queries that are citations
+  ("7 CFR 273.9") resolve deterministically; everything else ranks by
+  bge-base-en-v1.5 cosine similarity. Measured on the frozen 50-query
+  golden set: recall@1 0.64 / @3 0.78 / @5 0.84. A BM25 index (SQLite FTS5)
+  is built and kept as a fallback/debug leg, but RRF fusion was measured
+  (k=5..60) and never beat vectors+citation, so it stays out of the
+  ranking path. See `golden/` for the eval set and `DECISION_LOG.md` for
+  the evidence.
 - **Version-aware.** Every section carries `effective_from` /
   `effective_to`; version chains are gapless, so "as of date X" is exact.
 

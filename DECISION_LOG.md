@@ -3,20 +3,24 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
-## 2026-10-12: BM25-first retrieval, vector as the hybrid seam
+## 2026-10-12: Production retrieval = citation fast-path + vectors (BM25 not fused)
 
-**Decision:** The MCP server's `search` ranks with BM25 (SQLite FTS5) first;
-a vector index exists as an optional hybrid leg, added only if measured
-paraphrase-query performance underperforms.
+**Decision:** The ranking path is deterministic citation lookup (queries
+matching `\d+ CFR [\w.]+` resolve directly against current docs) plus
+bge-base-en-v1.5 cosine ranking. The BM25 index is built and kept in
+`meta.sqlite` as a fallback/debug leg, but RRF fusion is NOT in the
+ranking path.
 
-**Evidence:** Regulatory text is terminology-dense (queries contain exact
-strings like "7 CFR 273.9" and "gross monthly income"); the corpus is already
-chunked at the citation unit (one file per section), removing the hardest
-RAG chunking problems; BM25 rebuilds 3,400 docs in seconds with zero ML ops
-and debuggable matching. Golden eval round 2 (2026-10-12): vectors alone
-reach recall@5 0.80 overall but recall@1 0.00 on exact-citation queries —
-the empirical split the hybrid is designed around. Next: build the BM25 leg
-and measure the hybrid on the same frozen set.
+**Evidence (reverses the earlier BM25-first call):** Golden eval round 3,
+same frozen 50 queries. BM25 alone: 0.28/0.44/0.54. RRF(BM25, vectors)
+k=5..60: best 0.48/0.76/0.84 — never beats vectors + citation fast-path at
+0.64/0.78/0.84 on any k. BM25 adds noise on natural/paraphrase queries
+(RRF r@1 0.48 vs vectors+cite 0.64). The one thing BM25 was for — exact
+citations — the fast-path does perfectly (1.00) by construction, and
+correctly: a citation query is a lookup, not retrieval. Weighted fusion was
+deliberately not tried: tuning weights on n=50 would be overfitting; it
+needs a larger query set first. Caveat: n=50 is small; revisit if the query
+distribution shifts. Remaining headroom is paraphrase r@1 (0.417).
 
 ## 2026-10-12: Index current versions only
 
