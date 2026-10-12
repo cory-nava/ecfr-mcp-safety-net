@@ -1,0 +1,29 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+corpus files: 3306
+indexing 2278 current-version docs (1028 version files recorded but not indexed)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11977.71it/s]
+/home/hatch/workspace/ecfr-mcp/build/build_vectors.py:101: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = model.get_sentence_embedding_dimension()
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [01:05<01:05, 65.99s/it]Batches: 100%|██████████| 2/2 [01:45<00:00, 50.34s/it]Batches: 100%|██████████| 2/2 [01:45<00:00, 52.69s/it]
+  64/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [01:00<01:00, 60.15s/it]Batches: 100%|██████████| 2/2 [01:50<00:00, 54.17s/it]Batches: 100%|██████████| 2/2 [01:50<00:00, 55.07s/it]
+  128/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:51<00:51, 51.31s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 39.10s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 40.94s/it]
+  192/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:50<00:50, 50.50s/it]Batches: 100%|██████████| 2/2 [01:19<00:00, 37.80s/it]Batches: 100%|██████████| 2/2 [01:19<00:00, 39.70s/it]
+  256/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:50<00:50, 50.36s/it]Batches: 100%|██████████| 2/2 [01:20<00:00, 38.21s/it]Batches: 100%|██████████| 2/2 [01:20<00:00, 40.04s/it]
+  320/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:49<00:49, 49.25s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 39.06s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 40.59s/it]
+  384/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:52<00:52, 52.62s/it]Batches: 100%|██████████| 2/2 [01:25<00:00, 40.89s/it]Batches: 100%|██████████| 2/2 [01:25<00:00, 42.65s/it]
+  448/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:50<00:50, 50.71s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 39.21s/it]Batches: 100%|██████████| 2/2 [01:21<00:00, 40.94s/it]
+  512/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:49<00:49, 49.64s/it]Batches: 100%|██████████| 2/2 [01:39<00:00, 49.57s/it]Batches: 100%|██████████| 2/2 [01:39<00:00, 49.59s/it]
+  576/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:49<00:49, 49.82s/it]Batches: 100%|██████████| 2/2 [01:14<00:00, 34.74s/it]Batches: 100%|██████████| 2/2 [01:14<00:00, 37.01s/it]
+  640/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]Batches:  50%|█████     | 1/2 [00:50<00:50, 50.14s/it]Batches: 100%|██████████| 2/2 [01:02<00:00, 28.11s/it]Batches: 100%|██████████| 2/2 [01:02<00:00, 31.42s/it]
+  704/2278
+Batches:   0%|          | 0/2 [00:00<?, ?it/s]

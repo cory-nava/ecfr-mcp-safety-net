@@ -1,0 +1,402 @@
+[
+ {
+  "id": 1,
+  "query": "7 CFR 273.9",
+  "expected_citation": "7 CFR 273.9",
+  "expected_path": "title-7/part-273/7-cfr-273-9.md",
+  "type": "exact",
+  "program": "snap"
+ },
+ {
+  "id": 2,
+  "query": "What income counts and what deductions apply for SNAP?",
+  "expected_citation": "7 CFR 273.9",
+  "expected_path": "title-7/part-273/7-cfr-273-9.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 3,
+  "query": "how much can I earn and still get food stamps",
+  "expected_citation": "7 CFR 273.9",
+  "expected_path": "title-7/part-273/7-cfr-273-9.md",
+  "type": "paraphrase",
+  "program": "snap"
+ },
+ {
+  "id": 4,
+  "query": "Who counts as a SNAP household?",
+  "expected_citation": "7 CFR 273.1",
+  "expected_path": "title-7/part-273/7-cfr-273-1.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 5,
+  "query": "my boyfriend lives with me, are we one SNAP household",
+  "expected_citation": "7 CFR 273.1",
+  "expected_path": "title-7/part-273/7-cfr-273-1.md",
+  "type": "paraphrase",
+  "program": "snap"
+ },
+ {
+  "id": 6,
+  "query": "SNAP work requirements",
+  "expected_citation": "7 CFR 273.7",
+  "expected_path": "title-7/part-273/7-cfr-273-7.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 7,
+  "query": "do I have to work to keep my food stamps",
+  "expected_citation": "7 CFR 273.7",
+  "expected_path": "title-7/part-273/7-cfr-273-7.md",
+  "type": "paraphrase",
+  "program": "snap"
+ },
+ {
+  "id": 8,
+  "query": "How are SNAP benefit amounts calculated?",
+  "expected_citation": "7 CFR 273.10",
+  "expected_path": "title-7/part-273/7-cfr-273-10.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 9,
+  "query": "What must a SNAP office do when you apply?",
+  "expected_citation": "7 CFR 273.2",
+  "expected_path": "title-7/part-273/7-cfr-273-2.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 10,
+  "query": "7 CFR 271.2",
+  "expected_citation": "7 CFR 271.2",
+  "expected_path": "title-7/part-271/7-cfr-271-2.md",
+  "type": "exact",
+  "program": "snap"
+ },
+ {
+  "id": 11,
+  "query": "20 CFR 416.1100",
+  "expected_citation": "20 CFR 416.1100",
+  "expected_path": "title-20/part-416/20-cfr-416-1100.md",
+  "type": "exact",
+  "program": "ssi"
+ },
+ {
+  "id": 12,
+  "query": "What income counts for SSI eligibility?",
+  "expected_citation": "20 CFR 416.1100",
+  "expected_path": "title-20/part-416/20-cfr-416-1100.md",
+  "type": "natural",
+  "program": "ssi"
+ },
+ {
+  "id": 13,
+  "query": "does working affect my SSI eligibility",
+  "expected_citation": "20 CFR 416.1100",
+  "expected_path": "title-20/part-416/20-cfr-416-1100.md",
+  "type": "paraphrase",
+  "program": "ssi"
+ },
+ {
+  "id": 14,
+  "query": "What unearned income does SSI not count?",
+  "expected_citation": "20 CFR 416.1124",
+  "expected_path": "title-20/part-416/20-cfr-416-1124.md",
+  "type": "natural",
+  "program": "ssi"
+ },
+ {
+  "id": 15,
+  "query": "What resources count toward the SSI asset limit?",
+  "expected_citation": "20 CFR 416.1201",
+  "expected_path": "title-20/part-416/20-cfr-416-1201.md",
+  "type": "natural",
+  "program": "ssi"
+ },
+ {
+  "id": 16,
+  "query": "can I own a car and still get SSI",
+  "expected_citation": "20 CFR 416.1201",
+  "expected_path": "title-20/part-416/20-cfr-416-1201.md",
+  "type": "paraphrase",
+  "program": "ssi"
+ },
+ {
+  "id": 17,
+  "query": "Who can get SSI benefits?",
+  "expected_citation": "20 CFR 416.202",
+  "expected_path": "title-20/part-416/20-cfr-416-202.md",
+  "type": "natural",
+  "program": "ssi"
+ },
+ {
+  "id": 18,
+  "query": "What does assistance mean under TANF?",
+  "expected_citation": "45 CFR 260.31",
+  "expected_path": "title-45/part-260/45-cfr-260-31.md",
+  "type": "natural",
+  "program": "tanf"
+ },
+ {
+  "id": 19,
+  "query": "What is the purpose of the TANF program?",
+  "expected_citation": "45 CFR 260.20",
+  "expected_path": "title-45/part-260/45-cfr-260-20.md",
+  "type": "natural",
+  "program": "tanf"
+ },
+ {
+  "id": 20,
+  "query": "how many hours do I have to work on welfare",
+  "expected_citation": "45 CFR 261.31",
+  "expected_path": "title-45/part-261/45-cfr-261-31.md",
+  "type": "paraphrase",
+  "program": "tanf"
+ },
+ {
+  "id": 21,
+  "query": "How is MAGI calculated for Medicaid?",
+  "expected_citation": "42 CFR 435.603",
+  "expected_path": "title-42/part-435/42-cfr-435-603.md",
+  "type": "natural",
+  "program": "medicaid-chip"
+ },
+ {
+  "id": 22,
+  "query": "does Medicaid count my income before taxes",
+  "expected_citation": "42 CFR 435.603",
+  "expected_path": "title-42/part-435/42-cfr-435-603.md",
+  "type": "paraphrase",
+  "program": "medicaid-chip"
+ },
+ {
+  "id": 23,
+  "query": "Who is a targeted low-income child for CHIP?",
+  "expected_citation": "42 CFR 457.310",
+  "expected_path": "title-42/part-457/42-cfr-457-310.md",
+  "type": "natural",
+  "program": "medicaid-chip"
+ },
+ {
+  "id": 24,
+  "query": "42 CFR 435.907",
+  "expected_citation": "42 CFR 435.907",
+  "expected_path": "title-42/part-435/42-cfr-435-907.md",
+  "type": "exact",
+  "program": "medicaid-chip"
+ },
+ {
+  "id": 25,
+  "query": "How is annual income calculated for HUD housing programs?",
+  "expected_citation": "24 CFR 5.609",
+  "expected_path": "title-24/part-5/24-cfr-5-609.md",
+  "type": "natural",
+  "program": "housing"
+ },
+ {
+  "id": 26,
+  "query": "does my overtime count for section 8 income",
+  "expected_citation": "24 CFR 5.609",
+  "expected_path": "title-24/part-5/24-cfr-5-609.md",
+  "type": "paraphrase",
+  "program": "housing"
+ },
+ {
+  "id": 27,
+  "query": "Who is eligible for a housing choice voucher?",
+  "expected_citation": "24 CFR 982.201",
+  "expected_path": "title-24/part-982/24-cfr-982-201.md",
+  "type": "natural",
+  "program": "housing"
+ },
+ {
+  "id": 28,
+  "query": "Housing quality standards for vouchers",
+  "expected_citation": "24 CFR 982.401",
+  "expected_path": "title-24/part-982/24-cfr-982-401.md",
+  "type": "natural",
+  "program": "housing"
+ },
+ {
+  "id": 29,
+  "query": "How does WIC certify participants?",
+  "expected_citation": "7 CFR 246.7",
+  "expected_path": "title-7/part-246/7-cfr-246-7.md",
+  "type": "natural",
+  "program": "wic"
+ },
+ {
+  "id": 30,
+  "query": "what foods can I get on WIC",
+  "expected_citation": "7 CFR 246.10",
+  "expected_path": "title-7/part-246/7-cfr-246-10.md",
+  "type": "paraphrase",
+  "program": "wic"
+ },
+ {
+  "id": 31,
+  "query": "What is the maximum LIHEAP amount for weatherization?",
+  "expected_citation": "45 CFR 96.83",
+  "expected_path": "title-45/part-96/45-cfr-96-83.md",
+  "type": "natural",
+  "program": "liheap-block-grants"
+ },
+ {
+  "id": 32,
+  "query": "What must states do to receive LIHEAP block grant funds?",
+  "expected_citation": "45 CFR 96.10",
+  "expected_path": "title-45/part-96/45-cfr-96-10.md",
+  "type": "natural",
+  "program": "liheap-block-grants"
+ },
+ {
+  "id": 33,
+  "query": "Which children are eligible for child care subsidies?",
+  "expected_citation": "45 CFR 98.20",
+  "expected_path": "title-45/part-98/45-cfr-98-20.md",
+  "type": "natural",
+  "program": "child-care"
+ },
+ {
+  "id": 34,
+  "query": "can I choose my own babysitter with a child care voucher",
+  "expected_citation": "45 CFR 98.30",
+  "expected_path": "title-45/part-98/45-cfr-98-30.md",
+  "type": "paraphrase",
+  "program": "child-care"
+ },
+ {
+  "id": 35,
+  "query": "Who qualifies for Lifeline phone discounts?",
+  "expected_citation": "47 CFR 54.409",
+  "expected_path": "title-47/part-54/47-cfr-54-409.md",
+  "type": "natural",
+  "program": "lifeline"
+ },
+ {
+  "id": 36,
+  "query": "how do I prove I'm eligible for a free government phone",
+  "expected_citation": "47 CFR 54.410",
+  "expected_path": "title-47/part-54/47-cfr-54-410.md",
+  "type": "paraphrase",
+  "program": "lifeline"
+ },
+ {
+  "id": 37,
+  "query": "What does able and available for work mean for unemployment?",
+  "expected_citation": "20 CFR 604.3",
+  "expected_path": "title-20/part-604/20-cfr-604-3.md",
+  "type": "natural",
+  "program": "unemployment-insurance"
+ },
+ {
+  "id": 38,
+  "query": "can I get unemployment if I can only work part time",
+  "expected_citation": "20 CFR 604.5",
+  "expected_path": "title-20/part-604/20-cfr-604-5.md",
+  "type": "paraphrase",
+  "program": "unemployment-insurance"
+ },
+ {
+  "id": 39,
+  "query": "What are the school lunch meal requirements?",
+  "expected_citation": "7 CFR 210.10",
+  "expected_path": "title-7/part-210/7-cfr-210-10.md",
+  "type": "natural",
+  "program": "school-meals"
+ },
+ {
+  "id": 40,
+  "query": "How do schools verify free lunch applications?",
+  "expected_citation": "7 CFR 245.6a",
+  "expected_path": "title-7/part-245/7-cfr-245-6a.md",
+  "type": "natural",
+  "program": "school-meals"
+ },
+ {
+  "id": 41,
+  "query": "How do families apply for Summer EBT?",
+  "expected_citation": "7 CFR 292.13",
+  "expected_path": "title-7/part-292/7-cfr-292-13.md",
+  "type": "natural",
+  "program": "summer-meals"
+ },
+ {
+  "id": 42,
+  "query": "What is required for sponsors in the summer food program?",
+  "expected_citation": "7 CFR 225.14",
+  "expected_path": "title-7/part-225/7-cfr-225-14.md",
+  "type": "natural",
+  "program": "summer-meals"
+ },
+ {
+  "id": 43,
+  "query": "What is the income-related monthly adjustment amount for Medicare?",
+  "expected_citation": "20 CFR 418.1101",
+  "expected_path": "title-20/part-418/20-cfr-418-1101.md",
+  "type": "natural",
+  "program": "medicare-extra-help"
+ },
+ {
+  "id": 44,
+  "query": "What happens if a SNAP household gets overpaid?",
+  "expected_citation": "7 CFR 273.18",
+  "expected_path": "title-7/part-273/7-cfr-273-18.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 45,
+  "query": "What changes must SNAP households report?",
+  "expected_citation": "7 CFR 273.12",
+  "expected_path": "title-7/part-273/7-cfr-273-12.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 46,
+  "query": "What rights and responsibilities do commodity food program participants have?",
+  "expected_citation": "7 CFR 247.12",
+  "expected_path": "title-7/part-247/7-cfr-247-12.md",
+  "type": "natural",
+  "program": "commodity-programs"
+ },
+ {
+  "id": 47,
+  "query": "SNAP rules for households with special circumstances",
+  "expected_citation": "7 CFR 273.11",
+  "expected_path": "title-7/part-273/7-cfr-273-11.md",
+  "type": "natural",
+  "program": "snap"
+ },
+ {
+  "id": 48,
+  "query": "42 CFR 435.4",
+  "expected_citation": "42 CFR 435.4",
+  "expected_path": "title-42/part-435/42-cfr-435-4.md",
+  "type": "exact",
+  "program": "medicaid-chip"
+ },
+ {
+  "id": 49,
+  "query": "What makes a Social Security application a claim for benefits?",
+  "expected_citation": "20 CFR 416.310",
+  "expected_path": "title-20/part-416/20-cfr-416-310.md",
+  "type": "natural",
+  "program": "ssi"
+ },
+ {
+  "id": 50,
+  "query": "How do SNAP allotment reductions work?",
+  "expected_citation": "7 CFR 271.7",
+  "expected_path": "title-7/part-271/7-cfr-271-7.md",
+  "type": "natural",
+  "program": "snap"
+ }
+]
