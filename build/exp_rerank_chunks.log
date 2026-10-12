@@ -1,0 +1,58 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 32/199 [00:00<00:00, 304.35it/s]Loading weights:  32%|███▏      | 63/199 [00:00<00:00, 288.04it/s]Loading weights:  48%|████▊     | 96/199 [00:00<00:00, 302.90it/s]Loading weights:  64%|██████▍   | 127/199 [00:00<00:00, 292.31it/s]Loading weights:  79%|███████▉  | 157/199 [00:00<00:00, 236.91it/s]Loading weights:  94%|█████████▍| 188/199 [00:00<00:00, 235.32it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 269.66it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 32/201 [00:00<00:00, 318.58it/s]Loading weights:  32%|███▏      | 64/201 [00:00<00:00, 279.94it/s]Loading weights:  46%|████▋     | 93/201 [00:00<00:00, 268.21it/s]Loading weights:  60%|█████▉    | 120/201 [00:00<00:00, 258.31it/s]Loading weights:  73%|███████▎  | 146/201 [00:00<00:00, 229.65it/s]Loading weights:  85%|████████▍ | 170/201 [00:00<00:00, 168.11it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 240.20it/s]
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (610 > 512). Running this sequence through the model will result in indexing errors
+chunk texts regenerated and aligned: 6222
+  2/50 done
+  3/50 done
+  4/50 done
+  5/50 done
+  6/50 done
+  7/50 done
+  8/50 done
+  9/50 done
+  12/50 done
+  13/50 done
+  14/50 done
+  15/50 done
+  16/50 done
+  17/50 done
+  18/50 done
+  19/50 done
+  20/50 done
+  21/50 done
+  22/50 done
+  23/50 done
+  25/50 done
+  26/50 done
+  27/50 done
+  28/50 done
+  29/50 done
+  30/50 done
+  31/50 done
+  32/50 done
+  33/50 done
+  34/50 done
+  35/50 done
+  36/50 done
+  37/50 done
+  38/50 done
+  39/50 done
+  40/50 done
+  41/50 done
+  42/50 done
+  43/50 done
+  44/50 done
+  45/50 done
+  46/50 done
+  47/50 done
+  49/50 done
+  50/50 done
+n=50  (rerank top-50 chunks with BAAI/bge-reranker-base)
+recall@1: 0.520
+recall@3: 0.700
+recall@5: 0.760
+  exact      n= 5  r@1=1.000  r@3=1.000  r@5=1.000
+  natural    n=33  r@1=0.576  r@3=0.758  r@5=0.788
+  paraphrase n=12  r@1=0.167  r@3=0.417  r@5=0.583
+EXIT:0

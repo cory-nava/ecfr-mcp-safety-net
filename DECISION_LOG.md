@@ -93,6 +93,29 @@ release zip — one download, then fully offline.
 install step is a packaging failure. One-time 21MB download (often much
 less zipped) is a non-issue; per-query GitHub dependence would be.
 
+## 2026-10-12: Chunking measured as neutral; not adopted into production path
+
+**Decision:** Keep whole-section vectors as the production index. The
+chunked index (6,222 chunks, build/build_chunks.py) is built and retained
+for future experiments but not served.
+
+**Evidence:** Same frozen 50 queries: chunked best-chunk + citation =
+0.62/0.80/0.86 vs whole-section 0.64/0.78/0.84. Within noise; helps natural
+queries slightly (+0.03 r@1), hurts paraphrase r@1 (0.417 -> 0.250).
+Truncation is real (39.7% of docs > 512 tokens) but best-chunk aggregation
+doesn't convert the fix into recall gains on this query set.
+
+## 2026-10-12: bge-reranker-base rejected (both configurations)
+
+**Decision:** No cross-encoder rerank stage with bge-reranker-base.
+
+**Evidence:** Rerank top-50 sections: 0.52/0.70/0.74. Rerank top-50 chunks:
+0.52/0.70/0.76. Both well below the 0.64/0.78/0.84 baseline. The obvious
+confound (reranker truncated to each candidate's head) was eliminated by
+the chunk variant — identical degradation, so the cause is model/domain
+mismatch, not truncation. Not retried with v2-m3 yet (heavier; named
+follow-up, not assumed win).
+
 ## 2026-10-12: Golden set frozen before retrieval existed
 
 **Decision:** The 50-query golden eval set was authored and frozen
