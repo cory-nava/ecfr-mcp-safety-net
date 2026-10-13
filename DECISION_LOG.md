@@ -93,6 +93,15 @@ release zip — one download, then fully offline.
 install step is a packaging failure. One-time 21MB download (often much
 less zipped) is a non-issue; per-query GitHub dependence would be.
 
+## 2026-10-13: HyDE+rerank combo rejected (does not stack)
+
+**Decision:** Query-vector candidates + LLM rerank stays the best config.
+HyDE-averaged candidates + rerank scored 0.74/0.90/0.94 vs 0.76/0.94/0.96
+— worse everywhere, plus an extra LLM call per query for nothing.
+
+**Evidence:** Same frozen 50, $0.09 for the combo run. The reranker, not
+the candidate generator, is doing the work.
+
 ## 2026-10-13: LLM-judge rerank is the new best (0.76/0.94/0.96)
 
 **Decision:** Listwise LLM rerank (gemini-2.5-flash-lite, top-50 chunks)
