@@ -93,6 +93,20 @@ release zip — one download, then fully offline.
 install step is a packaging failure. One-time 21MB download (often much
 less zipped) is a non-issue; per-query GitHub dependence would be.
 
+## 2026-10-13: MCP server built with env-var tiers (Cory's design)
+
+**Decision:** Ship the server now with tier resolution purely from the
+environment: `ECFR_MCP_TIER` override > `OPENROUTER_API_KEY` present >
+free. No flags, no config files. Best tier degrades to free-tier ranking
+on any LLM failure rather than erroring. Corpus data ships in `data/`
+(64MB) instead of the deliberated release-zip seed — simpler, offline
+immediately; revisit if repo weight hurts.
+
+**Evidence:** Free tier smoke-tested over real MCP stdio (all 4 tools:
+citation lookup, natural search, full-text section incl. as_of versioning,
+version history, program list). Best tier tested with stubbed LLM:
+scoring path, degradation fallback, citation bypass of the LLM.
+
 ## 2026-10-13: HyDE+rerank combo rejected (does not stack)
 
 **Decision:** Query-vector candidates + LLM rerank stays the best config.
