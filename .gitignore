@@ -1,7 +1,0 @@
-.venv/
-.pip-tmp/
-corpus-src/
-build/vectors.npz
-build/meta.sqlite
-__pycache__/
-*.pyc

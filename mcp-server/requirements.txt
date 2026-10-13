@@ -1,5 +1,0 @@
-mcp>=2,<3
-numpy>=2
-sentence-transformers>=6
-# torch CPU is pulled in by sentence-transformers; for CPU-only installs:
-# pip install torch --index-url https://download.pytorch.org/whl/cpu

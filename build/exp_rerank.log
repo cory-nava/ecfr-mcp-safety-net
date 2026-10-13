@@ -1,56 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 16405.90it/s]
-Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights:  11%|█▏        | 23/201 [00:00<00:00, 202.67it/s]Loading weights:  80%|███████▉  | 160/201 [00:00<00:00, 851.61it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 763.01it/s]
-  2/50 done
-  3/50 done
-  4/50 done
-  5/50 done
-  6/50 done
-  7/50 done
-  8/50 done
-  9/50 done
-  12/50 done
-  13/50 done
-  14/50 done
-  15/50 done
-  16/50 done
-  17/50 done
-  18/50 done
-  19/50 done
-  20/50 done
-  21/50 done
-  22/50 done
-  23/50 done
-  25/50 done
-  26/50 done
-  27/50 done
-  28/50 done
-  29/50 done
-  30/50 done
-  31/50 done
-  32/50 done
-  33/50 done
-  34/50 done
-  35/50 done
-  36/50 done
-  37/50 done
-  38/50 done
-  39/50 done
-  40/50 done
-  41/50 done
-  42/50 done
-  43/50 done
-  44/50 done
-  45/50 done
-  46/50 done
-  47/50 done
-  49/50 done
-  50/50 done
-n=50  (rerank top-50 with BAAI/bge-reranker-base)
-recall@1: 0.520
-recall@3: 0.700
-recall@5: 0.740
-  exact      n= 5  r@1=1.000  r@3=1.000  r@5=1.000
-  natural    n=33  r@1=0.576  r@3=0.697  r@5=0.758
-  paraphrase n=12  r@1=0.167  r@3=0.583  r@5=0.583
-EXIT:0
