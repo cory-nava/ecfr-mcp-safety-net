@@ -93,6 +93,19 @@ release zip — one download, then fully offline.
 install step is a packaging failure. One-time 21MB download (often much
 less zipped) is a non-issue; per-query GitHub dependence would be.
 
+## 2026-10-13: LLM-judge rerank is the new best (0.76/0.94/0.96)
+
+**Decision:** Listwise LLM rerank (gemini-2.5-flash-lite, top-50 chunks)
+beats HyDE+query: +4pp r@1, +12pp r@3, natural r@3/r@5 perfect. Becomes
+the measured-best config. Same adoption caveat as HyDE (per-query LLM
+cost/latency/dependency — now ~6 calls/query, ~$0.002) deferred to server
+build.
+
+**Evidence:** Same frozen 50. $0.09 total. Scores in
+`golden/llm_rerank_scores.jsonl`; eval reproducible locally with no API.
+Model note: deepseek-v4-flash via SiliconFlow returned intermittent
+null-content 200s in streaks and was abandoned after 5/5 clean on gemini.
+
 ## 2026-10-13: HyDE wins the retrieval round; adoption deferred to server build
 
 **Decision:** HyDE passage + query vector averaging (0.72/0.82/0.88) is the

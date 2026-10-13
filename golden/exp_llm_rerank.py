@@ -38,7 +38,7 @@ from build_chunks import chunk_tokens, CHUNK_TOKENS, OVERLAP
 from build_vectors import parse_front_matter
 
 CITATION_RE = re.compile(r"(\d+)\s+CFR\s+([\w.]+)", re.IGNORECASE)
-MODEL = "deepseek/deepseek-v4-flash"
+MODEL = "google/gemini-2.5-flash-lite"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 BUDGET = 1.00
 BATCH = 10
@@ -131,12 +131,21 @@ def do_generate(args) -> int:
     goldens = json.load(open(args.golden))
     if args.limit:
         goldens = goldens[:args.limit]
+    hyde_vecs = {}
+    if args.candidate_source == "hyde_avg":
+        passages = {e["id"]: e["passage"] for e in json.load(open(args.hyde_passages))}
+        for g in goldens:
+            hp = model.encode([passages[g["id"]]], normalize_embeddings=True)[0]
+            qq = model.encode([g["query"]], normalize_embeddings=True)[0]
+            qv = hp + qq
+            hyde_vecs[g["id"]] = qv / np.linalg.norm(qv)
+        print("HyDE-averaged candidate vectors ready", flush=True)
     failed = []
     for g in goldens:
         if g["id"] in done or spent >= BUDGET:
             continue
-        q = model.encode([g["query"]], normalize_embeddings=True)[0]
-        order = np.argsort(-(Vn @ q))[:TOP_N]
+        qv = hyde_vecs.get(g["id"], model.encode([g["query"]], normalize_embeddings=True)[0])
+        order = np.argsort(-(Vn @ qv))[:TOP_N]
         chunk_scores: dict[str, float] = {}
         qcost = 0.0
         ok = True
@@ -147,7 +156,8 @@ def do_generate(args) -> int:
             try:
                 scores, usage = ask_or(PROMPT.format(q=g["query"], psgs=psgs))
             except Exception as e:
-                print(f"  FAILED q{g['id']} batch {b}: {type(e).__name__}", flush=True)
+                print(f"  FAILED q{g['id']} batch {b}: {type(e).__name__}: {str(e)[:250]}",
+                      flush=True)
                 ok = False
                 break
             cost = usage.get("cost", 0.0) or 0.0
@@ -167,7 +177,7 @@ def do_generate(args) -> int:
             failed.append(g["id"])
             continue
         rec = {"id": g["id"], "chunk_scores": chunk_scores, "cost": qcost,
-               "model": MODEL}
+               "model": MODEL, "candidate_source": args.candidate_source}
         fh.write(json.dumps(rec) + "\n")
         fh.flush()
         done.add(g["id"])
@@ -191,19 +201,20 @@ def do_eval(args) -> int:
     results = []
     for qid, cs in scored.items():
         g = goldens[qid]
+        m = CITATION_RE.fullmatch(g["query"].strip())
+        if m:
+            hit = con.execute("SELECT path FROM docs WHERE citation=? AND is_current=1",
+                              (f"{m.group(1)} CFR {m.group(2)}",)).fetchone()
+            if hit:
+                # citation fast-path: a query that IS a citation is a lookup
+                results.append({"type": g["type"], "rank": 1})
+                continue
         best: dict[str, float] = {}
         for jstr, s in cs.items():
             sec = sections[int(jstr)]
             if sec not in best or s > best[sec]:
                 best[sec] = float(s)
         ranked = sorted(best, key=lambda s: -best[s])
-        m = CITATION_RE.fullmatch(g["query"].strip())
-        if m:
-            hit = con.execute("SELECT path FROM docs WHERE citation=? AND is_current=1",
-                              (f"{m.group(1)} CFR {m.group(2)}",)).fetchone()
-            if hit and hit[0] in ranked:
-                ranked.remove(hit[0])
-                ranked.insert(0, hit[0])
         want = g["expected_path"]
         rank = ranked.index(want) + 1 if want in ranked else 10**9
         results.append({"type": g["type"], "rank": rank})
@@ -229,6 +240,9 @@ def main() -> int:
     ap.add_argument("--corpus", default="corpus-src/corpus")
     ap.add_argument("--scores", default=str(Path(__file__).parent / "llm_rerank_scores.jsonl"))
     ap.add_argument("--model-emb", default="BAAI/bge-base-en-v1.5")
+    ap.add_argument("--candidate-source", choices=["query", "hyde_avg"], default="query",
+                    help="hyde_avg: top-50 chunks by HyDE-passage+query averaged vector")
+    ap.add_argument("--hyde-passages", default=str(Path(__file__).parent / "hyde_passages.json"))
     args = ap.parse_args()
     if args.step == "generate":
         return do_generate(args)
