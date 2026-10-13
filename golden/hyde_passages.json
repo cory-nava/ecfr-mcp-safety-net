@@ -1,0 +1,1452 @@
+[
+ {
+  "id": 1,
+  "query": "7 CFR 273.9",
+  "passage": "(a) For purposes of this part, the term \u201cincome\u201d shall include all monetary and nonmonetary receipts from any source, including but not limited to wages, salaries, self-employment earnings, and public assistance payments, except those specifically excluded under \u00a7 273.9(c). (b) The State agency shall calculate net monthly income by deducting from gross income the applicable standard deduction, earned income deduction, dependent care deduction, medical expense deduction for elderly or disabled members, and any excess shelter deduction as prescribed in paragraphs (d) through (h) of this section. (c) Income exclusions enumerated in paragraph (c) of this section shall include, but are not limited to, lump-sum payments, income tax refunds, and certain educational assistance, provided such items are not otherwise defined as countable resources. (d) All deductions and exclusions set forth in this section are subject to the maximum limits and verification requirements specified in \u00a7 273.9(e) and (f), and the State agency must document each allowable deduction in the case file prior to issuance of benefits.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 61,
+   "completion_tokens": 340,
+   "total_tokens": 401,
+   "cost": 7.13426e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.13426e-05,
+    "upstream_inference_prompt_cost": 5.8926e-06,
+    "upstream_inference_completions_cost": 6.545e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 142,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 2,
+  "query": "What income counts and what deductions apply for SNAP?",
+  "passage": "Pursuant to 7 CFR 273.9, the countable income of a household for the Supplemental Nutrition Assistance Program shall include all gross earned and unearned income anticipated to be received during the certification period, excluding those sources enumerated in paragraph (c), such as bona fide loans, certain reimbursements, and proceeds from the sale of non-liquid assets. To determine net income, the agency shall apply the mandatory deductions specified in paragraph (d), in the following order: the standard deduction, the earned income deduction (20 percent of gross earned income), the dependent care deduction, and the excess shelter deduction. For households containing an elderly or disabled member, the excess medical expense deduction shall also be applied, but only to the extent that such expenses exceed $35 per month. The excess shelter deduction shall be limited to the amount by which shelter costs exceed 50 percent of the household's income after all other applicable deductions, unless the household is homeless, in which case a separate shelter allowance shall be available. The resulting net income shall thereby be computed and compared against the applicable statutory thresholds to determine eligibility and benefit allotment.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 65,
+   "completion_tokens": 1004,
+   "total_tokens": 1069,
+   "cost": 0.00028957,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00028957,
+    "upstream_inference_prompt_cost": 8.45e-06,
+    "upstream_inference_completions_cost": 0.00028112
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 780,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 3,
+  "query": "how much can I earn and still get food stamps",
+  "passage": "\u00a7 273.9 Income eligibility and benefit computation.\n\n(a) *Maximum allowable gross income.* Except as provided in paragraph (b) of this section, a household\u2019s countable gross monthly income, as defined in \u00a7 273.9(c), shall not exceed 130 percent of the applicable Federal poverty guideline for the household\u2019s size, as published annually by the Department of Health and Human Services. A household whose gross income exceeds such threshold is ineligible for assistance under this part.\n\n(b) *Elderly or disabled households.* For a household containing an individual who is aged 60 or older, or who receives disability-related assistance under a Federal or State program, the gross income limit in paragraph (a) of this section shall not apply; instead, such household must have a net monthly income, after all applicable deductions under \u00a7 273.9(d), at or below 100 percent of the Federal poverty guideline.\n\n(c) *Benefit reduction.* For eligible households, the monthly allotment shall be reduced by 30 percent of the household\u2019s countable net income, as computed under \u00a7 273.9(c) and (d), rounded to the nearest whole dollar, with any fractional amount less than $0.50 disregarded. No benefit shall be issued where the computed allotment is less than $10, except for households containing an elderly or disabled member, for which a minimum benefit of $10 shall be issued.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 64,
+   "completion_tokens": 288,
+   "total_tokens": 352,
+   "cost": 8.896e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.896e-05,
+    "upstream_inference_prompt_cost": 8.32e-06,
+    "upstream_inference_completions_cost": 8.064e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 4,
+  "query": "Who counts as a SNAP household?",
+  "passage": "For purposes of this part, a SNAP household consists of individuals who reside together and customarily purchase food and prepare meals in common. Notwithstanding separate food",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 141,
+   "completion_tokens": 400,
+   "total_tokens": 541,
+   "cost": 8.5631e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5631e-05,
+    "upstream_inference_prompt_cost": 1.2831e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 369,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 5,
+  "query": "my boyfriend lives with me, are we one SNAP household",
+  "passage": "Pursuant to 7 CFR 273.1(a), a household for SNAP purposes is defined as a group of individuals who reside together and customarily purchase and prepare food for consumption together. Cohabitation by itself, without a shared customary practice of purchasing and preparing meals, does not establish a single household. An unrelated cohabitant, such as a boyfriend, shall be considered a separate household unless you and he jointly purchase and prepare meals, thereby meeting the statutory test of common household status. Spouses and certain parent-child relationships are statutorily combined regardless of meal preparation, but this rule does not extend to non-relative companions. Consequently, the determination hinges on your actual food preparation and purchasing behavior, not merely on shared living quarters.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 66,
+   "completion_tokens": 752,
+   "total_tokens": 818,
+   "cost": 0.00021914,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00021914,
+    "upstream_inference_prompt_cost": 8.58e-06,
+    "upstream_inference_completions_cost": 0.00021056
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 601,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 6,
+  "query": "SNAP work requirements",
+  "passage": "(a) Except as provided in paragraph (b) of this section, an able-bodied adult without dependents shall, as a condition of eligibility for supplemental nutrition assistance program benefits, comply with a work requirement by satisfying one of the following: (1) working at least 80 hours per month; (2) participating in a qualifying employment and training program for at least 80 hours per month; or (3) complying with a workfare program consistent with \u00a7 273.7. (b) The work requirement in paragraph (a) shall apply only to an able-bodied adult without dependents who is age 18 through 49, except that the requirement shall not apply to an individual determined to be physically or mentally unfit for employment, pregnant, or otherwise exempt pursuant to \u00a7 273.7(e). (c) An individual subject to the work requirement who fails to comply without good cause shall be ineligible for benefits for such period as prescribed by applicable State agency policy, not to exceed the maximum disqualification period permitted under Federal law.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 137,
+   "completion_tokens": 307,
+   "total_tokens": 444,
+   "cost": 6.8341e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.8341e-05,
+    "upstream_inference_prompt_cost": 1.2467e-05,
+    "upstream_inference_completions_cost": 5.5874e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 96,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 7,
+  "query": "do I have to work to keep my food stamps",
+  "passage": "(a) Except as otherwise provided in this part, an individual shall not be eligible to receive supplemental nutrition assistance benefits unless the individual satisfies the work registration requirements set forth in \u00a7 273.7, including registering for employment, accepting suitable offers of work, and not voluntarily quitting a job without good cause. (b) An able-bodied adult without dependents, as defined in \u00a7 273.24, shall be subject to the work requirement under paragraph (a) of this section and must participate in, and comply with, an approved employment and training program for a minimum of 80 hours per month, or otherwise meet the work participation criteria specified in that section, as a condition of eligibility beyond the applicable time limit. (c) Exemptions from these work requirements shall apply only to those individuals expressly excepted under paragraphs (b) and (c) of \u00a7 273.7, including individuals who are physically or mentally unfit for employment, responsible for the care of a dependent child, or otherwise categorically exempt.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 143,
+   "completion_tokens": 314,
+   "total_tokens": 457,
+   "cost": 7.0161e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.0161e-05,
+    "upstream_inference_prompt_cost": 1.3013e-05,
+    "upstream_inference_completions_cost": 5.7148e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 108,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 8,
+  "query": "How are SNAP benefit amounts calculated?",
+  "passage": "Under 7 CFR 273.10, a household's monthly SNAP benefit is computed by subtracting 30 percent of its net monthly income from the applicable maximum monthly allotment for the household's size. The net monthly income is determined by applying all allowable deductions to gross income, including the standard deduction, earned income deduction, dependent care deduction, and excess shelter deduction, subject to statutory caps. For households with a net income of zero, the benefit shall equal the full maximum allotment. The resulting benefit amount is rounded down to the nearest whole dollar, and households with a calculated benefit of less than one dollar are not entitled to an issuance.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 506,
+   "total_tokens": 568,
+   "cost": 0.00014974,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00014974,
+    "upstream_inference_prompt_cost": 8.06e-06,
+    "upstream_inference_completions_cost": 0.00014168
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 377,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 9,
+  "query": "What must a SNAP office do when you apply?",
+  "passage": "Upon receipt of an application, the State agency shall accept the application in writing, record the date of filing, and furnish the applicant with a dated receipt therefor. The State agency shall take no action to deny, suspend, or terminate eligibility without first providing the household with adequate notice and an opportunity to respond. Eligibility shall be determined and the household shall be notified of the certification or denial within 30 days of the application date, except as otherwise provided for expedited service. Any benefits owing shall be issued on behalf of the household no later than 30 days from the application date, with benefits prorated for the initial month of application.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 386,
+   "total_tokens": 530,
+   "cost": 8.3356e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.3356e-05,
+    "upstream_inference_prompt_cost": 1.3104e-05,
+    "upstream_inference_completions_cost": 7.0252e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 253,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 10,
+  "query": "7 CFR 271.2",
+  "passage": "(a) For purposes of this part, section 271.2 defines the scope and applicability of the Food and Nutrition Service regulations governing the administration of the Supplemental Nutrition Assistance Program. (b) The definitions contained in this section shall apply to all subparts of this chapter unless otherwise specified by a particular subpart or appendix. (c) Any term defined in the Food and Nutrition Act of 2008, as amended, is incorporated by reference herein with the same force and effect as if fully set forth. (d) Nothing in this section shall be construed to limit the authority of the Secretary to issue additional definitions as necessary for program administration.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 61,
+   "completion_tokens": 129,
+   "total_tokens": 190,
+   "cost": 3.1262e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 3.1262e-05,
+    "upstream_inference_prompt_cost": 5.978e-06,
+    "upstream_inference_completions_cost": 2.5284e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 11,
+  "query": "20 CFR 416.1100",
+  "passage": "For purposes of this part, income is defined as anything you receive in cash or in kind that you can use to meet your needs for food and shelter. In-kind income consists of food or shelter, or something you can use to obtain food or shelter, received in a form other than cash. Income may be earned or unearned, and its excludability is determined in accordance with the provisions set forth in this subpart, subject to the specific exclusions enumerated in \u00a7\u00a7 416.1102 through 416.1104. The receipt of an item that is not usable to meet food or shelter needs, or is not received in a manner that constitutes a resource, shall not be considered income for SSI eligibility and benefit computation purposes. All determinations regarding income shall be made on a calendar-month basis, consistently with the reporting and verification requirements of this part.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 792,
+   "total_tokens": 854,
+   "cost": 0.00022982,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00022982,
+    "upstream_inference_prompt_cost": 8.06e-06,
+    "upstream_inference_completions_cost": 0.00022176
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 618,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 12,
+  "query": "What income counts for SSI eligibility?",
+  "passage": "For purposes of determining eligibility for supplemental security income benefits, the Commissioner shall consider all income actually received, whether in cash or in kind, as countable unless specifically excluded by statute or regulation. Countable income includes, but is not limited to, wages, net earnings from self-employment, Social Security benefits, pensions, unemployment compensation, and in-kind support and maintenance as defined in \u00a7 416.1102. Exclusions from countable income shall be applied in accordance with \u00a7 416.1104, including the general income exclusion and the earned income exclusion, before any benefit computation is undertaken. Income deemed from an ineligible spouse, parent, or sponsor shall be added to the individual\u2019s own countable income pursuant to \u00a7 416.1160. The agency shall determine monthly countable income using the retrospective monthly accounting method specified in \u00a7 416.1108, except where prospective accounting is required. Any income received in a given calendar month that is not excluded shall reduce the amount of the federal benefit rate, dollar for dollar, as provided in \u00a7 416.1105.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 141,
+   "completion_tokens": 275,
+   "total_tokens": 416,
+   "cost": 6.2881e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.2881e-05,
+    "upstream_inference_prompt_cost": 1.2831e-05,
+    "upstream_inference_completions_cost": 5.005e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 58,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 13,
+  "query": "does working affect my SSI eligibility",
+  "passage": "\u00a7",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 61,
+   "completion_tokens": 400,
+   "total_tokens": 461,
+   "cost": 0.00012054,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00012054,
+    "upstream_inference_prompt_cost": 8.54e-06,
+    "upstream_inference_completions_cost": 0.000112
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 479,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 14,
+  "query": "What unearned income does SSI not count?",
+  "passage": "(a) For purposes of determining eligibility for and the amount of supplemental security income benefits, the Administration shall not count as unearned income the first $20 of unearned income received in a calendar month. (b) Unearned income that is excluded by Federal statute, including need-based assistance from the Supplemental Nutrition Assistance Program, housing assistance payments, and home energy assistance, shall not be counted. (c) Income received in the form of loans, grants, scholarships, or fellowships used for educational purposes, and income used to meet the reasonable costs of impairment-related work expenses, shall be excluded to the extent provided under \u00a7 416.1103 and related provisions. (d) Any portion of unearned income that is not countable for purposes of SSI under this part shall be disregarded in computing the individual's countable income.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 346,
+   "total_tokens": 490,
+   "cost": 7.6076e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.6076e-05,
+    "upstream_inference_prompt_cost": 1.3104e-05,
+    "upstream_inference_completions_cost": 6.2972e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 175,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 15,
+  "query": "What resources count toward the SSI asset limit?",
+  "passage": "For purposes of determining eligibility for Supplemental Security Income benefits, all resources available to the individual and, where applicable, the individual\u2019s spouse are counted toward the statutory resource limit, except as expressly excluded under this part. Countable resources include, but are",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 143,
+   "completion_tokens": 400,
+   "total_tokens": 543,
+   "cost": 8.5813e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5813e-05,
+    "upstream_inference_prompt_cost": 1.3013e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 348,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 16,
+  "query": "can I own a car and still get SSI",
+  "passage": "(a) For purposes of determining initial and continuing eligibility for supplemental security income benefits, the term \u201cresources\u201d means cash or other liquid assets or any real or personal property that an individual owns and could convert to cash for support and maintenance. (b) However, the value of one automobile is excluded from an individual\u2019s resources if it is used primarily for transportation for the individual or for members of the individual\u2019s household, regardless of its value, provided that such use is for necessary daily activities and the automobile is not held primarily as an investment. (c) Accordingly, an individual may own an automobile and remain eligible for benefits so long as the automobile is fully excluded under this provision; if the automobile is not so excluded, its current market value shall be counted toward the applicable resource limit.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 143,
+   "completion_tokens": 284,
+   "total_tokens": 427,
+   "cost": 6.4701e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.4701e-05,
+    "upstream_inference_prompt_cost": 1.3013e-05,
+    "upstream_inference_completions_cost": 5.1688e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 123,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 17,
+  "query": "Who can get SSI benefits?",
+  "passage": "(a) Eligibility for supplemental security income benefits shall be determined on the basis of the individual\u2019s age, disability, or blindness, as defined in \u00a7 416.901, and on the individual\u2019s income and resources, as set forth in subparts K and L of this part. (b) No individual shall be eligible for benefits under this part for any month in which such individual is an inmate of a public institution, as defined in \u00a7 416.201, unless the exception in \u00a7 416.211(b) applies. (c) An alien, as defined in \u00a7 416.1200, must satisfy the qualified alien status requirements of \u00a7 416.1202 and the additional conditions of \u00a7 416.1204, including meeting the 7-year residency or military-service exception, to receive benefits. (d) Benefits shall not be payable to any individual who fails to file an application, who refuses to cooperate in the determination of eligibility, or who is absent from the United States for more than 30 consecutive days, except as provided in \u00a7 416.215.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 61,
+   "completion_tokens": 220,
+   "total_tokens": 281,
+   "cost": 6.953e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.953e-05,
+    "upstream_inference_prompt_cost": 7.93e-06,
+    "upstream_inference_completions_cost": 6.16e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 18,
+  "query": "What does assistance mean under TANF?",
+  "passage": "For purposes of this part, assistance means any payment, or series of payments, in cash or in-kind, or other benefits or services provided to a needy family to meet ongoing basic needs",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 142,
+   "completion_tokens": 400,
+   "total_tokens": 542,
+   "cost": 7.6986e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 120,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.6986e-05,
+    "upstream_inference_prompt_cost": 4.186e-06,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 362,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 19,
+  "query": "What is the purpose of the TANF program?",
+  "passage": "(a) Purpose. The purpose of the Temporary Assistance for Needy Families (TANF) program is to provide assistance to needy families so that children may be cared for in their own homes or in the homes of relatives; to end the dependence of needy parents on government benefits by promoting job preparation, work, and marriage; to prevent and reduce the incidence of out-of-wedlock pregnancies; and to encourage the formation and maintenance of two-parent families. (b) Implementation. Such purposes shall be effectuated through State-designed programs that, consistent with section 401 of the Social Security Act, require work participation, impose time limits, and utilize performance measures to ensure fiscal accountability and progress toward self-sufficiency.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 65,
+   "completion_tokens": 143,
+   "total_tokens": 208,
+   "cost": 4.849e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 4.849e-05,
+    "upstream_inference_prompt_cost": 8.45e-06,
+    "upstream_inference_completions_cost": 4.004e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 20,
+  "query": "how many hours do I have to work on welfare",
+  "passage": "(a) Work requirement. Except as otherwise provided in this part, an adult recipient of assistance under the Temporary Assistance for Needy Families program must participate in work activities for not fewer than 30 hours per week, or, in the case of a single custodial parent with a child under 6 years of age, not fewer than 20 hours per week. (b) The hours specified in paragraph (a) of this section shall be averaged over the month, and any failure to meet the required weekly hours without good cause shall result in a pro rata reduction of the family\u2019s assistance grant, consistent with \u00a7 261.14 of this chapter.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 143,
+   "completion_tokens": 243,
+   "total_tokens": 386,
+   "cost": 4.79206e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 128,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 4.79206e-05,
+    "upstream_inference_prompt_cost": 3.6946e-06,
+    "upstream_inference_completions_cost": 4.4226e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 110,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 21,
+  "query": "How is MAGI calculated for Medicaid?",
+  "passage": "For purposes of determining eligibility for Medicaid under section 1902(e)(14) of the Social Security Act, modified adjusted gross income (MAGI) shall be computed in accordance with the methodology set forth at 42 CFR 435.603. MAGI is defined as the applicant\u2019s or enrollee\u2019s adjusted gross income as determined for Federal income tax purposes, plus any tax-exempt interest, any non-taxable Social Security benefits, and any foreign earned income excluded from gross income under section 911 of the Internal Revenue Code. In computing MAGI, the following amounts are excluded: any lump sum payments, items excluded under sections 101, 104, and 105 of the Internal Revenue Code, and amounts received as child support, veterans\u2019 benefits, or workers\u2019 compensation. For individuals whose tax filing status is not applicable, the State agency must use a reasonable methodology consistent with the principles of this section to project",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 400,
+   "total_tokens": 462,
+   "cost": 0.00012068,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00012068,
+    "upstream_inference_prompt_cost": 8.68e-06,
+    "upstream_inference_completions_cost": 0.000112
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 212,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 22,
+  "query": "does Medicaid count my income before taxes",
+  "passage": "For purposes of determining an individual\u2019s eligibility for medical assistance under title XIX of the Social Security Act, the agency shall count the individual\u2019s modified adjusted gross income, as defined in section 36B(d)(2)(B) of the Internal Revenue Code of 1986, computed on the basis of income received before the application of any Federal, State, or local income tax deductions, credits, or exclusions unless otherwise expressly provided under this part. The countable income standard shall not reflect amounts withheld from wages for Federal income tax, State income tax, or other payroll deductions, nor shall it account for anticipated tax liabilities or refunds. In no case shall after-tax income, take-home pay, or net disposable earnings serve as the measure of financial eligibility for MAGI-based coverage groups. Such income shall be reconciled against tax return data as provided under applicable data matching protocols.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 140,
+   "completion_tokens": 294,
+   "total_tokens": 434,
+   "cost": 5.70752e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 126,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 5.70752e-05,
+    "upstream_inference_prompt_cost": 3.5672e-06,
+    "upstream_inference_completions_cost": 5.3508e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 115,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 23,
+  "query": "Who is a targeted low-income child for CHIP?",
+  "passage": "For purposes of this part, a targeted low-income child means an individual under 19 years of age who is not eligible for medical assistance under the State Medicaid plan or under a waiver of such plan, and who has not been determined to be covered under a group health plan, health insurance coverage, or other health benefits coverage described in this part. The child\u2019s family income must exceed the applicable income level for Medicaid eligibility under the State plan and must not exceed 200 percent of the Federal poverty level, or such higher level as the State may elect under this title. Such term also includes a child who, at the option of the State, is born to and living",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 400,
+   "total_tokens": 544,
+   "cost": 7.7532e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 115,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.7532e-05,
+    "upstream_inference_prompt_cost": 4.732e-06,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 265,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 25,
+  "query": "How is annual income calculated for HUD housing programs?",
+  "passage": "Annual income shall mean the anticipated total income from all sources received by the family for the 12-month period following the effective date of the determination of eligibility or recertification. This includes, but is not limited to, gross wages, salaries, self-employment net income, interest and dividend payments, social security benefits, and cash assistance from public programs. The amount shall be determined by projecting the family's current income circumstances forward, incorporating any known and reasonably certain changes in income over the coming year, as prescribed by 24 CFR 5.609. The calculation shall include the imputed income from net family assets when the actual income from such assets is less than the HUD-determined passbook rate. Excluded from annual income are specific enumerated sources, such as income of minor children, certain foster care payments, and reimbursement for medical expenses, consistent with the regulatory exclusions in 24 CFR 5.609(b). The resulting figure shall be the basis for all subsequent rent and assistance calculations under the applicable housing program.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 65,
+   "completion_tokens": 810,
+   "total_tokens": 875,
+   "cost": 0.00023525,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00023525,
+    "upstream_inference_prompt_cost": 8.45e-06,
+    "upstream_inference_completions_cost": 0.0002268
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 604,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 26,
+  "query": "does my overtime count for section 8 income",
+  "passage": "For purposes of determining annual income under Section 8 of the United States Housing Act of 1937, overtime compensation is included as earned income. The public housing agency must count all amounts received from wages, salaries, commissions, bonuses, and overtime pay when calculating a family\u2019s anticipated gross income. Overtime is not categorically excluded from annual income unless a specific statutory or regulatory exclusion under 24 CFR part 5 applies. Such earnings",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 142,
+   "completion_tokens": 400,
+   "total_tokens": 542,
+   "cost": 8.5722e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5722e-05,
+    "upstream_inference_prompt_cost": 1.2922e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 310,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 27,
+  "query": "Who is eligible for a housing choice voucher?",
+  "passage": "To be eligible for a housing choice voucher, a family must have an annual income that does not exceed the applicable very low-income limit or other income limit established by the Secretary for the family's size and locality. The family must also satisfy the eligibility criteria set forth in this part, including those pertaining to citizenship or eligible immigration status, and must provide all necessary documentation required by the public housing agency (PHA) to verify eligibility. A family's eligibility is determined in accordance",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 142,
+   "completion_tokens": 400,
+   "total_tokens": 542,
+   "cost": 8.5722e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5722e-05,
+    "upstream_inference_prompt_cost": 1.2922e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 305,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 29,
+  "query": "How does WIC certify participants?",
+  "passage": "(a) Certification. An applicant shall be certified as a participant only upon a determination by the State agency, or local agency acting under delegated authority, that the applicant satisfies all categorical, income, and nutritional risk eligibility requirements, as set forth in \u00a7 246.7. (b) Documentation. The State agency shall require documentation of the applicant's identity, income, and residency, and shall obtain a professional assessment of nutritional risk, including a medical or anthropometric assessment where applicable, prior to issuance of food instruments. (c) Certification period. Certification shall be for a fixed period not to exceed twelve months, except for infants, whose certification period shall be determined in accordance with \u00a7 246.7(e)(2), and shall expire on the last day of the period, requiring a new certification for continued participation. (d) Authorized representative. Where an applicant is unable to appear in person, the State agency may permit an authorized representative to complete the certification process upon presentation of valid documentation of authority to act on the applicant's behalf.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 140,
+   "completion_tokens": 296,
+   "total_tokens": 436,
+   "cost": 6.6612e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.6612e-05,
+    "upstream_inference_prompt_cost": 1.274e-05,
+    "upstream_inference_completions_cost": 5.3872e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 85,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 30,
+  "query": "what foods can I get on WIC",
+  "passage": "\u00a7 246.10 Supplemental foods. The supplemental foods provided under this part shall consist of specific items prescribed by the State agency in accordance with this section. Such items shall include, but are not limited to, iron-fortified infant formula, infant cereal, iron-fortified adult cereal, vitamin C-rich fruit or vegetable juice, fluid milk, cheese, eggs, dried beans or peas, peanut butter, canned fish, and whole grain bread or tortillas. The exact quantities and specific varieties within these categories shall be determined by the State agency, subject to the nutritional standards and maximum cost allowances established herein. For participants with qualifying medical conditions, the State agency may authorize exempt infant formulas or medical foods as defined in \u00a7 246.2, provided that appropriate medical documentation is furnished. Cash or credit purchases of foods not enumerated in the approved food package shall be disallowed.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 857,
+   "total_tokens": 919,
+   "cost": 0.00024802,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00024802,
+    "upstream_inference_prompt_cost": 8.06e-06,
+    "upstream_inference_completions_cost": 0.00023996
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 682,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 31,
+  "query": "What is the maximum LIHEAP amount for weatherization?",
+  "passage": "(a) *Maximum amount.* Except as provided in paragraph (b) of this section, the maximum amount of Low Income Home Energy Assistance Program (LIHEAP) funds that a grantee may expend for weatherization materials, labor, and related administrative costs for any single dwelling unit shall not exceed the lesser of $5,000 or the sum of the dwelling unit\u2019s estimated annual energy savings, as determined by the grantee\u2019s approved energy audit procedure, multiplied by a factor of 1.5, rounded to the nearest whole dollar. (b) *Exception.* A grantee may exceed the maximum amount set forth in paragraph (a) of this section by up to 25 percent for a dwelling unit occupied by a household with a member who is elderly, disabled, or a child under age six, provided the grantee documents that the additional expenditure is necessary to achieve a reduction in the household\u2019s energy burden and submits prior written justification to the Secretary.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 66,
+   "completion_tokens": 195,
+   "total_tokens": 261,
+   "cost": 6.318e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.318e-05,
+    "upstream_inference_prompt_cost": 8.58e-06,
+    "upstream_inference_completions_cost": 5.46e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 32,
+  "query": "What must states do to receive LIHEAP block grant funds?",
+  "passage": "To receive a LIHEAP block grant, a State must submit an application and an approved State plan to the Secretary for each fiscal year. The plan must include assurances that the State will use funds in accordance with statutory requirements, target assistance to households with the highest energy burden, and provide outreach to eligible low-income households. The State must certify that it has conducted a public hearing and afforded an opportunity for comment on the proposed plan. Additionally, the",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 146,
+   "completion_tokens": 400,
+   "total_tokens": 546,
+   "cost": 8.6086e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.6086e-05,
+    "upstream_inference_prompt_cost": 1.3286e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 310,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 33,
+  "query": "Which children are eligible for child care subsidies?",
+  "passage": "(a) *Eligible child.* A child is eligible for child care subsidies under this part if the child is under age 13, or under age 18 if the child has special needs or is in the care of a protective services agency, and the child\u2019s family meets the income eligibility threshold established by the Lead Agency, not exceeding 85 percent of State median income, as determined under \u00a7 98.20. (b) *Condition of eligibility.* Assistance may be provided only if the child\u2019s parent is employed, participating in a job search or job training program, or attending an educational institution, in accordance with the family\u2019s approved case plan; such requirement shall be waived for families receiving protective services or for children with special needs when the Lead Agency determines that services are necessary to prevent child abuse or neglect. (c) *Continued eligibility.* A child shall remain eligible for a 12-month period following the determination of initial eligibility, notwithstanding fluctuations in the family\u2019s income, hours of employment, or participation status, as provided in the Lead Agency\u2019s approved plan.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 142,
+   "completion_tokens": 304,
+   "total_tokens": 446,
+   "cost": 6.825e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.825e-05,
+    "upstream_inference_prompt_cost": 1.2922e-05,
+    "upstream_inference_completions_cost": 5.5328e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 81,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 34,
+  "query": "can I choose my own babysitter with a child care voucher",
+  "passage": "(a) A recipient of a child care subsidy, including a voucher, may select any provider of child care services of the parent\u2019s own choosing, subject to the requirements of this part. (b) The provider so selected may include a relative, neighbor, or other legally exempt caregiver, provided that such individual is not a parent of the recipient child and meets all applicable State or local health, safety, and background check standards. (c) The voucher shall not restrict the recipient to a specific agency, center, or family child care home, but shall afford the maximum feasible parental choice among eligible providers. (d) Notwithstanding the foregoing, the chosen provider must be deemed eligible by the administering agency, affirmatively comply with the State\u2019s approved Child Care and Development Fund plan, and not be disqualified from participation due to substantiated incidents of child abuse or neglect. (e) Payment under the voucher shall be rendered directly to the selected provider or as a reimbursement to the family, contingent upon verification of the provider\u2019s legal status and capacity to furnish care.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 66,
+   "completion_tokens": 683,
+   "total_tokens": 749,
+   "cost": 0.00019982,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00019982,
+    "upstream_inference_prompt_cost": 8.58e-06,
+    "upstream_inference_completions_cost": 0.00019124
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 470,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 35,
+  "query": "Who qualifies for Lifeline phone discounts?",
+  "passage": "(a) *Eligible low-income consumer.* An eligible low-income consumer is a consumer who satisfies one of the following criteria: (1) The consumer\u2019s household income is at or below 135 percent of the Federal Poverty Guidelines, as published by the Department of Health and Human Services; or (2) The consumer participates in one or more of the following qualifying assistance programs: Supplemental Nutrition Assistance Program (SNAP), Medicaid, Federal Public Housing Assistance, Supplemental Security Income (SSI), Veterans and Survivors Pension Benefit, or, on Tribal lands, any of the foregoing, or the Bureau of Indian Affairs General Assistance, Tribally-Administered Temporary Assistance for Needy Families, or Food Distribution Program on Indian Reservations. (b) *Household limitation.* No more than one Lifeline discount may be provided per household, and each eligible consumer must certify, under penalty of perjury, that the discount is not already received by another household member. (c) *Verification.* Such qualification must be verified by the Universal Service Administrative Company through the National Verifier or other designated mechanism prior to the disbursement of support.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 141,
+   "completion_tokens": 311,
+   "total_tokens": 452,
+   "cost": 6.9433e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.9433e-05,
+    "upstream_inference_prompt_cost": 1.2831e-05,
+    "upstream_inference_completions_cost": 5.6602e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 81,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 36,
+  "query": "how do I prove I'm eligible for a free government phone",
+  "passage": "To establish eligibility for a Lifeline-supported telephone service, an applicant shall provide documentation demonstrating enrollment in a qualifying federal assistance program, such as Medicaid, the Supplemental Nutrition Assistance Program, or Federal Public Housing Assistance, or shall submit a signed self-certification of household income at or below 135 percent of the Federal Poverty Guidelines. When claiming income-based eligibility, the applicant must also furnish supporting records, including, but not limited to, prior",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 145,
+   "completion_tokens": 400,
+   "total_tokens": 545,
+   "cost": 8.5995e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5995e-05,
+    "upstream_inference_prompt_cost": 1.3195e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 313,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 37,
+  "query": "What does able and available for work mean for unemployment?",
+  "passage": "\u00a7 604.5 Able and available for work. For purposes of this part, the term able and available for work means that an individual is physically and mentally capable of performing the duties of suitable work, and is ready, willing, and available to accept such work immediately. An individual shall not be deemed available where the individual imposes conditions upon acceptance of work so restrictive as to unduly",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 400,
+   "total_tokens": 544,
+   "cost": 8.5904e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5904e-05,
+    "upstream_inference_prompt_cost": 1.3104e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 322,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 38,
+  "query": "can I get unemployment if I can only work part time",
+  "passage": "\u00a7 682.310 Eligibility for part-time work availability.\n\n(a) An individual shall not be deemed ineligible for unemployment compensation solely on the basis that the individual is available for and seeking only part-time work, provided that the individual meets all other applicable State law requirements for benefit eligibility. (b) For purposes of this section, part-time work is defined as employment of fewer than 35 hours per week, or such lesser threshold as the State agency may adopt by regulation. (c) The individual must be able to demonstrate, upon request by the State agency, that the individual\u2019s restriction to part-time work does not constitute a withdrawal from the labor force, and that suitable part-time work exists within the individual\u2019s labor market. (d) Nothing in this section shall be construed to supersede State law provisions requiring a minimum number of hours of availability or a specific earnings threshold for benefit eligibility.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 65,
+   "completion_tokens": 182,
+   "total_tokens": 247,
+   "cost": 5.629e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 5.629e-05,
+    "upstream_inference_prompt_cost": 2.535e-05,
+    "upstream_inference_completions_cost": 3.094e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 39,
+  "query": "What are the school lunch meal requirements?",
+  "passage": "(a) Lunches served under the National School Lunch Program shall offer the five required food components: meat/meat alternate, vegetables, fruits, grains, and fluid milk, as specified in the meal pattern. (b) School food authorities must ensure the average daily calorie content of reimbursable lunches falls within the grade-specific ranges, and sodium levels shall not exceed the applicable weekly limits. (c) All lunch meals must be structured so that students are offered each component, and each student shall select at least three components, including a fruit or vegetable. (d) Fluid milk served must be fat-free or low-fat, and grains must be whole-grain-rich, with all menu items meeting the established nutrient and dietary specifications. (e) These requirements are subject to the age-grade groupings for grades K-5, 6-8, and 9-12.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 141,
+   "completion_tokens": 375,
+   "total_tokens": 516,
+   "cost": 8.1081e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.1081e-05,
+    "upstream_inference_prompt_cost": 1.2831e-05,
+    "upstream_inference_completions_cost": 6.825e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 197,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 40,
+  "query": "How do schools verify free lunch applications?",
+  "passage": "The State agency or local educational agency shall conduct verification of the household income and categorical eligibility statements contained in applications for free or reduced-price meals under the National School Lunch Program. Verification shall be performed on a sample of applications selected in accordance with the procedures prescribed in this part, unless a higher percentage is required by the Secretary. Households selected for verification shall be required to provide documentation substantiating reported income, including pay stubs, wage statements, or tax returns, or evidence of participation in a means-tested public assistance program, as applicable. The agency shall review such documentation to confirm that the household size and annual income are consistent with the income eligibility guidelines for free meals. Failure to cooperate with verification, or failure to demonstrate eligibility upon review, shall result in termination of free meal benefits, subject to the notice and hearing requirements of this section. All information obtained through verification shall be protected from unauthorized disclosure in accordance with the confidentiality provisions of the Richard B. Russell National School Lunch Act.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 141,
+   "completion_tokens": 288,
+   "total_tokens": 429,
+   "cost": 6.5247e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.5247e-05,
+    "upstream_inference_prompt_cost": 1.2831e-05,
+    "upstream_inference_completions_cost": 5.2416e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 89,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 43,
+  "query": "What is the income-related monthly adjustment amount for Medicare?",
+  "passage": "The income-related monthly adjustment amount is the additional premium required under section 1839(i) of the Social Security Act for Medicare Part B and Part D coverage. This adjustment is determined based on the beneficiary's modified adjusted gross income as reported on the tax return for the second preceding taxable year. The Secretary of Health and Human Services publishes the income thresholds annually in the Federal Register. Beneficiaries whose income exceeds the applicable threshold must pay the standard premium plus the income-related monthly adjustment amount. The adjustment amount increases with higher income brackets, as specified in the regulation.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 1144,
+   "total_tokens": 1288,
+   "cost": 0.0002008832,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.0002008832,
+    "upstream_inference_prompt_cost": 1.18944e-05,
+    "upstream_inference_completions_cost": 0.0001889888
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 1031,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 44,
+  "query": "What happens if a SNAP household gets overpaid?",
+  "passage": "Upon discovery of an overissuance of benefits to a household, the State agency shall establish a claim for the full amount of the overpayment. The State agency shall provide written notice of the claim, specifying the amount, the cause of the overissuance, and the household's right to a fair hearing and to request a waiver based on undue hardship. Collection shall be effected through reduction of the household's monthly allotment, administrative offset, or a negotiated repayment schedule, unless the overissuance is attributable to inadvertent household error, in which case collection may be limited to a statutorily prescribed period. The State agency may waive collection, in whole or in part, upon a demonstration that recovery would defeat the purpose of the program or be against equity and good conscience. Where the overissuance resulted from an intentional program violation, the household shall be subject to disqualification and mandatory recoupment, and the State agency shall refer the case for appropriate administrative or judicial action.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 65,
+   "completion_tokens": 1013,
+   "total_tokens": 1078,
+   "cost": 0.00029209,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00029209,
+    "upstream_inference_prompt_cost": 8.45e-06,
+    "upstream_inference_completions_cost": 0.00028364
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 812,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 45,
+  "query": "What changes must SNAP households report?",
+  "passage": "(a) Change reporting requirements. Households receiving benefits under this part shall report any change in circumstances that affects, or may affect, household eligibility or benefit amount, including, but not limited to: changes in household composition, income, or assets; changes in residential address or mailing address; changes in earned or unearned income, including new employment, termination of employment, or variation in work hours; changes in dependent care costs, medical expenses, or shelter costs, where such expenses are claimed as deductions; and changes in student status, disability status, or citizenship status. (b) Periodic reporting. Households shall comply with the reporting frequency and deadlines specified in \u00a7 273.12, including submission of interim reports or periodic reports as scheduled by the State agency. (c) Failure to report. Failure to report any required change within the timeframes established by the State agency shall result in the issuance of an overpayment claim, a reduction or termination of benefits, and, where applicable, referral for administrative disqualification or fraud investigation under part 273, subpart U.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 215,
+   "total_tokens": 277,
+   "cost": 6.826e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.826e-05,
+    "upstream_inference_prompt_cost": 8.06e-06,
+    "upstream_inference_completions_cost": 6.02e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 46,
+  "query": "What rights and responsibilities do commodity food program participants have?",
+  "passage": "Each participant in the commodity food program shall be entitled to receive the designated food commodities in the quantities and at the distribution intervals established by the administering State agency, provided that the participant meets all eligibility criteria set forth in this part. Participants shall be responsible for furnishing accurate and complete information regarding household composition, income, and residency at the time of certification and upon any subsequent change in circumstances, as such information is essential to determining continued eligibility. All participants shall comply with the verification procedures prescribed by the State agency, including the timely production of supporting documentation upon request. Commodities distributed under this program shall be used solely for the nutritional benefit of the participant\u2019s household and shall not be sold, exchanged, or otherwise diverted for commercial gain. A participant may request a fair hearing upon notification of an adverse action, and shall be afforded the opportunity to present evidence and arguments in accordance with the procedural requirements contained in \u00a7 250.16 of this chapter. Willful misrepresentation or failure to comply with any provision of this part shall constitute grounds for immediate termination of eligibility and may subject the participant to recovery of the value of any commodities improperly received.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 375,
+   "total_tokens": 519,
+   "cost": 8.1354e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.1354e-05,
+    "upstream_inference_prompt_cost": 1.3104e-05,
+    "upstream_inference_completions_cost": 6.825e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 147,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 47,
+  "query": "SNAP rules for households with special circumstances",
+  "passage": "\u00a7 273.10(i) Special circumstances. Households with special circumstances shall be subject to the modified eligibility and benefit computation provisions set forth in this paragraph. For elderly or disabled members, a standard medical expense deduction, and for homeless households, a fixed shelter deduction, shall be applied in lieu of actual verified costs, subject to the maximum amounts prescribed in part 273. Migrant households shall have their income and resources considered as of the date of application, and any anticipated temporary absence from the State shall not preclude certification, provided that the household maintains a fixed address. Furthermore, households containing a victim of domestic violence or an individual with a substance abuse issue may be granted an exemption from the work requirement and a waiver of the resource limit, pursuant to the criteria established in \u00a7 273.7(f). Finally, households meeting the criteria for expedited service, including those with zero net income or gross income below the applicable threshold, shall receive certification within seven calendar days of application, notwithstanding other verification requirements.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 62,
+   "completion_tokens": 773,
+   "total_tokens": 835,
+   "cost": 0.0002245,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.0002245,
+    "upstream_inference_prompt_cost": 8.06e-06,
+    "upstream_inference_completions_cost": 0.00021644
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 572,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 28,
+  "query": "Housing quality standards for vouchers",
+  "passage": "(a) The dwelling unit shall be decent, safe, and sanitary and shall meet the housing quality standards (HQS) set forth in this part as a condition of initial and continued receipt of tenant-based rental assistance under section 8(o) of the United States Housing Act of 1937 (42 U.S.C. 1437f(o)). (b) HQS include, but are not limited to, performance requirements for sanitary facilities; food preparation and refuse disposal; space and security; and the structural condition, electrical, plumbing, and heating systems of the unit. (c) The responsible entity shall inspect the unit prior to the initial execution of the housing assistance payments contract and at least biennially thereafter to verify compliance with HQS. (d) Any failure by the owner to maintain the unit in accordance with HQS shall constitute a violation of the lease and the assistance contract and shall be grounds for termination of assistance, abatement of housing assistance payments, or other remedial action consistent with this part.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 139,
+   "completion_tokens": 294,
+   "total_tokens": 433,
+   "cost": 6.6157e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.6157e-05,
+    "upstream_inference_prompt_cost": 1.2649e-05,
+    "upstream_inference_completions_cost": 5.3508e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 89,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 41,
+  "query": "How do families apply for Summer EBT?",
+  "passage": "(a) Application for Summer Electronic Benefit Transfer (Summer EBT) benefits shall be submitted by the child\u2019s parent or guardian to the State agency administering the program. (b) Each application must include, at a minimum, the child\u2019s name, date of birth, and school enrollment status, as well as the household\u2019s gross income or categorical eligibility documentation, if applicable. (c) States may accept applications through a single online portal or via paper forms at local Supplemental Nutrition Assistance Program (SNAP) offices, school district administrative sites, or other designated community locations. (d) No application shall be considered complete until all required fields and certifications under paragraph (a) are provided. (e) Upon verification of eligibility, the State agency shall issue benefits to the child\u2019s household in accordance with \u00a7 247.20.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 63,
+   "completion_tokens": 169,
+   "total_tokens": 232,
+   "cost": 3.9298e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 3.9298e-05,
+    "upstream_inference_prompt_cost": 6.174e-06,
+    "upstream_inference_completions_cost": 3.3124e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 0,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 49,
+  "query": "What makes a Social Security application a claim for benefits?",
+  "passage": "For purposes of this part, an application for benefits shall consist of a written statement, made on the prescribed form, filed with the Social Security Administration, that requests a determination of entitlement to a specified benefit under title II of the Act. The application must be signed, certified, and contain sufficient identifying information together with a clear designation of the benefit type sought. Such writing constitutes a claim for benefits only upon receipt by an appropriate official at a place accepted for filing, and only where the applicant indicates an intention to initiate a",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 400,
+   "total_tokens": 544,
+   "cost": 8.5904e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 8.5904e-05,
+    "upstream_inference_prompt_cost": 1.3104e-05,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 296,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 42,
+  "query": "What is required for sponsors in the summer food program?",
+  "passage": "Sponsors in the Summer Food Service Program shall enter into a written agreement with the State agency prior to operating any food service site, and such agreement shall specify the sponsor\u2019s responsibilities for meal service, administration, and fiscal accountability. Sponsors shall ensure that all meals served meet the meal pattern requirements prescribed by the Department, are served at eligible sites, and are provided without charge to participating children. Sponsors shall conduct on-site monitoring of each food service site in accordance with the frequency and documentation standards set forth in this part, and shall maintain accurate records of meal counts, daily production, and expenditures. Sponsors shall submit timely claims for reimbursement only for eligible meals that were served in conformance with program requirements, and shall retain all supporting documentation for the period required by applicable regulations. Sponsors shall also comply with all applicable civil rights requirements, including the prohibition against discrimination on the basis of race, color, national origin, sex, age, or disability, and shall ensure that their subcontracted food service management companies, if any, adhere to the same standards.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 144,
+   "completion_tokens": 369,
+   "total_tokens": 513,
+   "cost": 0.00042678918,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 143,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 0.00042678918,
+    "upstream_inference_prompt_cost": 1.70118e-06,
+    "upstream_inference_completions_cost": 0.000425088
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 154,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 48,
+  "query": "42 CFR 435.4",
+  "passage": "For purposes of this part, the definitions set forth in \u00a7 435.4 shall govern the construction of all terms used in this subchapter. The agency shall apply these definitions uniformly in the administration of the State plan under title XIX of the Social Security Act. Unless the context otherwise requires, terms defined in this section include applicant, recipient, assistance unit, Medicaid agency, and third-party liability. Where a term is not defined",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 140,
+   "completion_tokens": 400,
+   "total_tokens": 540,
+   "cost": 7.73136e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 113,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.73136e-05,
+    "upstream_inference_prompt_cost": 4.5136e-06,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 314,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 50,
+  "query": "How do SNAP allotment reductions work?",
+  "passage": "(a) Except as provided in paragraph (b) of this section, the amount of a household\u2019s monthly allotment shall be reduced by an amount equal to the proportion by which the household\u2019s net income, as determined under \u00a7 273.9, exceeds the applicable maximum income standard, with such reduction applied on a dollar-for-dollar basis against the maximum allotment for the household size. (b) In any month in which the Secretary determines that appropriated funds are insufficient to cover the cost of full allotments, each household\u2019s allotment shall be reduced by a uniform percentage applied to all households, except that no household shall receive an allotment of less than the applicable minimum benefit. (c) The State agency shall implement any reduction required under this section in accordance with the allotment schedule prescribed by the Secretary and shall provide advance notice to affected households in accordance with \u00a7 273.12. (d) Any reduction under this section shall be nullified to the extent that the household\u2019s circumstances, as verified in accordance with \u00a7 273.2(f), change during the certification period, in which case the State agency shall recompute the allotment from the date of the reported change.",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 142,
+   "completion_tokens": 330,
+   "total_tokens": 472,
+   "cost": 6.40276e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 123,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 6.40276e-05,
+    "upstream_inference_prompt_cost": 3.9676e-06,
+    "upstream_inference_completions_cost": 6.006e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 87,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ },
+ {
+  "id": 24,
+  "query": "42 CFR 435.907",
+  "passage": "Under \u00a7 435.907, the State agency must verify the citizenship or nationality of any applicant or recipient who attests to such status prior to enrollment or renewal of Medicaid eligibility. The agency must require the individual to submit satisfactory documentary evidence of citizenship or nationality, such as a birth certificate, passport, or other acceptable documentation specified by the Secretary. For individuals who are not citizens or nationals, the",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+   "prompt_tokens": 140,
+   "completion_tokens": 400,
+   "total_tokens": 540,
+   "cost": 7.65128e-05,
+   "is_byok": false,
+   "prompt_tokens_details": {
+    "cached_tokens": 124,
+    "cache_write_tokens": 0,
+    "audio_tokens": 0,
+    "video_tokens": 0
+   },
+   "cost_details": {
+    "upstream_inference_cost": 7.65128e-05,
+    "upstream_inference_prompt_cost": 3.7128e-06,
+    "upstream_inference_completions_cost": 7.28e-05
+   },
+   "completion_tokens_details": {
+    "reasoning_tokens": 320,
+    "image_tokens": 0,
+    "audio_tokens": 0
+   }
+  }
+ }
+]

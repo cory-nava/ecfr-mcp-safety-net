@@ -1,0 +1,10 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 5873.84it/s]
+  0/2278 files
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (610 > 512). Running this sequence through the model will result in indexing errors
+  500/2278 files
+  1000/2278 files
+  1500/2278 files
+  2000/2278 files
+saved 6222 chunk texts
+EXIT:0

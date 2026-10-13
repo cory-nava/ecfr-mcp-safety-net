@@ -45,6 +45,9 @@ def main() -> int:
     ap.add_argument("--golden", default=str(Path(__file__).parent / "eval.json"))
     ap.add_argument("--model", default="BAAI/bge-base-en-v1.5")
     ap.add_argument("--reranker", default="BAAI/bge-reranker-base")
+    ap.add_argument("--batch-size", type=int, default=32)
+    ap.add_argument("--results", default="",
+                    help="JSONL file for per-query results; existing ids are skipped (resume)")
     args = ap.parse_args()
 
     from sentence_transformers import SentenceTransformer, CrossEncoder
@@ -78,8 +81,19 @@ def main() -> int:
 
     con = sqlite3.connect(args.meta)
     goldens = json.load(open(args.golden))
+    done_ids = set()
+    res_fh = None
+    if args.results:
+        rp = Path(args.results)
+        if rp.exists():
+            for line in rp.read_text().splitlines():
+                if line.strip():
+                    done_ids.add(json.loads(line)["id"])
+        res_fh = open(rp, "a")
     results = []
     for gi, g in enumerate(goldens):
+        if g["id"] in done_ids:
+            continue
         q = model.encode([g["query"]], normalize_embeddings=True)[0]
         order = np.argsort(-(Vn @ q))
         m = CITATION_RE.fullmatch(g["query"].strip())
@@ -91,7 +105,8 @@ def main() -> int:
                                 "top1": hit[0]})
                 continue
         cand_idx = order[:TOP_N]
-        scores = ranker.predict([(g["query"], texts[i]) for i in cand_idx])
+        scores = ranker.predict([(g["query"], texts[i]) for i in cand_idx],
+                                batch_size=args.batch_size)
         best: dict[str, float] = {}
         for i, s in zip(cand_idx, scores):
             sec = sections[i]
@@ -100,8 +115,12 @@ def main() -> int:
         ranked = sorted(best, key=lambda s: -best[s])
         want = g["expected_path"]
         rank = ranked.index(want) + 1 if want in ranked else 10**9
-        results.append({"id": g["id"], "type": g["type"], "rank": rank,
-                        "top1": ranked[0] if ranked else None})
+        rec = {"id": g["id"], "type": g["type"], "rank": rank,
+               "top1": ranked[0] if ranked else None}
+        results.append(rec)
+        if res_fh:
+            res_fh.write(json.dumps(rec) + "\n")
+            res_fh.flush()
         print(f"  {gi+1}/{len(goldens)} done", flush=True)
 
     def recall(k):

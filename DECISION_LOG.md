@@ -93,6 +93,19 @@ release zip — one download, then fully offline.
 install step is a packaging failure. One-time 21MB download (often much
 less zipped) is a non-issue; per-query GitHub dependence would be.
 
+## 2026-10-13: HyDE wins the retrieval round; adoption deferred to server build
+
+**Decision:** HyDE passage + query vector averaging (0.72/0.82/0.88) is the
+measured-best retrieval config, beating whole-section vectors (0.64/0.78/
+0.84) by +8pp r@1. It is NOT yet the production default — that call waits
+for the MCP server build, where per-query LLM latency (~5-10s), cost
+(~$0.0001), and the OpenRouter dependency get weighed against the recall
+gain. The losing configs (rerank-base, chunking, BM25) stay out.
+
+**Evidence:** Same frozen 50 queries. HyDE-only also beats base
+(0.68/0.84/0.90); the average is best-balanced (natural 0.758, paraphrase
+0.500). Total experiment cost: $0.0056.
+
 ## 2026-10-12: Chunking measured as neutral; not adopted into production path
 
 **Decision:** Keep whole-section vectors as the production index. The
