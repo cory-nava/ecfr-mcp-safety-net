@@ -1,0 +1,16 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 13090.55it/s]
+loaded 6222 chunk texts from cache
+  FAILED q1 batch 0: RuntimeError
+  FAILED q2 batch 0: RuntimeError
+done: 0 queries scored, spent=$0.0000, failed=[1, 2]
+EXIT:2
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  82%|████████▏ | 164/199 [00:00<00:00, 1602.46it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1465.12it/s]
+loaded 6222 chunk texts from cache
+  FAILED q1 batch 10: RuntimeError
+  FAILED q2 batch 0: RuntimeError
+  FAILED q3 batch 0: RuntimeError
+  FAILED q4 batch 0: RuntimeError
+  FAILED q5 batch 0: RuntimeError
+  FAILED q6 batch 0: RuntimeError

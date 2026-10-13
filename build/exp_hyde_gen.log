@@ -1,0 +1,457 @@
+  generated 5 (816 chars)
+  generated 6 (1033 chars)
+  generated 7 (1062 chars)
+  generated 8 (689 chars)
+  generated 9 (707 chars)
+  generated 10 (681 chars)
+  generated 11 (858 chars)
+  generated 12 (1138 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+EXIT:1
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+  generated 13 (1 chars)
+  generated 14 (877 chars)
+  generated 15 (303 chars)
+  generated 16 (879 chars)
+  generated 17 (971 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+  generated 18 (184 chars)
+  generated 19 (762 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 144, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 73, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 55, in ask_or
+    with urllib.request.urlopen(req, timeout=120) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1457, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+EXIT:0
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+  generated 20 (616 chars)
+  generated 21 (930 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+  generated 22 (939 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+  generated 23 (682 chars)
+Traceback (most recent call last):
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 158, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 151, in main
+    return do_generate(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 80, in do_generate
+    passage, usage = ask_or(args.model, PROMPT.format(q=g["query"]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/ecfr-mcp/golden/exp_hyde.py", line 68, in ask_or
+    raise RuntimeError(f"no usable response after retries: {str(last)[:300]}")
+RuntimeError: no usable response after retries: HTTP Error 403: Forbidden
+EXIT:1
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 25 (1121 chars)
+  generated 26 (477 chars)
+  generated 27 (540 chars)
+  FAILED 28: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 29 (1145 chars)
+  generated 30 (951 chars)
+  generated 31 (935 chars)
+  generated 32 (501 chars)
+  generated 33 (1115 chars)
+  generated 34 (1124 chars)
+  generated 35 (1198 chars)
+  generated 36 (533 chars)
+  generated 37 (409 chars)
+  generated 38 (963 chars)
+  generated 39 (842 chars)
+  generated 40 (1242 chars)
+  FAILED 41: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  FAILED 42: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 43 (669 chars)
+  generated 44 (1059 chars)
+  generated 45 (1169 chars)
+  generated 46 (1428 chars)
+  generated 47 (1177 chars)
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 28 (1009 chars)
+  generated 41 (873 chars)
+  FAILED 42: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  FAILED 48: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 49 (604 chars)
+  FAILED 50: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 346 prompt + 863 completion tokens
+saved 46 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24, 42, 48, 50]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+  generated 42 (1251 chars)
+  generated 48 (454 chars)
+  generated 50 (1225 chars)
+pilot/full usage: 426 prompt + 1099 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 0 prompt + 0 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 0 prompt + 0 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 0 prompt + 0 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 0 prompt + 0 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  FAILED 24: RuntimeError no usable response after retries: HTTP Error 403: Forbidden
+pilot/full usage: 0 prompt + 0 completion tokens
+saved 49 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: [24]
+  generated 24 (459 chars)
+pilot/full usage: 140 prompt + 400 completion tokens
+saved 50 passages -> /home/hatch/workspace/ecfr-mcp/golden/hyde_passages.json; failed: []
+hyde final: 50 /50
