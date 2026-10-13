@@ -106,6 +106,10 @@ immediately; revisit if repo weight hurts.
 citation lookup, natural search, full-text section incl. as_of versioning,
 version history, program list). Best tier tested with stubbed LLM:
 scoring path, degradation fallback, citation bypass of the LLM.
+Corpus ships as `data/corpus.tar.gz` (3.4MB) instead of 3,399 loose
+files — the 10-worker blob uploader hung through the sandbox egress
+proxy; verified single-blob uploads are fine (2MB/2.7s, 17MB/12s).
+Server extracts the tarball once, on first `get_section`, under a lock.
 
 ## 2026-10-13: HyDE+rerank combo rejected (does not stack)
 

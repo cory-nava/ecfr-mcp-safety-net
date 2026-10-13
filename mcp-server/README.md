@@ -58,4 +58,7 @@ Data dir override: `ECFR_MCP_DATA=/path/to/data`.
 - `server.py` — MCP stdio server, tool definitions, tier wiring.
 - `retrieval.py` — tier resolution, free/best search, section/version/program helpers.
 - `requirements.txt` — `mcp>=2`, `numpy`, `sentence-transformers`.
-- `../data/` — vectors, chunks, chunk texts, `meta.sqlite`, corpus Markdown.
+- `../data/` — vector + chunk indexes, chunk texts, `meta.sqlite`,
+  and the corpus as `corpus.tar.gz` (3.4MB; thousands of Markdown files
+  would make the git push crawl — the server extracts it once, on first
+  `get_section`, under a file lock).

@@ -212,10 +212,35 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
         return search_free(corpus, query, top_k), True
 
 
+def _ensure_corpus(data_dir: Path) -> Path:
+    """data/corpus ships as corpus.tar.gz (thousands of files would make
+    the git push crawl); extract once, on first use."""
+    data_dir = Path(data_dir)
+    cdir = data_dir / "corpus"
+    lock = data_dir / ".corpus-extract.lock"
+    if not cdir.is_dir() or not any(cdir.iterdir()):
+        import fcntl
+        import tarfile
+        tgz = data_dir / "corpus.tar.gz"
+        if not tgz.exists():
+            raise FileNotFoundError(f"no corpus dir and no {tgz}")
+        with open(lock, "w") as lf:
+            fcntl.flock(lf, fcntl.LOCK_EX)
+            try:
+                if not cdir.is_dir() or not any(cdir.iterdir()):
+                    cdir.mkdir(parents=True, exist_ok=True)
+                    with tarfile.open(tgz, "r:gz") as tf:
+                        tf.extractall(data_dir)
+            finally:
+                fcntl.flock(lf, fcntl.LOCK_UN)
+    return cdir
+
+
 def get_section(data_dir: str | Path, citation: str,
                 as_of: str | None = None) -> dict:
     """Full section text; as_of=YYYY-MM-DD selects the version in force then."""
     data_dir = Path(data_dir)
+    _ensure_corpus(data_dir)
     con = sqlite3.connect(data_dir / "meta.sqlite")
     con.row_factory = sqlite3.Row
     norm = " ".join(citation.split())
