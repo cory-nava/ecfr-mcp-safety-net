@@ -95,7 +95,7 @@ class Corpus:
     def embedder(self):
         if self._embedder is None:
             from sentence_transformers import SentenceTransformer
-            self._embedder = SentenceTransformer("BAAI/bge-base-en-v1.5")
+            self._embedder = SentenceTransformer("BAAI/bge-small-en-v1.5")
         return self._embedder
 
     def embed(self, text: str) -> np.ndarray:

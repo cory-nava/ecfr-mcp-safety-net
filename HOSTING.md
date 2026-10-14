@@ -6,19 +6,19 @@
 
 | Component | RAM |
 |-----------|-----|
-| `BAAI/bge-base-en-v1.5` model (CPU, PyTorch) | ~500 MB |
+| `BAAI/bge-small-en-v1.5` model (CPU, PyTorch) | ~200 MB |
 | Corpus data (vectors + chunks loaded into numpy) | ~100 MB |
 | Python interpreter + MCP server overhead | ~100 MB |
-| **Total** | **~700 MB – 1 GB** |
+| **Total** | **~400 – 512 MB** |
 
 ### Disk Requirements
 
 | Component | Size |
 |-----------|------|
-| `BAAI/bge-base-en-v1.5` model weights (downloaded once to `~/.cache/huggingface`) | 418 MB |
+| `BAAI/bge-small-en-v1.5` model weights (downloaded once to `~/.cache/huggingface`) | 127 MB |
 | Corpus data files (`vectors.npz`, `chunks.npz`, `meta.sqlite`, etc.) | ~63 MB |
 | Python venv + dependencies (torch, sentence-transformers, mcp, etc.) | ~2–3 GB |
-| **Total** | **~3.5 GB** |
+| **Total** | **~3.2 GB** |
 
 ### Startup Time
 

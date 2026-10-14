@@ -41,6 +41,9 @@ one-liners instead of research projects.
   pins either. LLM failure degrades gracefully to free-tier ranking.
   Measured on the frozen 50-query golden set — see `golden/` and the
   whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`).
+- **Embedding model: `BAAI/bge-small-en-v1.5`** (127MB, 384 dims).
+  Chosen over `bge-base-en-v1.5` (418MB, 768 dims) for a 70% size
+  reduction with negligible quality difference on CFR keyword queries.
 - **Version-aware.** Every section carries `effective_from` /
   `effective_to`; "as of date X" is exact via `get_section(as_of=...)`.
 

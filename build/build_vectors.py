@@ -30,7 +30,7 @@ for _var in ("no_proxy", "NO_PROXY"):
 
 import numpy as np
 
-MODEL = "BAAI/bge-base-en-v1.5"
+MODEL = "BAAI/bge-small-en-v1.5"
 BATCH = 64
 
 

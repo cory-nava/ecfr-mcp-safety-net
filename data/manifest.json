@@ -1,0 +1,10 @@
+{
+ "model": "BAAI/bge-small-en-v1.5",
+ "dims": 384,
+ "vectors": 2278,
+ "meta_rows": 3306,
+ "corpus_snapshot": "ctrimm/ecfr-markdown @ main, retrieved 2026-10-12 (eCFR current as of 2026-10-08)",
+ "built_at": "2026-10-14T02:50:19Z",
+ "excluded_from_index": "files with --as-of- in name (earlier versions)",
+ "embed_text": "<title>\\n<body>, front matter excluded, no instruction prefixes, bge 512-token truncation applies"
+}
