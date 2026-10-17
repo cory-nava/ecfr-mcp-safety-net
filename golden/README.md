@@ -33,6 +33,9 @@ python golden/eval.py --vectors data/vectors.npz
 Reports recall@1 / recall@3 / recall@5 overall and per query type. A query
 counts as correct if the expected citation's file is in the top-k.
 
+Results: `results-2026-10-12.md` (the bake-off, bge-base) and
+`results-2026-10-17.md` (bge-small vs bge-base on the refreshed corpus).
+
 The `exp_*.py` and `eval_*.py` experiment scripts are the record of the
 2026-10-12/13 bake-off (see `results-2026-10-12.md` and `../DECISION_LOG.md`).
 They were run with `BAAI/bge-base-en-v1.5`, which is still their default
