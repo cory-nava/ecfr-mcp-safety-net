@@ -101,6 +101,7 @@ unless noted (batches of 10). Detail per query type and per miss:
 | 4 | Dense top-100 + rerank | 0.76 | 0.86 | 0.92 | 10 | $0.173 |
 | 5 | Hybrid dense∪BM25 candidates + rerank | 0.70 | 0.84 | 0.88 | ~9 | $0.143 |
 | 6 | Free tier: citation fast-path + vectors | 0.60 | 0.78 | 0.80 | 0 | $0 |
+| 7 | HyDE-averaged candidates + **gpt-5.4-nano** rerank | 0.58 | 0.88 | 0.94 | 6 (5 rerank + 1 HyDE) | $0.170 |
 
 ★ Best measured, not the default: Luna scores 48/50 (2 queries returned
 unparseable responses) and takes 30–40s/batch — it emits ~80 reasoning

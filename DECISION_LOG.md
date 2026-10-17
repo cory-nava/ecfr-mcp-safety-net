@@ -249,3 +249,12 @@ chain-of-thought is the quality edge and the latency cost (30–40s/batch vs
 1–2s). Cost $0.0022/query vs $0.0018 (+25%). Results in
 `golden/results-2026-10-17.md`, scores in `golden/llm_rerank_scores_luna.jsonl`.
 Server default stays flash-lite (speed); Luna documented as the quality option.
+
+## 2026-10-17 — gpt-5.4-nano rejected as reranker (0.58/0.88/0.94)
+
+Tested openai/gpt-5.4-nano (latest nano-tier, $0.20/$1.25 per MTok) as listwise
+reranker on HyDE-averaged candidates: r@1 0.58 vs flash-lite's 0.76 (-18pp),
+paraphrase r@1 0.333. Fast (~2s/batch, 50/50 scored, $0.170) but a clearly
+worse judge. Newer/pricier != better at relevance scoring. Ranking:
+Luna (0.875) > flash-lite (0.76) > 5.4-nano (0.58) > Haiku-5.5 (unusable).
+Flash-lite stays the server default.
