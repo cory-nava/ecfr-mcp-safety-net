@@ -17,7 +17,9 @@ silently been the free tier since then. The same rebuild appended to the old
 `meta.sqlite` instead of replacing it (every row twice, `is_current` stored as
 text so `bool('0')` was true). All rebuilt from the refreshed corpus; free
 tier re-measured with the shipped code (`golden/eval_server.py`): 0.60 / 0.78 /
-0.80, vs 0.64 / 0.78 / 0.84 for bge-base on the earlier corpus. Also: `as_of`
+0.80, vs 0.64 / 0.78 / 0.84 for bge-base on the same refreshed corpus
+(2 of 50 queries at r@1 and at r@5; within noise at n=50, but a real cost to
+weigh against the 70% smaller model). Also: `as_of`
 lookups now treat `effective_to` as the last day in force (inclusive), as
 ecfr-markdown writes it; the corpus tarball is read into memory rather than
 extracted next to the code (no lock, works on Windows).

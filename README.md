@@ -75,6 +75,8 @@ The tier is picked from the environment; there are no flags.
 
 Recall is measured on the frozen 50-query golden set (`golden/`), with
 `python golden/eval_server.py`, which runs the server's own code.
+`bge-base-en-v1.5` scores 0.64 / 0.78 / 0.84 on the free tier with the same
+corpus and code; `bge-small` was chosen for its 127 MB download (vs 418 MB).
 † The best-tier figure was measured during the bake-off with `bge-base`
 candidates and hasn't been re-measured since the switch to `bge-small` (it needs
 an OpenRouter key: `OPENROUTER_API_KEY=... python golden/eval_server.py --tier best`).
