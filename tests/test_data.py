@@ -3,6 +3,7 @@ import json
 import sqlite3
 import tarfile
 import unittest
+from contextlib import closing
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -16,6 +17,10 @@ class IndexTests(unittest.TestCase):
     def setUpClass(cls):
         cls.corpus = retrieval.Corpus(DATA)
         cls.con = sqlite3.connect(DATA / "meta.sqlite")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.con.close()
 
     def test_indexes_share_one_model(self):
         manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
@@ -38,26 +43,27 @@ class IndexTests(unittest.TestCase):
         missing = {p for (p,) in self.con.execute("SELECT path FROM docs")} - names
         self.assertFalse(missing, f"{len(missing)} meta rows have no file in corpus.tar.gz")
 
-    def test_one_current_version_and_contiguous_history(self):
+    def test_one_current_version_and_ordered_history(self):
         cites = [c for (c,) in self.con.execute(
             "SELECT citation FROM docs GROUP BY citation HAVING COUNT(*) > 1")]
         self.assertTrue(cites)
         for c in cites:
             hist = retrieval.version_history(DATA, c)
             self.assertLessEqual(sum(h["is_current"] for h in hist), 1, c)
+            # versions never overlap; a gap is legitimate (e.g. 42 CFR 457.960 was removed 2024-06-03 to 2026-06-02)
             for a, b in zip(hist, hist[1:]):
                 if a["effective_to"] and b["effective_from"]:
-                    nxt = (date.fromisoformat(a["effective_to"]) + timedelta(days=1)).isoformat()
-                    self.assertEqual(nxt, b["effective_from"], c)
+                    self.assertLess(a["effective_to"], b["effective_from"], c)
 
 
 class LookupTests(unittest.TestCase):
     def setUp(self):
-        con = sqlite3.connect(DATA / "meta.sqlite")
-        # an earlier version with a known last day, and the version that follows it
-        self.cite, self.last_day = con.execute(
-            "SELECT citation, effective_to FROM docs WHERE is_current=0 AND effective_to != '' "
-            "ORDER BY citation LIMIT 1").fetchone()
+        # an earlier version with a known last day, followed the next day by another version
+        with closing(sqlite3.connect(DATA / "meta.sqlite")) as con:
+            self.cite, self.last_day = con.execute(
+                "SELECT a.citation, a.effective_to FROM docs a JOIN docs b ON a.citation = b.citation "
+                "AND b.effective_from = date(a.effective_to, '+1 day') "
+                "WHERE a.is_current = 0 ORDER BY a.citation LIMIT 1").fetchone()
 
     def test_as_of_includes_last_day_in_force(self):
         sec = retrieval.get_section(DATA, self.cite, as_of=self.last_day)

@@ -16,7 +16,7 @@
 | Component | Size |
 |-----------|------|
 | `BAAI/bge-small-en-v1.5` model weights (downloaded once to `~/.cache/huggingface`) | 127 MB |
-| Corpus data files in `data/` (indexes, `meta.sqlite`, `corpus.tar.gz`) | ~DATA_MB MB |
+| Corpus data files in `data/` (indexes, `meta.sqlite`, `corpus.tar.gz`) | ~29 MB |
 | Python venv + dependencies (torch, sentence-transformers, mcp, etc.) | ~2–3 GB |
 | **Total** | **~3.2 GB** |
 

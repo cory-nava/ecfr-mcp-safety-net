@@ -18,7 +18,7 @@ python -m venv .venv && .venv/bin/pip install -e .
 #   .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
-The indexes and the corpus ship in `data/` (DATA_MB MB). The first search
+The indexes and the corpus ship in `data/` (29 MB). The first search
 downloads the embedding model (`BAAI/bge-small-en-v1.5`, 127 MB) to the
 Hugging Face cache; after that the free tier runs fully offline.
 
@@ -62,7 +62,7 @@ The tier is picked from the environment; there are no flags.
 
 | `ECFR_MCP_TIER` | `OPENROUTER_API_KEY` | Tier | Recall@1 / @3 / @5 | Cost |
 |---|---|---|---|---|
-| unset | unset | **free** | FREE_R | $0, offline |
+| unset | unset | **free** | 0.60 / 0.78 / 0.80 | $0, offline |
 | unset | set | **best** | 0.76 / 0.94 / 0.96 † | ~$0.002 / query |
 | `free` or `best` | either | pinned | | |
 
