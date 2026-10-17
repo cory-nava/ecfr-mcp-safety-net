@@ -40,3 +40,20 @@ box with memory fixes before judging it.
 
 At n=50, differences under ~0.04 are noise. Before hardening any embedding
 win into lore, re-confirm on a larger query set.
+
+## Generic embedding bake-off
+
+**What:** `bash future/embedding_bakeoff.sh <hf-model-id>` builds section
+vectors with any sentence-transformers-compatible model and evals dense
+retrieval on the golden set. No API spend.
+
+**Candidates worth trying** (by HF downloads, text embedding):
+- `BAAI/bge-large-en-v1.5` (10M dl) — direct bigger sibling of shipped
+  bge-small. Cleanest comparison. 335M params, 1024-dim.
+- `Qwen/Qwen3-Embedding-0.6B` (8.6M dl) — new Qwen3 architecture, strong
+  MTEB, small enough it may run on modest boxes.
+- `jinaai/jina-embeddings-v3` (1.7M dl) — strong alternative.
+- `nomic-ai/nomic-embed-text-v1.5` — MoE-based, good value.
+
+**What we know:** bge-base vs bge-small gave identical r@1; embedding is
+not the bottleneck. Expect small gains at r@3/r@5 at best.
