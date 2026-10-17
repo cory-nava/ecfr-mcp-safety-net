@@ -80,16 +80,50 @@ The tier is picked from the environment; there are no flags.
   +16pp r@1 over free is worth it per query is a product call — the
   `ECFR_MCP_TIER=free` pin exists for exactly this tradeoff.
 
+- **HyDE-averaged candidates + rerank** is the best *measured* config
+  (0.76 / 0.92 / 0.94) but is **not** the server default: it adds one
+  HyDE passage-generation call per query (~$0.0001 on flash, 5–10s) for
+  +4pp at r@3/r@5 with r@1 unchanged. The default stays zero extra calls
+  beyond the rerank itself. See the leaderboard below.
+
+## Leaderboard
+
+All numbers on the frozen 50-query golden set, `bge-small-en-v1.5`
+candidates, measured 2026-10-17. Reranker is `google/gemini-2.5-flash-lite`
+unless noted (batches of 10). Detail per query type and per miss:
+`golden/results-2026-10-17.md`.
+
+| # | Config | r@1 | r@3 | r@5 | LLM calls / query | Cost / 50 queries |
+|---|---|---|---|---|---|---|
+| 1 | HyDE-averaged candidates + **gpt-6-luna** rerank ★ | 0.875 | 1.000 | 1.000 | 6 (5 rerank + 1 HyDE) | $0.107 |
+| 2 | HyDE-averaged candidates + rerank | 0.76 | 0.92 | 0.94 | 6 (5 rerank + 1 HyDE) | $0.088 |
+| 3 | Query candidates + rerank (best-tier default) | 0.76 | 0.88 | 0.90 | 5 | $0.086 |
+| 4 | Dense top-100 + rerank | 0.76 | 0.86 | 0.92 | 10 | $0.173 |
+| 5 | Hybrid dense∪BM25 candidates + rerank | 0.70 | 0.84 | 0.88 | ~9 | $0.143 |
+| 6 | Free tier: citation fast-path + vectors | 0.60 | 0.78 | 0.80 | 0 | $0 |
+
+★ Best measured, not the default: Luna scores 48/50 (2 queries returned
+unparseable responses) and takes 30–40s/batch — it emits ~80 reasoning
+tokens per call, which is the quality edge and the latency cost. The HyDE
+call costs ~$0.0001/query (one flash generation); the rerank is ~$0.0017/query,
+HyDE+rerank path is ~$0.0018/query. r@1 is identical to the default —
+the gain is entirely at r@3/r@5, where the stronger candidate pool
+matters. Adopting it as the default is a latency/cost tradeoff, hence
+opt-in.
+
+For reference, the 2026-10-12/13 bake-off on `bge-base-en-v1.5`
+(768-dim): free 0.64/0.78/0.84, rerank 0.76/0.94/0.96 — see the
+whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`).
+
 Recall is measured on the frozen 50-query golden set (`golden/`), with
 `python golden/eval_server.py`, which runs the server's own code.
-`bge-base-en-v1.5` scores 0.64 / 0.78 / 0.84 on the free tier with the same
-corpus and code; `bge-small` was chosen for its 127 MB download (vs 418 MB).
-Full comparison, per query type and per miss: `golden/results-2026-10-17.md`.
-The best tier was re-measured on `bge-small` candidates 2026-10-17:
-0.76 / 0.88 / 0.90 ($0.086 for the 50-query run).
+`bge-small` was chosen for its 127 MB download (vs 418 MB for
+`bge-base-en-v1.5`, which scores 0.64 / 0.78 / 0.84 on the free tier with
+the same corpus and code).
 The whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`) and
-`DECISION_LOG.md` cover the seven rounds of experiments behind these choices;
-they predate the model switch, so their numbers are for `bge-base`.
+`DECISION_LOG.md` cover the seven rounds of experiments behind these
+choices; they predate the model switch, so their numbers are for
+`bge-base`.
 
 ## Use cases
 

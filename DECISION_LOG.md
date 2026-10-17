@@ -3,6 +3,32 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-17: server default stays query-candidates (zero extra calls)
+
+**Decision:** The best tier keeps query-candidate + rerank as the default.
+HyDE-averaged candidates (0.76/0.92/0.94, the best measured config) stay
+opt-in: one extra flash call per query (~$0.0001, 5–10s) for +4pp at
+r@3/r@5 with r@1 unchanged is a latency/cost tradeoff for the deployer,
+not the default. The README leaderboard records all five measured
+configs with per-query costs.
+
+## 2026-10-17: HyDE-averaged candidates + rerank is the new best (0.76/0.92/0.94)
+
+**Decision:** The best measured config is now HyDE-averaged top-50 chunk
+candidates + listwise LLM rerank: 0.76/0.92/0.94 at $0.088/50 queries —
+same cost as the query-candidate baseline. Whether it becomes the server
+default is open: it adds one HyDE flash call per query (~$0.0001, 5–10s
+latency) for +4pp at r@3/r@5 with r@1 unchanged.
+
+**Evidence:** Round 8 (`golden/exp_rerank_candidates.py`, same frozen 50).
+Hybrid dense∪BM25 candidates HURT (0.70/0.84/0.88; paraphrase r@1
+0.583→0.417 — lexical distractors fool the LLM scorer, same mechanism as
+the bge-reranker-base failure). Dense top-100 is a wash (0.76/0.86/0.92,
+2x cost). This refines round 7's "combo does not stack": on bge-base the
+combo lost everywhere, but on the weaker bge-small pool HyDE-averaged
+candidates gain where the pool is thinnest. Total experiment spend this
+session: ~$0.49.
+
 ## 2026-10-17: best tier re-measured on bge-small (0.76/0.88/0.90)
 
 **Decision:** Publish best-tier numbers measured on the shipped bge-small
@@ -211,3 +237,15 @@ follow-up, not assumed win).
 measures is worthless. The set caught the prefix bug in round 1 — the
 payoff of the discipline. Rule: add queries freely; never edit an existing
 query to make the retriever pass.
+
+## 2026-10-17 — Luna (gpt-6-luna) is the best reranker by a wide margin; Haiku-5.5 rejected
+
+Compared three LLM rerankers on HyDE-averaged candidates (bge-small), same 50
+queries: gemini-2.5-flash-lite 0.76/0.92/0.94, **gpt-6-luna 0.875/1.000/1.000**,
+claude-haiku-5.5 unusable (0/50 scored — empty/null responses on 15KB prompts).
+On the 48 queries Luna completed, flash-lite scores 0.729/0.917/0.938, so the
+gap is not a dropout artifact. Luna emits ~80 reasoning tokens/call; the
+chain-of-thought is the quality edge and the latency cost (30–40s/batch vs
+1–2s). Cost $0.0022/query vs $0.0018 (+25%). Results in
+`golden/results-2026-10-17.md`, scores in `golden/llm_rerank_scores_luna.jsonl`.
+Server default stays flash-lite (speed); Luna documented as the quality option.
