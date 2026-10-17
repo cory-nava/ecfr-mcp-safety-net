@@ -3,6 +3,18 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-17: best tier re-measured on bge-small (0.76/0.88/0.90)
+
+**Decision:** Publish best-tier numbers measured on the shipped bge-small
+candidates; retire the "old bge-base figure" label.
+
+**Evidence:** Same frozen 50, `golden/exp_llm_rerank.py`, gemini-2.5-flash-lite,
+$0.086 for the run (scores in `golden/llm_rerank_scores_bgesmall.jsonl`).
+r@1 identical to bge-base (0.76); the gap opens at r@3/r@5 (0.88/0.90 vs
+0.94/0.96) — bge-small's top-50 misses the gold section outright more often.
+Same lesson as the free tier: the candidate generator, not the reranker, is
+where the ~4pp went.
+
 ## 2026-10-17: bge-small everywhere, indexes rebuilt, open-source cleanup
 
 **Decision:** `BAAI/bge-small-en-v1.5` (384-dim) is the model for both the

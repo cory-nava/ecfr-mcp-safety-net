@@ -63,7 +63,7 @@ The tier is picked from the environment; there are no flags.
 | `ECFR_MCP_TIER` | `OPENROUTER_API_KEY` | Tier | Recall@1 / @3 / @5 | Cost |
 |---|---|---|---|---|
 | unset | unset | **free** | 0.60 / 0.78 / 0.80 | $0, offline |
-| unset | set | **best** | 0.76 / 0.94 / 0.96 † | ~$0.002 / query |
+| unset | set | **best** | 0.76 / 0.88 / 0.90 | ~$0.002 / query |
 | `free` or `best` | either | pinned | | |
 
 - **free:** citation fast-path, then cosine similarity over whole-section
@@ -73,14 +73,20 @@ The tier is picked from the environment; there are no flags.
   section scores as its best chunk). If the LLM call fails, that query falls
   back to free-tier ranking and the response says `"free (degraded from best)"`.
 
+  **Reranker cost (estimated):** 5 scoring calls per query (50 chunks ÷ 10
+  per batch) — about **$0.0017 per query** at current flash-lite pricing.
+  Measured: $0.0864 for the full 50-query golden run (2026-10-17), zero
+  failed calls. Latency is 30–60s sequential, batchable. Whether the
+  +16pp r@1 over free is worth it per query is a product call — the
+  `ECFR_MCP_TIER=free` pin exists for exactly this tradeoff.
+
 Recall is measured on the frozen 50-query golden set (`golden/`), with
 `python golden/eval_server.py`, which runs the server's own code.
 `bge-base-en-v1.5` scores 0.64 / 0.78 / 0.84 on the free tier with the same
 corpus and code; `bge-small` was chosen for its 127 MB download (vs 418 MB).
 Full comparison, per query type and per miss: `golden/results-2026-10-17.md`.
-† The best-tier figure was measured during the bake-off with `bge-base`
-candidates and hasn't been re-measured since the switch to `bge-small` (it needs
-an OpenRouter key: `OPENROUTER_API_KEY=... python golden/eval_server.py --tier best`).
+The best tier was re-measured on `bge-small` candidates 2026-10-17:
+0.76 / 0.88 / 0.90 ($0.086 for the 50-query run).
 The whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`) and
 `DECISION_LOG.md` cover the seven rounds of experiments behind these choices;
 they predate the model switch, so their numbers are for `bge-base`.
