@@ -7,26 +7,21 @@
 - Stores L2-normalized vectors in vectors.npz and metadata in meta.sqlite.
 - Writes manifest.json with model/corpus provenance for reproducibility.
 
+Rebuilds meta.sqlite from scratch on every run (an existing file is replaced,
+never appended to).
+
 Usage:
-    .venv/bin/python build/build_vectors.py --corpus corpus-src/corpus --out build
+    python build/build_vectors.py --corpus ../ecfr-markdown/corpus --out data \
+        --snapshot "ctrimm/ecfr-markdown @ <commit> (eCFR current as of <date>)"
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
-import os
-import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
-
-# Sandbox quirk: no_proxy holds bracketed IPv6 literals ([::1]) which make
-# httpx (used by huggingface_hub) crash with "Invalid port". Sanitize first.
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 
@@ -60,6 +55,7 @@ def main() -> int:
     ap.add_argument("--corpus", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--model", default=MODEL)
+    ap.add_argument("--snapshot", required=True, help="corpus provenance recorded in manifest.json")
     args = ap.parse_args()
 
     from sentence_transformers import SentenceTransformer
@@ -73,8 +69,8 @@ def main() -> int:
 
     docs, metas = [], []
     for p in files:
-        rel = str(p.relative_to(corpus))
-        fm, body = parse_front_matter(p.read_text())
+        rel = p.relative_to(corpus).as_posix()
+        fm, body = parse_front_matter(p.read_text(encoding="utf-8"))
         is_version = "--as-of-" in p.name
         metas.append({
             "path": rel,
@@ -89,7 +85,7 @@ def main() -> int:
             "sha": hashlib.sha256(p.read_bytes()).hexdigest()[:16],
         })
         if not is_version:
-            # No instruction prefixes: bge-base-en-v1.5 was not trained with
+            # No instruction prefixes: bge-*-en-v1.5 was not trained with
             # query:/passage: prefixes; adding them degrades retrieval badly
             # (golden eval 2026-10-12: exact-citation queries ranked ~1270th).
             docs.append((rel, f"{fm.get('title', '')}\n{body.strip()}"))
@@ -98,7 +94,7 @@ def main() -> int:
           f"({len(files) - len(docs)} version files recorded but not indexed)")
 
     model = SentenceTransformer(args.model)
-    dim = model.get_sentence_embedding_dimension()
+    dim = model.get_embedding_dimension()
     paths = [r for r, _ in docs]
     vecs = np.zeros((len(docs), dim), dtype=np.float32)
     for i in range(0, len(docs), BATCH):
@@ -108,15 +104,18 @@ def main() -> int:
         print(f"  {min(i + BATCH, len(docs))}/{len(docs)}", flush=True)
     np.savez_compressed(out / "vectors.npz", vectors=vecs, paths=np.array(paths))
 
-    con = sqlite3.connect(out / "meta.sqlite")
-    con.execute("""CREATE TABLE IF NOT EXISTS docs
+    db = out / "meta.sqlite"
+    db.unlink(missing_ok=True)  # an old table kept by CREATE IF NOT EXISTS is how rows got duplicated
+    con = sqlite3.connect(db)
+    con.execute("""CREATE TABLE docs
         (path TEXT PRIMARY KEY, citation TEXT, title TEXT, program TEXT, tags TEXT,
          effective_from TEXT, effective_to TEXT, resource TEXT, is_current INTEGER, sha TEXT)""")
     con.executemany(
         "INSERT OR REPLACE INTO docs VALUES (?,?,?,?,?,?,?,?,?,?)",
         [(m["path"], m["citation"], m["title"], m["program"], m["tags"], m["effective_from"],
           m["effective_to"], m["resource"], m["is_current"], m["sha"]) for m in metas])
-    con.execute("CREATE INDEX IF NOT EXISTS idx_citation ON docs(citation)")
+    con.execute("CREATE INDEX idx_citation ON docs(citation)")
+    con.execute("CREATE INDEX idx_current ON docs(is_current)")
     con.commit()
     print("meta rows:", con.execute("SELECT COUNT(*) FROM docs").fetchone()[0])
     con.close()
@@ -126,12 +125,12 @@ def main() -> int:
         "dims": dim,
         "vectors": len(docs),
         "meta_rows": len(metas),
-        "corpus_snapshot": "ctrimm/ecfr-markdown @ main, retrieved 2026-10-12 (eCFR current as of 2026-10-08)",
+        "corpus_snapshot": args.snapshot,
         "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "excluded_from_index": "files with --as-of- in name (earlier versions)",
         "embed_text": "<title>\\n<body>, front matter excluded, no instruction prefixes, bge 512-token truncation applies",
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(manifest, indent=1))
     return 0
 

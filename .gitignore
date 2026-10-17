@@ -1,7 +1,18 @@
+# local environments and caches
 .venv/
 .pip-tmp/
-corpus-src/
-build/vectors.npz
-build/meta.sqlite
 __pycache__/
 *.pyc
+*.egg-info/
+
+# build scratch: scripts live in build/, outputs go to data/ (shipped) or build/ (experiments)
+build/*.npz
+build/*.sqlite
+build/*.json
+build/*.log
+corpus-src/
+
+# extracted corpus from older server versions, and experiment spend trackers
+data/corpus/
+data/.corpus-extract.lock
+*.spent

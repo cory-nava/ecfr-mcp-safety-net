@@ -16,13 +16,13 @@
 | Component | Size |
 |-----------|------|
 | `BAAI/bge-small-en-v1.5` model weights (downloaded once to `~/.cache/huggingface`) | 127 MB |
-| Corpus data files (`vectors.npz`, `chunks.npz`, `meta.sqlite`, etc.) | ~63 MB |
+| Corpus data files in `data/` (indexes, `meta.sqlite`, `corpus.tar.gz`) | ~DATA_MB MB |
 | Python venv + dependencies (torch, sentence-transformers, mcp, etc.) | ~2–3 GB |
 | **Total** | **~3.2 GB** |
 
 ### Startup Time
 
-The first request after launch takes **30–60 seconds** while the embedding model and corpus load into memory. Subsequent requests are fast (< 1s for most queries).
+Startup loads the indexes (a second or two). The first search then loads the embedding model (downloading it once, ~127 MB, if it isn't cached yet), which takes 10–60 seconds depending on the machine and network; the first `get_section` reads the corpus tarball into memory (~1 s). After that, free-tier searches take well under a second; best-tier searches add the LLM rerank round trips (a few seconds).
 
 ---
 
@@ -33,7 +33,7 @@ The first request after launch takes **30–60 seconds** while the embedding mod
 Lambda has three problems for this server:
 
 1. **stdio transport** — the server runs via `mcp.run_stdio_async()`, a persistent process. Lambda is request/response and doesn't support persistent stdio. Switching to MCP's HTTP/SSE transport requires a code rewrite.
-2. **Cold start latency** — loading the 418 MB model + PyTorch takes 30–60 seconds. Without Provisioned Concurrency, every cold start is unusable.
+2. **Cold start latency** — importing PyTorch and loading the 127 MB model takes 10–30 seconds. Without Provisioned Concurrency, every cold start is painful.
 3. **Package size** — the venv is 2–3 GB, requiring a container image build (Lambda supports up to 10 GB images, so it fits, but adds pipeline complexity).
 
 Lambda only makes sense with Provisioned Concurrency to stay warm — at which point it costs the same as always-on alternatives with more setup work.

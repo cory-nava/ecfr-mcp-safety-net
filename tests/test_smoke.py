@@ -1,22 +1,30 @@
-"""Stdio smoke test for the ecfr-mcp server (free tier)."""
+"""End-to-end stdio smoke test for the ecfr-mcp server (free tier, all 4 tools).
+
+Needs sentence-transformers and downloads the embedding model on first run; skipped otherwise.
+"""
 import asyncio
+import importlib.util
 import json
 import os
 import sys
+import unittest
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+ROOT = Path(__file__).parent.parent
+
 
 async def main() -> int:
     env = dict(os.environ)
     env["ECFR_MCP_TIER"] = "free"
-    env["ECFR_MCP_DATA"] = str(Path(__file__).parent.parent / "data")
+    env["ECFR_MCP_DATA"] = str(ROOT / "data")
     params = StdioServerParameters(
         command=sys.executable,
-        args=[str(Path(__file__).parent / "server.py")],
+        args=["-m", "ecfr_mcp"],
         env=env,
+        cwd=str(ROOT),
     )
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as s:
@@ -59,15 +67,23 @@ async def main() -> int:
             sec = json.loads(r.content[0].text)
             print("as_of:", sec["citation"], sec["effective_from"],
                   "->", sec["effective_to"], "| current:", sec["is_current"])
-            assert sec["found"]
+            assert sec["found"] and sec["effective_from"] <= "2024-06-01"
+            assert sec["effective_to"] == "" or sec["effective_to"] >= "2024-06-01"
 
             r = await s.call_tool("version_history",
                                   {"citation": "20 CFR 416.1102"})
             hist = json.loads(r.content[0].text)
             print("versions:", len(hist))
             assert len(hist) >= 2
+            assert sum(h["is_current"] for h in hist) == 1
     print("SMOKE OK")
     return 0
+
+
+@unittest.skipUnless(importlib.util.find_spec("sentence_transformers"), "needs sentence-transformers")
+class SmokeTest(unittest.TestCase):
+    def test_all_tools_over_stdio(self):
+        self.assertEqual(asyncio.run(main()), 0)
 
 
 if __name__ == "__main__":

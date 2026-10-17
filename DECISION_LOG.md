@@ -3,6 +3,24 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-17: bge-small everywhere, indexes rebuilt, open-source cleanup
+
+**Decision:** `BAAI/bge-small-en-v1.5` (384-dim) is the model for both the
+section and the chunk index. `data/manifest.json` records the model and the
+server loads whatever it names; the server refuses to start if the indexes
+disagree on dimensions.
+
+**Evidence:** The 2026-10-13 switch to bge-small rebuilt `vectors.npz` but
+not `chunks.npz` (still 768-dim bge-base). Every best-tier query hit a shape
+mismatch, which the degrade-to-free handler swallowed, so the best tier had
+silently been the free tier since then. The same rebuild appended to the old
+`meta.sqlite` instead of replacing it (every row twice, `is_current` stored as
+text so `bool('0')` was true). All rebuilt from the refreshed corpus; free
+tier re-measured with the shipped code: FREE_R. Also: `as_of`
+lookups now treat `effective_to` as the last day in force (inclusive), as
+ecfr-markdown writes it; the corpus tarball is read into memory rather than
+extracted next to the code (no lock, works on Windows).
+
 ## 2026-10-12: Production retrieval = citation fast-path + vectors (BM25 not fused)
 
 **Decision:** The ranking path is deterministic citation lookup (queries

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecfr-mcp"
+version = "0.1.0"
+description = "MCP server over the eCFR-as-Markdown benefit-regulations corpus: search, exact citations, and point-in-time section text."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = [
+  "mcp>=2,<3",
+  "numpy>=2",
+  "sentence-transformers>=6",
+]
+
+[project.scripts]
+ecfr-mcp = "ecfr_mcp.server:run"
+
+[tool.setuptools]
+packages = ["ecfr_mcp"]

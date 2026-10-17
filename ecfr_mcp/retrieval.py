@@ -10,24 +10,20 @@ ranking for that query rather than erroring.
 """
 from __future__ import annotations
 
+import functools
 import json
 import os
 import re
 import sqlite3
+import tarfile
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-
-# Sandbox quirk: no_proxy contains bracketed IPv6 literals that crash
-# httpx/huggingface_hub at import ("Invalid port"). Sanitize first.
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 
 CITATION_RE = re.compile(r"(\d+)\s+CFR\s+([\w.]+)", re.IGNORECASE)
+DEFAULT_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL = "google/gemini-2.5-flash-lite"
 RERANK_API = "https://openrouter.ai/api/v1/chat/completions"
 TOP_N = 50
@@ -53,6 +49,29 @@ def resolve_tier(env=None) -> tuple[str, str]:
     return "free", "no OPENROUTER_API_KEY in environment"
 
 
+@functools.lru_cache(maxsize=None)
+def _db(data_dir: Path) -> sqlite3.Connection:
+    """One read-only connection per data dir (a missing file errors instead of creating an empty DB)."""
+    path = Path(data_dir) / "meta.sqlite"
+    if not path.exists():
+        raise FileNotFoundError(path)
+    con = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True, check_same_thread=False)
+    con.row_factory = sqlite3.Row
+    return con
+
+
+@functools.lru_cache(maxsize=None)
+def _texts(data_dir: Path) -> dict[str, str]:
+    """Corpus Markdown keyed by path. Read once from corpus.tar.gz into memory (~30MB),
+    so nothing is ever written next to the package."""
+    out = {}
+    with tarfile.open(Path(data_dir) / "corpus.tar.gz", "r:gz") as tf:
+        for m in tf:
+            if m.isfile() and m.name.startswith("corpus/") and m.name.endswith(".md"):
+                out[m.name[len("corpus/"):]] = tf.extractfile(m).read().decode("utf-8")
+    return out
+
+
 @dataclass
 class Hit:
     citation: str
@@ -63,43 +82,42 @@ class Hit:
     rank: int
 
 
-@dataclass
 class Corpus:
-    data_dir: Path
-    meta: sqlite3.Connection = field(init=False)
-    sections: list = field(init=False)
-    sec_vecs: np.ndarray = field(init=False)
-    chunk_sections: list = field(init=False)
-    chunk_vecs: np.ndarray = field(init=False)
-    chunk_texts: list = field(init=False)
-    _embedder = None
-
     def __init__(self, data_dir: str | Path):
-        self.data_dir = Path(data_dir)
-        d = self.data_dir
-        self.meta = sqlite3.connect(d / "meta.sqlite")
-        self.meta.row_factory = sqlite3.Row
+        self.data_dir = d = Path(data_dir)
+        self.meta = _db(d)
+        manifest = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+        # the query encoder must be the model that built the indexes; the manifest is the source of truth
+        self.model_name = manifest.get("model", DEFAULT_EMBED_MODEL)
         z = np.load(d / "vectors.npz")
         self.sections = z["paths"].tolist()
-        V = z["vectors"].astype(np.float64)
-        self.sec_vecs = V / np.linalg.norm(V, axis=1, keepdims=True)
+        self.sec_vecs = _normalized(z["vectors"])
         zc = np.load(d / "chunks.npz")
         self.chunk_sections = zc["sections"].tolist()
-        Vc = zc["vectors"].astype(np.float64)
-        self.chunk_vecs = Vc / np.linalg.norm(Vc, axis=1, keepdims=True)
-        zt = np.load(d / "chunk_texts.npz", allow_pickle=True)
-        assert zt["chunk_ids"].tolist() == zc["chunk_ids"].tolist()
+        self.chunk_vecs = _normalized(zc["vectors"])
+        zt = np.load(d / "chunk_texts.npz", allow_pickle=True)  # our own build output, shipped with the code
+        if zt["chunk_ids"].tolist() != zc["chunk_ids"].tolist():
+            raise ValueError("chunk_texts.npz is misaligned with chunks.npz; rebuild with build/build_chunks.py")
         self.chunk_texts = zt["texts"].tolist()
+        dims = {self.sec_vecs.shape[1], self.chunk_vecs.shape[1], int(manifest.get("dims", self.sec_vecs.shape[1]))}
+        if len(dims) != 1:
+            raise ValueError(f"index dimensions disagree ({sorted(dims)}): vectors.npz, chunks.npz and "
+                             f"manifest.json must all come from {self.model_name}; rebuild the indexes")
+        self.dims = dims.pop()
+        self._embedder = None
 
     @property
     def embedder(self):
         if self._embedder is None:
             from sentence_transformers import SentenceTransformer
-            self._embedder = SentenceTransformer("BAAI/bge-small-en-v1.5")
+            self._embedder = SentenceTransformer(self.model_name)
         return self._embedder
 
     def embed(self, text: str) -> np.ndarray:
-        return self.embedder.encode([text], normalize_embeddings=True)[0]
+        q = self.embedder.encode([text], normalize_embeddings=True)[0]
+        if q.shape[0] != self.dims:
+            raise ValueError(f"{self.model_name} gives {q.shape[0]}-dim vectors but the indexes are {self.dims}-dim")
+        return q
 
     def doc_row(self, path: str):
         return self.meta.execute("SELECT * FROM docs WHERE path=?", (path,)).fetchone()
@@ -111,18 +129,27 @@ class Corpus:
         ).fetchone()
 
 
+def _normalized(v: np.ndarray) -> np.ndarray:
+    v = v.astype(np.float32)
+    return v / np.linalg.norm(v, axis=1, keepdims=True)
+
+
 def _hit_from_row(row, score: float, rank: int) -> Hit:
     return Hit(citation=row["citation"], title=row["title"], path=row["path"],
                program=row["program"] or "", score=score, rank=rank)
 
 
+def _citation_hit(corpus: Corpus, query: str) -> Hit | None:
+    m = CITATION_RE.fullmatch(query.strip())
+    row = m and corpus.lookup_citation(f"{m.group(1)} CFR {m.group(2)}")
+    return _hit_from_row(row, 1.0, 1) if row else None
+
+
 def search_free(corpus: Corpus, query: str, top_k: int = 5) -> list[Hit]:
     """Citation fast-path + dense cosine over section vectors."""
-    m = CITATION_RE.fullmatch(query.strip())
-    if m:
-        row = corpus.lookup_citation(f"{m.group(1)} CFR {m.group(2)}")
-        if row:
-            return [_hit_from_row(row, 1.0, 1)]
+    hit = _citation_hit(corpus, query)
+    if hit:
+        return [hit]
     q = corpus.embed(query)
     sims = corpus.sec_vecs @ q
     order = np.argsort(-sims)[:top_k]
@@ -175,15 +202,14 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
     results are free-tier ranking instead.
     """
     key = api_key or os.environ.get("OPENROUTER_API_KEY")
-    m = CITATION_RE.fullmatch(query.strip())
-    if m:
-        row = corpus.lookup_citation(f"{m.group(1)} CFR {m.group(2)}")
-        if row:
-            return [_hit_from_row(row, 1.0, 1)], False
+    hit = _citation_hit(corpus, query)
+    if hit:
+        return [hit], False
+    if not key:
+        return search_free(corpus, query, top_k), True
+    # embedding errors are not LLM failures: let them surface instead of hiding behind the free tier
+    q = corpus.embed(query)
     try:
-        if not key:
-            raise RuntimeError("no API key for best tier")
-        q = corpus.embed(query)
         order = np.argsort(-(corpus.chunk_vecs @ q))[:TOP_N]
         pairs = [(query, corpus.chunk_texts[i]) for i in order]
         batch_scores = _llm_scores(pairs, key, call_api=call_api)
@@ -212,42 +238,19 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
         return search_free(corpus, query, top_k), True
 
 
-def _ensure_corpus(data_dir: Path) -> Path:
-    """data/corpus ships as corpus.tar.gz (thousands of files would make
-    the git push crawl); extract once, on first use."""
-    data_dir = Path(data_dir)
-    cdir = data_dir / "corpus"
-    lock = data_dir / ".corpus-extract.lock"
-    if not cdir.is_dir() or not any(cdir.iterdir()):
-        import fcntl
-        import tarfile
-        tgz = data_dir / "corpus.tar.gz"
-        if not tgz.exists():
-            raise FileNotFoundError(f"no corpus dir and no {tgz}")
-        with open(lock, "w") as lf:
-            fcntl.flock(lf, fcntl.LOCK_EX)
-            try:
-                if not cdir.is_dir() or not any(cdir.iterdir()):
-                    cdir.mkdir(parents=True, exist_ok=True)
-                    with tarfile.open(tgz, "r:gz") as tf:
-                        tf.extractall(data_dir)
-            finally:
-                fcntl.flock(lf, fcntl.LOCK_UN)
-    return cdir
-
-
 def get_section(data_dir: str | Path, citation: str,
                 as_of: str | None = None) -> dict:
-    """Full section text; as_of=YYYY-MM-DD selects the version in force then."""
+    """Full section text; as_of=YYYY-MM-DD selects the version in force then.
+
+    effective_to is the last day a version was in force (inclusive), as ecfr-markdown writes it.
+    """
     data_dir = Path(data_dir)
-    _ensure_corpus(data_dir)
-    con = sqlite3.connect(data_dir / "meta.sqlite")
-    con.row_factory = sqlite3.Row
+    con = _db(data_dir)
     norm = " ".join(citation.split())
     if as_of:
         row = con.execute(
             """SELECT * FROM docs WHERE citation=?
-               AND effective_from <= ? AND (effective_to = '' OR effective_to > ?)
+               AND effective_from <= ? AND (effective_to = '' OR effective_to >= ?)
                ORDER BY effective_from DESC LIMIT 1""",
             (norm, as_of, as_of)).fetchone()
     else:
@@ -255,19 +258,15 @@ def get_section(data_dir: str | Path, citation: str,
             "SELECT * FROM docs WHERE citation=? AND is_current=1", (norm,)).fetchone()
     if not row:
         return {"found": False, "citation": norm}
-    text = (data_dir / "corpus" / row["path"]).read_text()
     return {"found": True, "citation": row["citation"], "title": row["title"],
             "program": row["program"], "effective_from": row["effective_from"],
             "effective_to": row["effective_to"], "is_current": bool(row["is_current"]),
-            "path": row["path"], "text": text}
+            "path": row["path"], "text": _texts(data_dir)[row["path"]]}
 
 
 def version_history(data_dir: str | Path, citation: str) -> list[dict]:
-    data_dir = Path(data_dir)
-    con = sqlite3.connect(data_dir / "meta.sqlite")
-    con.row_factory = sqlite3.Row
     norm = " ".join(citation.split())
-    rows = con.execute(
+    rows = _db(Path(data_dir)).execute(
         "SELECT * FROM docs WHERE citation=? ORDER BY effective_from", (norm,)).fetchall()
     return [{"path": r["path"], "effective_from": r["effective_from"],
              "effective_to": r["effective_to"], "is_current": bool(r["is_current"]),
@@ -275,9 +274,7 @@ def version_history(data_dir: str | Path, citation: str) -> list[dict]:
 
 
 def list_programs(data_dir: str | Path) -> list[dict]:
-    data_dir = Path(data_dir)
-    con = sqlite3.connect(data_dir / "meta.sqlite")
-    rows = con.execute(
+    rows = _db(Path(data_dir)).execute(
         """SELECT program, COUNT(*) n FROM docs
            WHERE is_current=1 AND program != '' GROUP BY program ORDER BY n DESC"""
     ).fetchall()

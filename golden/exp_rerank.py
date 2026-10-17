@@ -11,15 +11,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sqlite3
 from pathlib import Path
-
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 

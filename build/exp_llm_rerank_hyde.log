@@ -1,56 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  15%|█▌        | 30/199 [00:00<00:00, 297.58it/s]Loading weights:  30%|███       | 60/199 [00:00<00:00, 297.48it/s]Loading weights:  52%|█████▏    | 104/199 [00:00<00:00, 348.22it/s]Loading weights:  70%|██████▉   | 139/199 [00:00<00:00, 274.91it/s]Loading weights:  85%|████████▌ | 170/199 [00:00<00:00, 266.09it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 286.73it/s]
-loaded 6222 chunk texts from cache
-HyDE-averaged candidate vectors ready
-  scored q1 (50 chunks) qcost=$0.0018 spent=$0.0018
-  scored q2 (50 chunks) qcost=$0.0018 spent=$0.0036
-  scored q3 (50 chunks) qcost=$0.0018 spent=$0.0054
-  scored q4 (50 chunks) qcost=$0.0017 spent=$0.0071
-  scored q5 (50 chunks) qcost=$0.0017 spent=$0.0088
-  scored q6 (50 chunks) qcost=$0.0018 spent=$0.0105
-  scored q7 (50 chunks) qcost=$0.0017 spent=$0.0122
-  scored q8 (50 chunks) qcost=$0.0019 spent=$0.0141
-  scored q9 (50 chunks) qcost=$0.0017 spent=$0.0158
-  scored q10 (50 chunks) qcost=$0.0020 spent=$0.0178
-  scored q11 (50 chunks) qcost=$0.0020 spent=$0.0197
-  scored q12 (50 chunks) qcost=$0.0018 spent=$0.0216
-  scored q13 (50 chunks) qcost=$0.0017 spent=$0.0233
-  scored q14 (50 chunks) qcost=$0.0019 spent=$0.0252
-  scored q15 (50 chunks) qcost=$0.0018 spent=$0.0270
-  scored q16 (50 chunks) qcost=$0.0017 spent=$0.0287
-  scored q17 (50 chunks) qcost=$0.0017 spent=$0.0304
-  scored q18 (50 chunks) qcost=$0.0018 spent=$0.0322
-  scored q19 (50 chunks) qcost=$0.0017 spent=$0.0339
-  scored q20 (50 chunks) qcost=$0.0017 spent=$0.0356
-  scored q21 (50 chunks) qcost=$0.0019 spent=$0.0375
-  scored q22 (50 chunks) qcost=$0.0018 spent=$0.0394
-  scored q23 (50 chunks) qcost=$0.0018 spent=$0.0411
-  scored q24 (50 chunks) qcost=$0.0018 spent=$0.0429
-  scored q25 (50 chunks) qcost=$0.0018 spent=$0.0447
-  scored q26 (50 chunks) qcost=$0.0018 spent=$0.0465
-  scored q27 (50 chunks) qcost=$0.0018 spent=$0.0483
-  scored q28 (50 chunks) qcost=$0.0018 spent=$0.0500
-  scored q29 (50 chunks) qcost=$0.0017 spent=$0.0517
-  scored q30 (50 chunks) qcost=$0.0020 spent=$0.0536
-  scored q31 (50 chunks) qcost=$0.0018 spent=$0.0554
-  scored q32 (50 chunks) qcost=$0.0016 spent=$0.0571
-  scored q33 (50 chunks) qcost=$0.0018 spent=$0.0588
-  scored q34 (50 chunks) qcost=$0.0018 spent=$0.0606
-  scored q35 (50 chunks) qcost=$0.0016 spent=$0.0622
-  scored q36 (50 chunks) qcost=$0.0016 spent=$0.0638
-  scored q37 (50 chunks) qcost=$0.0017 spent=$0.0655
-  scored q38 (50 chunks) qcost=$0.0017 spent=$0.0672
-  scored q39 (50 chunks) qcost=$0.0020 spent=$0.0692
-  scored q40 (50 chunks) qcost=$0.0017 spent=$0.0708
-  scored q41 (50 chunks) qcost=$0.0016 spent=$0.0724
-  scored q42 (50 chunks) qcost=$0.0017 spent=$0.0741
-  scored q43 (50 chunks) qcost=$0.0018 spent=$0.0759
-  scored q44 (50 chunks) qcost=$0.0017 spent=$0.0777
-  scored q45 (50 chunks) qcost=$0.0017 spent=$0.0794
-  scored q46 (50 chunks) qcost=$0.0015 spent=$0.0808
-  scored q47 (50 chunks) qcost=$0.0018 spent=$0.0826
-  scored q48 (50 chunks) qcost=$0.0017 spent=$0.0843
-  scored q49 (50 chunks) qcost=$0.0016 spent=$0.0859
-  scored q50 (50 chunks) qcost=$0.0017 spent=$0.0876
-done: 50 queries scored, spent=$0.0876, failed=[]
-EXIT:0

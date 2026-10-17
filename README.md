@@ -1,65 +1,127 @@
 # ecfr-mcp
 
-An MCP server over the eCFR-as-Markdown benefit-regulations corpus
-([ctrimm/ecfr-markdown](https://github.com/ctrimm/ecfr-markdown)): one file
-per CFR section, with effective dates and version history.
+An [MCP](https://modelcontextprotocol.io) server over the federal
+benefit-program regulations in
+[ctrimm/ecfr-markdown](https://github.com/ctrimm/ecfr-markdown): SNAP, WIC,
+school meals, TANF, Medicaid/CHIP, SSI, housing vouchers, LIHEAP, Lifeline and
+more, one CFR section per document, with effective dates and version history.
 
-## Why this exists
+Agents get four tools instead of raw files: search, exact section text,
+"what did this rule say on date X?", and version history.
 
-The corpus is static files — great for bulk RAG, but awkward for an agent
-that needs to *quote the rule*. The MCP server gives agents semantic tools
-instead of raw file access: the agent never needs to know the corpus layout,
-and temporal questions ("what did the rule say in June 2024?") become
-one-liners instead of research projects.
+## Quick start
+
+```bash
+git clone https://github.com/ctrimm/ecfr-mcp && cd ecfr-mcp
+python -m venv .venv && .venv/bin/pip install -e .
+# CPU-only machines can skip the CUDA build of PyTorch: install it first with
+#   .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
+```
+
+The indexes and the corpus ship in `data/` (DATA_MB MB). The first search
+downloads the embedding model (`BAAI/bge-small-en-v1.5`, 127 MB) to the
+Hugging Face cache; after that the free tier runs fully offline.
+
+**Claude Code**
+
+```bash
+claude mcp add ecfr -- /path/to/ecfr-mcp/.venv/bin/ecfr-mcp
+```
+
+**Claude Desktop and other MCP clients** (`claude_desktop_config.json` or equivalent):
+
+```json
+{
+  "mcpServers": {
+    "ecfr": {
+      "command": "/path/to/ecfr-mcp/.venv/bin/ecfr-mcp",
+      "env": { "OPENROUTER_API_KEY": "optional: enables the best tier" }
+    }
+  }
+}
+```
+
+On Windows the command is `\path\to\ecfr-mcp\.venv\Scripts\ecfr-mcp.exe`.
+`python -m ecfr_mcp` also works.
+
+## Tools
+
+| Tool | What it does |
+|---|---|
+| `search_corpus(query, top_k=5)` | Ranked sections. An exact citation like `7 CFR 273.9` resolves by direct lookup. |
+| `get_section(citation, as_of=None)` | Full section Markdown. `as_of="YYYY-MM-DD"` returns the version in force that day. |
+| `version_history(citation)` | Every version with `effective_from` / `effective_to` (last day in force). |
+| `list_programs()` | Programs with current section counts. |
+
+Point-in-time answers go back to 2024-01-01: the corpus has every version in
+force since then, plus the version already in force on that date.
+
+## Retrieval tiers
+
+The tier is picked from the environment; there are no flags.
+
+| `ECFR_MCP_TIER` | `OPENROUTER_API_KEY` | Tier | Recall@1 / @3 / @5 | Cost |
+|---|---|---|---|---|
+| unset | unset | **free** | FREE_R | $0, offline |
+| unset | set | **best** | 0.76 / 0.94 / 0.96 † | ~$0.002 / query |
+| `free` or `best` | either | pinned | | |
+
+- **free:** citation fast-path, then cosine similarity over whole-section
+  `bge-small-en-v1.5` vectors.
+- **best:** the top 50 chunks by vector similarity, reranked listwise by an LLM
+  (`google/gemini-2.5-flash-lite` through OpenRouter, batches of 10; a
+  section scores as its best chunk). If the LLM call fails, that query falls
+  back to free-tier ranking and the response says `"free (degraded from best)"`.
+
+Recall is measured on the frozen 50-query golden set (`golden/`), with
+`python golden/eval_server.py`, which runs the server's own code.
+† The best-tier figure was measured during the bake-off with `bge-base`
+candidates and hasn't been re-measured since the switch to `bge-small` (it needs
+an OpenRouter key: `OPENROUTER_API_KEY=... python golden/eval_server.py --tier best`).
+The whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`) and
+`DECISION_LOG.md` cover the seven rounds of experiments behind these choices;
+they predate the model switch, so their numbers are for `bge-base`.
 
 ## Use cases
 
-- **Caseworker agent lookup.** "Client has $2,100/mo income, household of
-  3 — what does SNAP say?" The agent pulls 7 CFR 273.9, reads the actual
-  section, and cites it. This is the primary lane: AI assistants working
-  inside case-management tools need citation-grade regulatory answers.
-- **Temporal questions.** "What did the SSI rule say when this determination
-  was made in March 2025?" The `as_of` tool answers what a current-only
-  mirror cannot.
-- **"What changed?" analysis.** A policy analyst or advocate asks what
-  changed in a part between two dates; the server diffs the version chain.
-- **Citation-grade RAG without infra.** A small legal-aid or nonprofit team
-  gets grounded regulatory answers through their agent without standing up
-  a vector database — BM25-first retrieval, no embedding pipeline required.
-- **Eval fixture generation.** Pulling gold-standard section text
-  programmatically for policy-grounded LLM evals (e.g. CivBench-style).
+- **Caseworker assistants.** "Household of 3, $2,100 a month: what does SNAP
+  say?" The agent pulls 7 CFR 273.9, reads it, and cites it.
+- **Point-in-time questions.** "What did the SSI rule say when this
+  determination was made in March 2025?"
+- **What changed?** Compare a section's versions across dates.
+- **Grounded answers without infrastructure.** No vector database or hosted
+  service to run.
+- **Eval fixtures.** Pull gold-standard section text for policy-grounded LLM evals.
 
-## Design
+## Caveats
 
-- **Corpus ships with the server.** `data/` carries the vector indexes,
-  metadata, and corpus Markdown (64MB) — one clone, fully offline, no
-  download step. (A versioned release-zip seed remains a possible
-  follow-up if the repo weight becomes a problem.)
-- **Retrieval tiers are environmental.** No flags: `OPENROUTER_API_KEY`
-  set -> best tier (LLM rerank, 0.76/0.94/0.96); unset -> free tier
-  (citation fast-path + vectors, 0.64/0.78/0.84, $0). `ECFR_MCP_TIER`
-  pins either. LLM failure degrades gracefully to free-tier ranking.
-  Measured on the frozen 50-query golden set — see `golden/` and the
-  whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`).
-- **Embedding model: `BAAI/bge-small-en-v1.5`** (127MB, 384 dims).
-  Chosen over `bge-base-en-v1.5` (418MB, 768 dims) for a 70% size
-  reduction with negligible quality difference on CFR keyword queries.
-- **Version-aware.** Every section carries `effective_from` /
-  `effective_to`; "as of date X" is exact via `get_section(as_of=...)`.
+This is a convenience copy of the eCFR, not the official legal edition; see
+the caveats in [ecfr-markdown](https://github.com/ctrimm/ecfr-markdown#caveats).
+The bundled snapshot is recorded in `data/manifest.json` (`corpus_snapshot`).
 
-## Layout
+## Development
 
-- `mcp-server/` — the MCP server (`server.py`, `retrieval.py`), 4 tools,
-  tier logic, smoke + best-tier tests.
-- `data/` — vectors, chunk index + texts, `meta.sqlite`, corpus Markdown.
-- `golden/` — 50-query golden eval set (frozen 2026-10-12, before any
-  retrieval was built) + eval harness + all seven experiment scripts.
-- `build/` — index build scripts, build manifest with model/corpus provenance.
-- `whitepaper/` — technical whitepaper (PDF) + charts + generation scripts.
+```bash
+python -m unittest discover -s tests -t .   # the smoke test also needs the embedding model
+```
 
-## Status
+Rebuild `data/` after refreshing the corpus (needs `sentence-transformers`;
+`build/requirements.txt` pins a CPU-only PyTorch):
 
-Retrieval bake-off: done (7 rounds, best 0.76/0.94/0.96). MCP server:
-built, smoke-tested (free tier, all 4 tools over stdio), best-tier
-tested with stubbed LLM (scoring, degradation, citation bypass).
-Whitepaper: PDF in `whitepaper/`, web version in the Artifacts tab.
+```bash
+python build/build_vectors.py --corpus ../ecfr-markdown/corpus --out data \
+    --snapshot "ctrimm/ecfr-markdown @ <commit> (eCFR current as of <date>)"
+python build/build_chunks.py  --corpus ../ecfr-markdown/corpus --out data
+python build/pack_corpus.py   --corpus ../ecfr-markdown/corpus --out data
+python golden/eval_server.py --tier free
+```
+
+Layout: `ecfr_mcp/` is the server (`server.py`, `retrieval.py`), `data/` the
+shipped indexes and corpus, `build/` the index builders, `golden/` the eval set
+and experiment scripts, `whitepaper/` the write-up, and `HOSTING.md` covers
+RAM, disk, and cloud costs.
+
+## License
+
+Code: MIT (see `LICENSE`). The regulatory text is a work of the U.S. government
+and is in the public domain.

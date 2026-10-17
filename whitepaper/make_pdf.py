@@ -1,15 +1,18 @@
-"""Render the whitepaper report.md + charts to a PDF for the repo."""
+"""Render whitepaper/report.md + whitepaper/charts/*.png to the PDF.
+
+Needs weasyprint. report.md is the whitepaper's Markdown source.
+"""
 import base64
 import re
 from pathlib import Path
 
-ROOT = Path("/home/hatch/workspace/ecfr-mcp")
-RN = Path("/home/hatch/workspace/research_notes/ecfr-retrieval-whitepaper")
-md = (RN / "report.md").read_text()
+ROOT = Path(__file__).resolve().parent.parent
+WP = ROOT / "whitepaper"
+md = (WP / "report.md").read_text(encoding="utf-8")
 
 
 def img_tag(name: str) -> str:
-    b64 = base64.b64encode((RN / name).read_bytes()).decode()
+    b64 = base64.b64encode((WP / "charts" / name).read_bytes()).decode()
     return (f'<figure><img src="data:image/png;base64,{b64}" '
             f'style="width:100%"/></figure>')
 

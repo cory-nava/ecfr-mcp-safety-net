@@ -5,7 +5,7 @@ Tier selection is environmental (see retrieval.resolve_tier):
   OPENROUTER_API_KEY set      best tier (LLM rerank)
   otherwise                   free tier (citation fast-path + vectors)
 
-Data dir: ECFR_MCP_DATA, or ./data next to this file.
+Data dir: ECFR_MCP_DATA, or data/ at the repository root.
 
 Tools:
   search_corpus(query, top_k)      ranked sections (tier-appropriate)
@@ -21,11 +21,9 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
-
 from mcp.server.mcpserver import MCPServer
 
-import retrieval
+from . import retrieval
 
 DATA_DIR = Path(os.environ.get("ECFR_MCP_DATA",
                                Path(__file__).parent.parent / "data"))
@@ -85,11 +83,18 @@ async def main() -> None:
     global _tier, _tier_reason
     _tier, _tier_reason = retrieval.resolve_tier()
     # fail fast on missing data, not on first tool call
+    if not (DATA_DIR / "meta.sqlite").exists():
+        sys.exit(f"[ecfr-mcp] no index data in {DATA_DIR}. Install from a clone of the repo "
+                 "(pip install -e .) or point ECFR_MCP_DATA at its data/ directory.")
     corpus()
     print(f"[ecfr-mcp] tier={_tier} ({_tier_reason}) data={DATA_DIR}",
           file=sys.stderr, flush=True)
     await mcp.run_stdio_async()
 
 
-if __name__ == "__main__":
+def run() -> None:
     asyncio.run(main())
+
+
+if __name__ == "__main__":
+    run()

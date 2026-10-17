@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-OUT = Path("/home/hatch/workspace/ecfr-mcp/whitepaper/charts")
+OUT = Path(__file__).resolve().parent / "charts"
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({

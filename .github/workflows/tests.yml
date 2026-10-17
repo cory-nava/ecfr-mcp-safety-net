@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      # index integrity, lookups and best-tier logic need no embedding model; the stdio smoke test
+      # (tests/test_smoke.py) skips itself without sentence-transformers
+      - run: pip install "mcp>=2,<3" "numpy>=2"
+      - run: python -m unittest discover -s tests -t . -v

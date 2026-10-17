@@ -26,11 +26,6 @@ import time
 import urllib.request
 from pathlib import Path
 
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
-
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "build"))
@@ -52,16 +47,14 @@ PROMPT = ("You are scoring passages for a legal researcher. Query: {q}\n\n"
 
 
 def ask_or(prompt: str) -> tuple[dict, dict]:
-    sys.path.insert(0, "/opt/hatch/skills/skill-creator/bin")
-    from dynamic_credentials import add_surrogate_to_request
     body = json.dumps({"model": MODEL,
                        "messages": [{"role": "user", "content": prompt}],
                        "temperature": 0.0, "max_tokens": 300}).encode()
     req = urllib.request.Request(API_URL, data=body,
                                  headers={"Content-Type": "application/json",
+                                          "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
                                           "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
                                           "X-Title": "ecfr-mcp llm-rerank"})
-    add_surrogate_to_request(req, "custom.openrouter", allowed_hosts=["openrouter.ai"])
     last = None
     for attempt in range(12):
         try:

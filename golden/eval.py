@@ -1,29 +1,19 @@
 """Run the golden eval set against a built vector DB.
 
 Usage:
-    python3 golden/eval.py --vectors build/vectors.npz --meta build/meta.sqlite
+    python3 golden/eval.py --vectors data/vectors.npz
 
 Reports recall@1 / recall@3 / recall@5 overall and per query type.
 A query is correct if the expected citation's file ranks in the top-k
 by cosine similarity. The query encoder must be the same model that
-built the vectors (recorded in build/manifest.json).
+built the vectors (recorded in manifest.json; used by default).
 """
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import re
-import sqlite3
 import sys
 from pathlib import Path
-
-# Sandbox quirk: no_proxy holds bracketed IPv6 literals ([::1]) which make
-# httpx (used by huggingface_hub) crash with "Invalid port". Sanitize first.
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 
@@ -31,10 +21,11 @@ import numpy as np
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--vectors", required=True, help="vectors.npz from build_vectors.py")
-    ap.add_argument("--meta", required=True, help="meta.sqlite from build_vectors.py")
     ap.add_argument("--golden", default=str(Path(__file__).parent / "eval.json"))
-    ap.add_argument("--model", default="BAAI/bge-base-en-v1.5")
+    ap.add_argument("--model", default=None, help="query encoder (default: the model in manifest.json next to the index)")
     args = ap.parse_args()
+    if args.model is None:
+        args.model = json.loads((Path(args.vectors).parent / "manifest.json").read_text(encoding="utf-8"))["model"]
 
     from sentence_transformers import SentenceTransformer
 
@@ -43,7 +34,6 @@ def main() -> int:
     Vn = V / np.linalg.norm(V, axis=1, keepdims=True)
     path_to_idx = {p: i for i, p in enumerate(paths)}
 
-    con = sqlite3.connect(args.meta)
     model = SentenceTransformer(args.model)
 
     goldens = json.load(open(args.golden))

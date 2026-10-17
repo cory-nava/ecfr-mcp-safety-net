@@ -6,7 +6,7 @@ Step 2 (eval): embed the HyDE passages (plain, no prefix) and retrieve
 against section vectors; also test query+HyDE vector averaging.
 Citation fast-path applies as in production.
 
-OpenRouter auth via Secure Vault surrogate (custom.openrouter).
+OpenRouter auth: set OPENROUTER_API_KEY.
 Cost: ~50 queries x ~400 completion tokens on a flash-class model (~$0.01).
 
 Usage:
@@ -20,15 +20,9 @@ import json
 import os
 import re
 import sqlite3
-import sys
 import time
 import urllib.request
 from pathlib import Path
-
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 
@@ -42,15 +36,13 @@ PROMPT = ("Write a short passage (4-6 sentences) in the style of a U.S. federal 
 
 
 def ask_or(model: str, prompt: str) -> tuple[str, dict]:
-    sys.path.insert(0, "/opt/hatch/skills/skill-creator/bin")
-    from dynamic_credentials import add_surrogate_to_request
     body = json.dumps({"model": model, "messages": [{"role": "user", "content": prompt}],
                        "temperature": 0.7, "max_tokens": 400}).encode()
     req = urllib.request.Request(API_URL, data=body,
                                  headers={"Content-Type": "application/json",
+                                          "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
                                           "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
                                           "X-Title": "ecfr-mcp hyde experiment"})
-    add_surrogate_to_request(req, "custom.openrouter", allowed_hosts=["openrouter.ai"])
     import time
     last = None
     for attempt in range(6):

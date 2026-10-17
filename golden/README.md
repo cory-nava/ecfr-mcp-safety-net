@@ -22,12 +22,22 @@ eCFR current as of 2026-10-08), each mapped to one expected section citation.
 ## Running
 
 ```bash
-python3 golden/eval.py --vectors build/vectors.npz --meta build/meta.sqlite
+# what ships: the server's own retrieval code over data/ (citation fast-path included)
+python golden/eval_server.py --tier free
+OPENROUTER_API_KEY=... python golden/eval_server.py --tier best
+
+# vectors only (no citation fast-path), with the model named in data/manifest.json
+python golden/eval.py --vectors data/vectors.npz
 ```
 
 Reports recall@1 / recall@3 / recall@5 overall and per query type. A query
-counts as correct if the expected citation's file is in the top-k by cosine
-similarity.
+counts as correct if the expected citation's file is in the top-k.
+
+The `exp_*.py` and `eval_*.py` experiment scripts are the record of the
+2026-10-12/13 bake-off (see `results-2026-10-12.md` and `../DECISION_LOG.md`).
+They were run with `BAAI/bge-base-en-v1.5`, which is still their default
+`--model`; the shipped indexes now use `bge-small`. The LLM experiments
+read `OPENROUTER_API_KEY`.
 
 ## Updating
 
@@ -47,6 +57,7 @@ corpus, i.e. they appear in no current part XML export:
 - 45 CFR 96.80 (LIHEAP scope) — only `--as-of-2024-01-01` and
   `--as-of-2026-06-09` versions exist
 
-Either the sections were removed/renumbered after those dates, or the export
-dropped them. Worth investigating in the ecfr-markdown repo before treating
-the corpus as complete.
+Resolved 2026-10-17: not an export bug. Both sections became `[Reserved]`
+(45 CFR 261.30 on 2026-09-29, 45 CFR 96.80 on 2026-08-10), and ecfr-markdown
+skips reserved sections, so only their earlier versions exist, each with an
+`effective_to`.

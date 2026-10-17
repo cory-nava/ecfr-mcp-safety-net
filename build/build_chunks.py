@@ -1,4 +1,4 @@
-"""Experiment: chunked vector index.
+"""Chunked vector index (chunks.npz + chunk_texts.npz), used by the best tier's LLM rerank.
 
 Splits each current-version section into overlapping token windows
 (default 450 tokens, 64 overlap; bge truncates at 512) with the section
@@ -7,30 +7,25 @@ title prepended to every chunk. Section rank at eval time = best chunk rank.
 Rationale (measured 2026-10-12): 39.7% of corpus docs exceed bge's 512-token
 limit and are silently truncated today (p90 = 1766 tokens, max = 33k).
 
+Run after build_vectors.py: it uses the same model and records the chunk
+settings in the same manifest.json, so the server can check the indexes match.
+
 Usage:
-    .venv/bin/python build/build_chunks.py --corpus corpus-src/corpus --out build
+    python build/build_chunks.py --corpus ../ecfr-markdown/corpus --out data
 """
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
-
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build_vectors import parse_front_matter
+from build_vectors import MODEL, parse_front_matter
 
-MODEL = "BAAI/bge-base-en-v1.5"
 CHUNK_TOKENS = 450
 OVERLAP = 64
 BATCH = 64
@@ -64,14 +59,18 @@ def main() -> int:
 
     corpus = Path(args.corpus)
     out = Path(args.out)
+    mf = out / "manifest.json"
+    manifest = json.loads(mf.read_text(encoding="utf-8")) if mf.exists() else {}
+    if manifest.get("model", args.model) != args.model or manifest.get("dims", dim) != dim:
+        raise SystemExit(f"{mf} was built with {manifest.get('model')}; rebuild vectors with {args.model} first")
     files = sorted(p for p in corpus.rglob("*.md")
                    if p.name != "index.md" and "--as-of-" not in p.name)
     print(f"section files: {len(files)}", flush=True)
 
     chunk_texts, chunk_ids, section_of = [], [], []
     for p in files:
-        rel = str(p.relative_to(corpus))
-        fm, body = parse_front_matter(p.read_text())
+        rel = p.relative_to(corpus).as_posix()
+        fm, body = parse_front_matter(p.read_text(encoding="utf-8"))
         title = fm.get("title", "")
         body_ids = tok.encode(body.strip(), add_special_tokens=False)
         # reserve room for the title in each chunk
@@ -94,12 +93,14 @@ def main() -> int:
             print(f"  {min(i + BATCH, len(chunk_texts))}/{len(chunk_texts)}", flush=True)
     np.savez_compressed(out / "chunks.npz", vectors=vecs,
                         chunk_ids=np.array(chunk_ids), sections=np.array(section_of))
-    (out / "chunks_manifest.json").write_text(json.dumps({
-        "model": args.model, "dims": dim, "chunks": len(chunk_texts),
-        "sections": len(files), "chunk_tokens": args.chunk_tokens,
-        "overlap": args.overlap, "title_prepended": True,
-        "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-    }, indent=1))
+    np.savez(out / "chunk_texts.npz", chunk_ids=np.array(chunk_ids),
+             texts=np.array(chunk_texts, dtype=object))
+    manifest.update({
+        "chunks_model": args.model, "chunks": len(chunk_texts), "chunk_tokens": args.chunk_tokens,
+        "chunk_overlap": args.overlap, "chunk_title_prepended": True,
+        "chunks_built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    })
+    mf.write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
     print("done", flush=True)
     return 0
 

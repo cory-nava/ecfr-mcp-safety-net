@@ -10,15 +10,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sqlite3
 from pathlib import Path
-
-for _var in ("no_proxy", "NO_PROXY"):
-    _val = os.environ.get(_var)
-    if _val:
-        os.environ[_var] = re.sub(r"\[([0-9a-fA-F:]+)\]", r"\1", _val)
 
 import numpy as np
 
@@ -30,8 +24,10 @@ def main() -> int:
     ap.add_argument("--chunks", required=True)
     ap.add_argument("--meta", required=True)
     ap.add_argument("--golden", default=str(Path(__file__).parent / "eval.json"))
-    ap.add_argument("--model", default="BAAI/bge-base-en-v1.5")
+    ap.add_argument("--model", default=None, help="query encoder (default: the model in manifest.json next to the index)")
     args = ap.parse_args()
+    if args.model is None:
+        args.model = json.loads((Path(args.chunks).parent / "manifest.json").read_text(encoding="utf-8"))["model"]
 
     from sentence_transformers import SentenceTransformer
 
