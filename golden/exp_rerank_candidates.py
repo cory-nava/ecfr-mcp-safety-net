@@ -211,7 +211,6 @@ def do_generate(args) -> int:
     bm25_con = None
     if args.candidate_source == "hybrid":
         bm25_con = get_bm25(args.bm25_db, texts)
-    # Fresh API credential AFTER the (slow) embedding phase: surrogates can
     # OPENROUTER_API_KEY comes from the environment.
     failed = []
     for g in goldens:

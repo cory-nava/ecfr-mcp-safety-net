@@ -22,7 +22,7 @@
 
 ### Startup Time
 
-Startup loads the indexes (a second or two). The first search then loads the embedding model (downloading it once, ~127 MB, if it isn't cached yet), which takes 10–60 seconds depending on the machine and network; the first `get_section` reads the corpus tarball into memory (~1 s). After that, free-tier searches take well under a second; best-tier searches add the LLM rerank round trips (a few seconds).
+Startup loads the indexes (a second or two). The first search then loads the embedding model (downloading it once, ~127 MB, if it isn't cached yet), which takes 10–60 seconds depending on the machine and network; the first `get_section` reads the corpus tarball into memory (~1 s). After that, free-tier searches take well under a second; best-tier searches add five sequential LLM rerank calls, 30–60 seconds per query as measured on the golden run.
 
 ---
 
