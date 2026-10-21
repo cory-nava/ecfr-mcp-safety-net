@@ -112,6 +112,13 @@ the gain is entirely at r@3/r@5, where the stronger candidate pool
 matters. Adopting it as the default is a latency/cost tradeoff, hence
 opt-in.
 
+**Untested candidate:** `bge-reranker-v2-m3`, a self-hosted cross-encoder
+(zero API cost; an external 2026-10-18 report puts it at Cohere Rerank
+quality on CPU). It has no row above because it has never finished a run
+on this corpus — its one attempt OOM-killed at 13/50 queries on a 7GB
+box. Retrying it needs a 16GB+ box; until then it is a candidate, not a
+measured result.
+
 For reference, the 2026-10-12/13 bake-off on `bge-base-en-v1.5`
 (768-dim): free 0.64/0.78/0.84, rerank 0.76/0.94/0.96 — see the
 whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`).

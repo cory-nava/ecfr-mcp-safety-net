@@ -257,6 +257,19 @@ def get_section(data_dir: str | Path, citation: str,
         row = con.execute(
             "SELECT * FROM docs WHERE citation=? AND is_current=1", (norm,)).fetchone()
     if not row:
+        hist = version_history(data_dir, norm)
+        if hist:
+            last = hist[-1]
+            return {"found": False, "citation": norm,
+                    "status": "not_in_force",
+                    "versions": len(hist),
+                    "last_effective_from": last["effective_from"],
+                    "last_effective_to": last["effective_to"],
+                    "note": (f"No current text for {norm}, but {len(hist)} historical "
+                             f"version(s) exist (last in force {last['effective_from']} to "
+                             f"{last['effective_to'] or 'superseded'}). The section was likely "
+                             "repealed, marked [Reserved], or renumbered; "
+                             "call version_history for the full record.")}
         return {"found": False, "citation": norm}
     return {"found": True, "citation": row["citation"], "title": row["title"],
             "program": row["program"], "effective_from": row["effective_from"],

@@ -3,6 +3,26 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-20: Round 8 filed; external retrieval findings kept separate
+
+**Measured here (Round 8, 2026-10-17, frozen 50-query golden set):**
+HyDE-averaged top-50 chunk candidates + listwise LLM rerank is the best
+measured config at 0.76/0.92/0.94, $0.088/50 queries (full entry below,
+dated 2026-10-17). Hybrid dense∪BM25 candidates hurt (0.70/0.84/0.88);
+dense top-100 was a wash at 2x cost (0.76/0.86/0.92).
+
+**External findings (web discovery report, 2026-10-18 — NOT measured on
+this corpus; recorded as calibration for the next embedder/reranker
+choice, not as results):**
+
+- On fact-lookup queries, HyDE wins cleanly (R@10 0.79 vs baseline 0.71).
+- Query decomposition wins on multi-hop queries.
+- Naive HyDE-plus-encoder hybrids backfire (-10.8pp NDCG@5).
+- The same report puts `bge-reranker-v2-m3` at Cohere Rerank quality on
+  CPU at zero API cost. Untested here: its only run on this corpus
+  OOM-killed at 13/50 queries on a 7GB box (partial scores in
+  `build/rerank_v2m3_results.jsonl`). It stays a candidate, not a result.
+
 ## 2026-10-17: server default stays query-candidates (zero extra calls)
 
 **Decision:** The best tier keeps query-candidate + rerank as the default.
@@ -258,3 +278,35 @@ paraphrase r@1 0.333. Fast (~2s/batch, 50/50 scored, $0.170) but a clearly
 worse judge. Newer/pricier != better at relevance scoring. Ranking:
 Luna (0.875) > flash-lite (0.76) > 5.4-nano (0.58) > Haiku-5.5 (unusable).
 Flash-lite stays the server default.
+
+## 2026-10-20 — get_section not_in_force re-applied to ecfr_mcp/ layout; da52c02 is_current claim corrected
+
+**Decision:** Re-applied the `not_in_force` improvement from da52c02 (2026-10-13, old
+`mcp-server/` layout) to the current `ecfr_mcp/` layout. `get_section` on a citation with
+historical versions but no current text now returns `found: false, status: "not_in_force"`
+with `versions`, `last_effective_from/to`, and a note pointing at `version_history` —
+instead of a bare not-found indistinguishable from a typo. MCP tool description updated
+to document the behavior. No golden re-measure: the search path is untouched and the
+frozen golden set contains zero queries against reserved sections.
+
+**Correction to da52c02:** its second claim — "`is_current` was `bool()` on a TEXT column
+('0'/'1'), so it was always True even for superseded versions" — does NOT reproduce
+against the current tree. `data/meta.sqlite` declares `is_current INTEGER`
+(`build/build_vectors.py` writes Python ints 0/1; 1,029 rows 0 / 2,278 rows 1), so
+`bool()` is already correct, and AGENTS.md codifies "`is_current` is an integer;
+report it with `bool()`". That half of da52c02 was deliberately NOT ported — porting
+`str(...) == "1"` would have deviated from the house rule for zero behavior change.
+
+**Why the re-apply was needed:** da52c02 lives only on the stale local `master` (old
+layout). The PR #1 restructure (`mcp-server/` -> `ecfr_mcp/`, commit 4b2fae6) dropped the
+change — the current tree had no `not_in_force` handling. Pushing da52c02 as-is would
+have pushed the old layout against the new tree.
+
+**Evidence:** Direct tests against `data/meta.sqlite`: `45 CFR 260.10` -> not_in_force
+(2 versions, last 2026-07-31 to 2026-09-28); `45 CFR 96.80` -> not_in_force; `as_of=
+2026-08-15` on 260.10 returns the historical text with `is_current: false`; current
+section `45 CFR 260.20` returns text with `is_current: true`; unknown citation
+`45 CFR 999.999` still bare `found: false`. `python -m unittest discover -s tests -t .`:
+12 passed, 1 error — the error is `tests/test_smoke.py` failing to `import mcp`
+(package not installed in sandbox); full stdio smoke test still unverified, same caveat
+as 2026-10-13.

@@ -64,7 +64,10 @@ async def search_corpus(query: str, top_k: int = 5) -> str:
 
 
 @mcp.tool(description="Get the full text of one CFR section. "
-                       "as_of='YYYY-MM-DD' returns the version in force on that date.")
+                       "as_of='YYYY-MM-DD' returns the version in force on that date. "
+                       "If the section has no current text but historical versions exist "
+                       "(repealed / [Reserved] / renumbered), reports last-in-force dates "
+                       "instead of a bare not-found.")
 async def get_section(citation: str, as_of: str | None = None) -> str:
     return json.dumps(retrieval.get_section(DATA_DIR, citation, as_of), indent=1)
 
