@@ -3,8 +3,8 @@
  "dims": 384,
  "vectors": 2278,
  "meta_rows": 3307,
- "corpus_snapshot": "ctrimm/ecfr-markdown @ 2dc934b (eCFR current as of 2026-10-15)",
- "built_at": "2026-10-17T08:48:23Z",
+ "corpus_snapshot": "ctrimm/ecfr-markdown-safety-net @ 880a1bbb85512f529f27b3d3aae21165dc94df8c (automated rebuild)",
+ "built_at": "2026-10-22T15:46:14Z",
  "excluded_from_index": "files with --as-of- in name (earlier versions)",
  "embed_text": "<title>\\n<body>, front matter excluded, no instruction prefixes, bge 512-token truncation applies",
  "chunks_model": "BAAI/bge-small-en-v1.5",
@@ -12,5 +12,5 @@
  "chunk_tokens": 450,
  "chunk_overlap": 64,
  "chunk_title_prepended": true,
- "chunks_built_at": "2026-10-17T08:57:06Z"
+ "chunks_built_at": "2026-10-22T16:05:52Z"
 }
