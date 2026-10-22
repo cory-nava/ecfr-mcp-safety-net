@@ -11,8 +11,8 @@ Rebuilds meta.sqlite from scratch on every run (an existing file is replaced,
 never appended to).
 
 Usage:
-    python build/build_vectors.py --corpus ../ecfr-markdown/corpus --out data \
-        --snapshot "ctrimm/ecfr-markdown @ <commit> (eCFR current as of <date>)"
+    python build/build_vectors.py --corpus ../ecfr-markdown-safety-net/corpus --out data \
+        --snapshot "ctrimm/ecfr-markdown-safety-net @ <commit> (eCFR current as of <date>)"
 """
 from __future__ import annotations
 

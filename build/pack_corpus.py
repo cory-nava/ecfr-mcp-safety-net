@@ -3,7 +3,7 @@
 Deterministic (sorted members, fixed mtime and owner), so the tarball only changes when the corpus does.
 
 Usage:
-    python build/pack_corpus.py --corpus ../ecfr-markdown/corpus --out data
+    python build/pack_corpus.py --corpus ../ecfr-markdown-safety-net/corpus --out data
 """
 from __future__ import annotations
 

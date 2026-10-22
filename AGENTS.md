@@ -1,6 +1,6 @@
 # Notes for coding agents
 
-ecfr-mcp is a stdio MCP server over the ctrimm/ecfr-markdown corpus. `ecfr_mcp/` is the server
+ecfr-mcp is a stdio MCP server over the ctrimm/ecfr-markdown-safety-net corpus. `ecfr_mcp/` is the server
 (`server.py` tools, `retrieval.py` tiers and lookups), `data/` the shipped indexes and corpus, `build/` the
 index builders, `golden/` the eval set.
 
@@ -11,10 +11,10 @@ index builders, `golden/` the eval set.
 - **Rebuild `data/` as a unit, in order**, never one file by hand:
 
   ```bash
-  python build/build_vectors.py --corpus ../ecfr-markdown/corpus --out data \
-      --snapshot "ctrimm/ecfr-markdown @ <commit> (eCFR current as of <date>)"
-  python build/build_chunks.py  --corpus ../ecfr-markdown/corpus --out data
-  python build/pack_corpus.py   --corpus ../ecfr-markdown/corpus --out data
+  python build/build_vectors.py --corpus ../ecfr-markdown-safety-net/corpus --out data \
+      --snapshot "ctrimm/ecfr-markdown-safety-net @ <commit> (eCFR current as of <date>)"
+  python build/build_chunks.py  --corpus ../ecfr-markdown-safety-net/corpus --out data
+  python build/pack_corpus.py   --corpus ../ecfr-markdown-safety-net/corpus --out data
   ```
 
   (Switching models once updated only `vectors.npz`; the best tier then failed on every query, silently.)

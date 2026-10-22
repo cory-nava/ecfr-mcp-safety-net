@@ -11,7 +11,7 @@ Run after build_vectors.py: it uses the same model and records the chunk
 settings in the same manifest.json, so the server can check the indexes match.
 
 Usage:
-    python build/build_chunks.py --corpus ../ecfr-markdown/corpus --out data
+    python build/build_chunks.py --corpus ../ecfr-markdown-safety-net/corpus --out data
 """
 from __future__ import annotations
 

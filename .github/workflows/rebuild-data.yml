@@ -1,8 +1,8 @@
-name: Rebuild data from ecfr-markdown
+name: Rebuild data from ecfr-markdown-safety-net
 
-# Triggered by ctrimm/ecfr-markdown whenever its corpus changes on main (a
+# Triggered by ctrimm/ecfr-markdown-safety-net whenever its corpus changes on main (a
 # merged sync PR), or manually. Rebuilds data/ (vectors, chunks, metadata,
-# corpus tarball) from that exact ecfr-markdown commit, runs the test suite
+# corpus tarball) from that exact ecfr-markdown-safety-net commit, runs the test suite
 # against the rebuilt data, and opens a pull request with the result.
 
 on:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       corpus_sha:
-        description: "ecfr-markdown commit to build from (default: its current main)"
+        description: "ecfr-markdown-safety-net commit to build from (default: its current main)"
         required: false
         type: string
 
@@ -26,20 +26,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve the ecfr-markdown commit
+      - name: Resolve the ecfr-markdown-safety-net commit
         id: src
         run: |
           sha="${{ github.event.client_payload.ecfr_markdown_sha || inputs.corpus_sha }}"
           if [ -z "$sha" ]; then
-            sha=$(git ls-remote https://github.com/ctrimm/ecfr-markdown.git refs/heads/main | cut -f1)
+            sha=$(git ls-remote https://github.com/ctrimm/ecfr-markdown-safety-net.git refs/heads/main | cut -f1)
           fi
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           echo "short=${sha:0:7}" >> "$GITHUB_OUTPUT"
 
-      - name: Check out ecfr-markdown at that commit
+      - name: Check out ecfr-markdown-safety-net at that commit
         uses: actions/checkout@v4
         with:
-          repository: ctrimm/ecfr-markdown
+          repository: ctrimm/ecfr-markdown-safety-net
           ref: ${{ steps.src.outputs.sha }}
           path: corpus-src
 
@@ -61,7 +61,7 @@ jobs:
       - name: Rebuild data/
         run: |
           python build/build_vectors.py --corpus corpus-src/corpus --out data \
-            --snapshot "ctrimm/ecfr-markdown @ ${{ steps.src.outputs.sha }} (automated rebuild)"
+            --snapshot "ctrimm/ecfr-markdown-safety-net @ ${{ steps.src.outputs.sha }} (automated rebuild)"
           python build/build_chunks.py --corpus corpus-src/corpus --out data
           python build/pack_corpus.py --corpus corpus-src/corpus --out data
 
@@ -78,11 +78,11 @@ jobs:
       - name: Open pull request
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "Rebuild data/ from ecfr-markdown @ ${{ steps.src.outputs.short }}"
+          commit-message: "Rebuild data/ from ecfr-markdown-safety-net @ ${{ steps.src.outputs.short }}"
           branch: data-rebuild/${{ steps.src.outputs.short }}
-          title: "Rebuild data/ from ecfr-markdown @ ${{ steps.src.outputs.short }}"
+          title: "Rebuild data/ from ecfr-markdown-safety-net @ ${{ steps.src.outputs.short }}"
           body: |
-            Automated rebuild of `data/` from [ctrimm/ecfr-markdown@${{ steps.src.outputs.short }}](https://github.com/ctrimm/ecfr-markdown/commit/${{ steps.src.outputs.sha }}).
+            Automated rebuild of `data/` from [ctrimm/ecfr-markdown-safety-net@${{ steps.src.outputs.short }}](https://github.com/ctrimm/ecfr-markdown-safety-net/commit/${{ steps.src.outputs.sha }}).
 
             New index: ${{ steps.manifest.outputs.vectors }} sections, ${{ steps.manifest.outputs.meta_rows }} metadata rows (incl. historical versions), ${{ steps.manifest.outputs.chunks }} chunks.
 

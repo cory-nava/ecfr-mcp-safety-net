@@ -1,8 +1,8 @@
-# ecfr-mcp
+# ecfr-mcp-safety-net
 
 An [MCP](https://modelcontextprotocol.io) server over the federal
 benefit-program regulations in
-[ctrimm/ecfr-markdown](https://github.com/ctrimm/ecfr-markdown): SNAP, WIC,
+[ctrimm/ecfr-markdown-safety-net](https://github.com/ctrimm/ecfr-markdown-safety-net): SNAP, WIC,
 school meals, TANF, Medicaid/CHIP, SSI, housing vouchers, LIHEAP, Lifeline and
 more, one CFR section per document, with effective dates and version history.
 
@@ -12,7 +12,7 @@ Agents get four tools instead of raw files: search, exact section text,
 ## Quick start
 
 ```bash
-git clone https://github.com/ctrimm/ecfr-mcp && cd ecfr-mcp
+git clone https://github.com/ctrimm/ecfr-mcp-safety-net && cd ecfr-mcp-safety-net
 python -m venv .venv && .venv/bin/pip install -e .
 # CPU-only machines can skip the CUDA build of PyTorch: install it first with
 #   .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -25,7 +25,7 @@ Hugging Face cache; after that the free tier runs fully offline.
 **Claude Code**
 
 ```bash
-claude mcp add ecfr -- /path/to/ecfr-mcp/.venv/bin/ecfr-mcp
+claude mcp add ecfr -- /path/to/ecfr-mcp-safety-net/.venv/bin/ecfr-mcp
 ```
 
 **Claude Desktop and other MCP clients** (`claude_desktop_config.json` or equivalent):
@@ -34,14 +34,14 @@ claude mcp add ecfr -- /path/to/ecfr-mcp/.venv/bin/ecfr-mcp
 {
   "mcpServers": {
     "ecfr": {
-      "command": "/path/to/ecfr-mcp/.venv/bin/ecfr-mcp",
+      "command": "/path/to/ecfr-mcp-safety-net/.venv/bin/ecfr-mcp",
       "env": { "OPENROUTER_API_KEY": "optional: enables the best tier" }
     }
   }
 }
 ```
 
-On Windows the command is `\path\to\ecfr-mcp\.venv\Scripts\ecfr-mcp.exe`.
+On Windows the command is `\path\to\ecfr-mcp-safety-net\.venv\Scripts\ecfr-mcp.exe`.
 `python -m ecfr_mcp` also works.
 
 ## Tools
@@ -147,7 +147,7 @@ choices; they predate the model switch, so their numbers are for
 ## Caveats
 
 This is a convenience copy of the eCFR, not the official legal edition; see
-the caveats in [ecfr-markdown](https://github.com/ctrimm/ecfr-markdown#caveats).
+the caveats in [ecfr-markdown-safety-net](https://github.com/ctrimm/ecfr-markdown-safety-net#caveats).
 The bundled snapshot is recorded in `data/manifest.json` (`corpus_snapshot`).
 
 ## Development
@@ -160,10 +160,10 @@ Rebuild `data/` after refreshing the corpus (needs `sentence-transformers`;
 `build/requirements.txt` pins a CPU-only PyTorch):
 
 ```bash
-python build/build_vectors.py --corpus ../ecfr-markdown/corpus --out data \
-    --snapshot "ctrimm/ecfr-markdown @ <commit> (eCFR current as of <date>)"
-python build/build_chunks.py  --corpus ../ecfr-markdown/corpus --out data
-python build/pack_corpus.py   --corpus ../ecfr-markdown/corpus --out data
+python build/build_vectors.py --corpus ../ecfr-markdown-safety-net/corpus --out data \
+    --snapshot "ctrimm/ecfr-markdown-safety-net @ <commit> (eCFR current as of <date>)"
+python build/build_chunks.py  --corpus ../ecfr-markdown-safety-net/corpus --out data
+python build/pack_corpus.py   --corpus ../ecfr-markdown-safety-net/corpus --out data
 python golden/eval_server.py --tier free
 ```
 
