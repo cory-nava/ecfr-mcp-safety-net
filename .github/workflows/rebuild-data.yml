@@ -56,7 +56,12 @@ jobs:
           key: hf-bge-small-en-v1.5
 
       - name: Install build dependencies
-        run: pip install -r build/requirements.txt
+        # CPU torch first, explicitly (the README's own prescription): a bare
+        # `pip install -r build/requirements.txt` in a clean environment cannot
+        # resolve sentence-transformers alongside the PyTorch CPU index.
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r build/requirements.txt
 
       - name: Rebuild data/
         run: |

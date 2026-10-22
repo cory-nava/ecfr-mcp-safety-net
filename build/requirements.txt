@@ -1,5 +1,5 @@
 # Vector DB build dependencies (CPU-only torch)
---index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 sentence-transformers
 numpy
