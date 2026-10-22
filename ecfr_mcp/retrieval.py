@@ -18,6 +18,7 @@ import sqlite3
 import tarfile
 import urllib.request
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -248,6 +249,13 @@ def get_section(data_dir: str | Path, citation: str,
     con = _db(data_dir)
     norm = " ".join(citation.split())
     if as_of:
+        try:
+            as_of = _iso_date(as_of)
+        except ValueError:
+            # dates compare as strings below, so a malformed one would silently pick the wrong version
+            return {"found": False, "citation": norm, "status": "invalid_date",
+                    "note": f"as_of must be a calendar date written YYYY-MM-DD; got {as_of!r}."}
+    if as_of:
         row = con.execute(
             """SELECT * FROM docs WHERE citation=?
                AND effective_from <= ? AND (effective_to = '' OR effective_to >= ?)
@@ -257,24 +265,50 @@ def get_section(data_dir: str | Path, citation: str,
         row = con.execute(
             "SELECT * FROM docs WHERE citation=? AND is_current=1", (norm,)).fetchone()
     if not row:
-        hist = version_history(data_dir, norm)
-        if hist:
-            last = hist[-1]
-            return {"found": False, "citation": norm,
-                    "status": "not_in_force",
-                    "versions": len(hist),
-                    "last_effective_from": last["effective_from"],
-                    "last_effective_to": last["effective_to"],
-                    "note": (f"No current text for {norm}, but {len(hist)} historical "
-                             f"version(s) exist (last in force {last['effective_from']} to "
-                             f"{last['effective_to'] or 'superseded'}). The section was likely "
-                             "repealed, marked [Reserved], or renumbered; "
-                             "call version_history for the full record.")}
-        return {"found": False, "citation": norm}
+        return _miss(norm, as_of, version_history(data_dir, norm))
     return {"found": True, "citation": row["citation"], "title": row["title"],
             "program": row["program"], "effective_from": row["effective_from"],
             "effective_to": row["effective_to"], "is_current": bool(row["is_current"]),
             "path": row["path"], "text": _texts(data_dir)[row["path"]]}
+
+
+def _iso_date(s: str) -> str:
+    """Strict YYYY-MM-DD, returned unchanged; anything else (2024-6-1, June 2024, a datetime) raises."""
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", s.strip()):
+        raise ValueError(s)
+    return date.fromisoformat(s.strip()).isoformat()
+
+
+def _miss(norm: str, as_of: str | None, hist: list[dict]) -> dict:
+    """Explain why get_section found nothing, without guessing beyond what the version history shows."""
+    if not hist:
+        return {"found": False, "citation": norm, "status": "unknown_citation"}
+    first, last = hist[0], hist[-1]
+    span = f"{len(hist)} recorded version(s), the earliest in force from {first['effective_from']}"
+    if as_of is None or as_of > (last["effective_to"] or "9999-12-31"):
+        # no version is current: every recorded version has an end date
+        return {"found": False, "citation": norm, "status": "not_in_force",
+                "versions": len(hist),
+                "last_effective_from": last["effective_from"],
+                "last_effective_to": last["effective_to"],
+                "note": (f"{norm} has no text in force{' on ' + as_of if as_of else ' today'}: its last "
+                         f"version was in force {last['effective_from']} to {last['effective_to']}. "
+                         "The section was likely repealed, marked [Reserved], or renumbered; "
+                         "call version_history for the full record.")}
+    if as_of < first["effective_from"]:
+        return {"found": False, "citation": norm, "status": "before_recorded_history",
+                "versions": len(hist), "earliest_effective_from": first["effective_from"],
+                "note": (f"The corpus has no text for {norm} on {as_of}: its {span}. That says nothing "
+                         "about whether the section was in force then; check the official CFR for "
+                         "earlier dates.")}
+    ended = max((h["effective_to"] for h in hist if h["effective_to"] and h["effective_to"] < as_of), default="")
+    starts = min((h["effective_from"] for h in hist if h["effective_from"] > as_of), default="")
+    return {"found": False, "citation": norm, "status": "not_in_force_on_date",
+            "versions": len(hist), "gap_from": ended, "gap_to": starts,
+            "note": (f"No version of {norm} was in force on {as_of}"
+                     + (f": the previous version's last day in force was {ended} and the next took "
+                        f"effect {starts}" if ended and starts else "")
+                     + ". Call version_history for the full record.")}
 
 
 def version_history(data_dir: str | Path, citation: str) -> list[dict]:

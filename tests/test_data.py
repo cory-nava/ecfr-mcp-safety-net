@@ -82,6 +82,51 @@ class LookupTests(unittest.TestCase):
         self.assertIn("income", sec["text"].lower())
         self.assertFalse(retrieval.get_section(DATA, "7 CFR 999.999")["found"])
 
+    def _one(self, sql):
+        with closing(sqlite3.connect(DATA / "meta.sqlite")) as con:
+            return con.execute(sql).fetchone()
+
+    def test_as_of_before_recorded_history_is_not_called_repealed(self):
+        cite, earliest = self._one(
+            "SELECT citation, MIN(effective_from) FROM docs WHERE citation IN "
+            "(SELECT citation FROM docs WHERE is_current = 1) GROUP BY citation ORDER BY citation LIMIT 1")
+        day_before = (date.fromisoformat(earliest) - timedelta(days=1)).isoformat()
+        sec = retrieval.get_section(DATA, cite, as_of=day_before)
+        self.assertFalse(sec["found"])
+        self.assertEqual(sec["status"], "before_recorded_history")
+        self.assertEqual(sec["earliest_effective_from"], earliest)
+        self.assertNotIn("repealed", sec["note"])
+
+    def test_as_of_in_a_gap_reports_the_gap(self):
+        # a version whose successor starts later than the day after it ends (e.g. 42 CFR 457.960)
+        cite, ended, starts = self._one(
+            "SELECT a.citation, a.effective_to, MIN(b.effective_from) FROM docs a JOIN docs b "
+            "ON a.citation = b.citation AND b.effective_from > a.effective_to "
+            "WHERE a.effective_to != '' GROUP BY a.citation, a.effective_to "
+            "HAVING MIN(b.effective_from) > date(a.effective_to, '+1 day') ORDER BY a.citation LIMIT 1")
+        inside = (date.fromisoformat(ended) + timedelta(days=1)).isoformat()
+        sec = retrieval.get_section(DATA, cite, as_of=inside)
+        self.assertEqual(sec["status"], "not_in_force_on_date")
+        self.assertEqual((sec["gap_from"], sec["gap_to"]), (ended, starts))
+        self.assertNotIn("repealed", sec["note"])
+
+    def test_no_current_text_is_not_in_force(self):
+        cite, last_to = self._one(
+            "SELECT citation, MAX(effective_to) FROM docs GROUP BY citation "
+            "HAVING SUM(is_current) = 0 ORDER BY citation LIMIT 1")
+        for as_of in (None, (date.fromisoformat(last_to) + timedelta(days=1)).isoformat()):
+            sec = retrieval.get_section(DATA, cite, as_of=as_of)
+            self.assertEqual(sec["status"], "not_in_force", as_of)
+            self.assertEqual(sec["last_effective_to"], last_to)
+        self.assertTrue(retrieval.get_section(DATA, cite, as_of=last_to)["found"])
+
+    def test_malformed_as_of_is_rejected_not_guessed(self):
+        for bad in ("2024-6-1", "June 2024", "2024-02-30", "2025-01-17T00:00", "06/01/2024"):
+            sec = retrieval.get_section(DATA, "7 CFR 273.9", as_of=bad)
+            self.assertFalse(sec["found"], bad)
+            self.assertEqual(sec["status"], "invalid_date", bad)
+        self.assertEqual(retrieval.get_section(DATA, "7 CFR 999.999")["status"], "unknown_citation")
+
     def test_list_programs(self):
         progs = retrieval.list_programs(DATA)
         self.assertGreaterEqual(len(progs), 10)

@@ -49,7 +49,7 @@ On Windows the command is `\path\to\ecfr-mcp-safety-net\.venv\Scripts\ecfr-mcp.e
 | Tool | What it does |
 |---|---|
 | `search_corpus(query, top_k=5)` | Ranked sections. An exact citation like `7 CFR 273.9` resolves by direct lookup. |
-| `get_section(citation, as_of=None)` | Full section Markdown. `as_of="YYYY-MM-DD"` returns the version in force that day. |
+| `get_section(citation, as_of=None)` | Full section Markdown. `as_of="YYYY-MM-DD"` returns the version in force that day. On a miss, `status` says why: `unknown_citation`, `invalid_date`, `not_in_force` (no current text), `not_in_force_on_date` (a gap in the section's history) or `before_recorded_history`. |
 | `version_history(citation)` | Every version with `effective_from` / `effective_to` (last day in force). |
 | `list_programs()` | Programs with current section counts. |
 

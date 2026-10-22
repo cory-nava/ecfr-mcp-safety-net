@@ -23,7 +23,9 @@ index builders, `golden/` the eval set.
 - **The server writes nothing to disk.** `meta.sqlite` opens read-only and section text is read from
   `corpus.tar.gz` into memory. Keep it working on Windows (no `fcntl`, no POSIX-only paths).
 - **Dates.** `effective_to` is the last day a version was in force, inclusive; `as_of` lookups use `>=`.
-  Versions never overlap, but gaps are real (removed sections).
+  Versions never overlap, but gaps are real (removed sections). Dates compare as strings, so `as_of` must be
+  validated as `YYYY-MM-DD` before any query. A miss must say which case it is (gap, before recorded history,
+  no current text); never report a section as repealed unless it has no current version.
 - **`is_current` is an integer** in `meta.sqlite`; report it with `bool()` only after that.
 
 ## Changing retrieval

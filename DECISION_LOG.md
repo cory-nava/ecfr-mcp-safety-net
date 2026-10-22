@@ -3,6 +3,25 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-22: get_section misses say which case they are; as_of is validated
+
+**Decision:** A `get_section` miss returns one of five statuses instead of treating every
+miss with history as "repealed": `unknown_citation`; `invalid_date`; `not_in_force` (no
+version is current: repealed / [Reserved] / renumbered, the 2026-10-20 behaviour, fields
+unchanged); `not_in_force_on_date` (the date falls in a gap, with `gap_from`/`gap_to`);
+`before_recorded_history` (earlier than the section's first recorded version). `as_of`
+must be a real `YYYY-MM-DD` date.
+
+**Evidence:** On 604b0a4, `get_section("7 CFR 273.9", as_of="1990-01-01")` (SNAP income,
+in force) said "No current text… likely repealed", and so did 42 CFR 457.960 on
+2025-01-01 (removed 2024-06-03, restored 2026-06-03). Worse, dates compare as strings and
+were never validated: `as_of="2024-6-1"` returned the November 2024 version (wrong; the
+2023-09-26 version was in force) and `as_of="June 2024"` returned today's text, both with
+`found: true`. History in the corpus starts at the version in force on 2024-01-01, so an
+earlier date is a gap in our records, not evidence about the CFR. Tests cover each case
+and fail on 604b0a4. Note: `as_of` is this project's own parameter; OKF (v0.1 or v0.2)
+has no point-in-time concept, and `effective_from`/`effective_to` are extension keys.
+
 ## 2026-10-20: Round 8 filed; external retrieval findings kept separate
 
 **Measured here (Round 8, 2026-10-17, frozen 50-query golden set):**
