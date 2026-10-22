@@ -64,10 +64,12 @@ async def search_corpus(query: str, top_k: int = 5) -> str:
 
 
 @mcp.tool(description="Get the full text of one CFR section. "
-                       "as_of='YYYY-MM-DD' returns the version in force on that date. "
-                       "If the section has no current text but historical versions exist "
-                       "(repealed / [Reserved] / renumbered), reports last-in-force dates "
-                       "instead of a bare not-found.")
+                       "as_of='YYYY-MM-DD' (exactly that format) returns the version in force on "
+                       "that date. When nothing is found, `status` says why: unknown_citation, "
+                       "invalid_date, not_in_force (no current text: repealed / [Reserved] / "
+                       "renumbered), not_in_force_on_date (a gap in the section's history), or "
+                       "before_recorded_history (earlier than the corpus records; not evidence "
+                       "the section was absent).")
 async def get_section(citation: str, as_of: str | None = None) -> str:
     return json.dumps(retrieval.get_section(DATA_DIR, citation, as_of), indent=1)
 
