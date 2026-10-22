@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ecfr-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "MCP server over the eCFR-as-Markdown benefit-regulations corpus: search, exact citations, and point-in-time section text."
 readme = "README.md"
 license = {text = "MIT"}

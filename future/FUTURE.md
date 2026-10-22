@@ -16,7 +16,7 @@ better candidates help exactly where the pool is weakest), so a stronger
 embedder could lift r@3/r@5.
 
 **What we know (2026-10-17):**
-- Tried on the 7GB sandbox box: OOM-killed twice. The HF checkpoint is the
+- Tried on a 7GB machine: OOM-killed twice. The HF checkpoint is the
   full 740M multimodal model; even fp16 + batch 8 + 512-token cap dies after
   loading weights. Needs 16GB+ RAM.
 - Press coverage notes v2's *text* scores "barely moved" vs v1; the big

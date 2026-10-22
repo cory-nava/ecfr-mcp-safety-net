@@ -186,8 +186,9 @@ citation lookup, natural search, full-text section incl. as_of versioning,
 version history, program list). Best tier tested with stubbed LLM:
 scoring path, degradation fallback, citation bypass of the LLM.
 Corpus ships as `data/corpus.tar.gz` (3.4MB) instead of 3,399 loose
-files — the 10-worker blob uploader hung through the sandbox egress
-proxy; verified single-blob uploads are fine (2MB/2.7s, 17MB/12s).
+files — a single archive is also far kinder to git hosting than
+thousands of small blobs (verified single-blob uploads are fine:
+2MB/2.7s, 17MB/12s).
 Server extracts the tarball once, on first `get_section`, under a lock.
 
 ## 2026-10-13: HyDE+rerank combo rejected (does not stack)
@@ -308,5 +309,6 @@ have pushed the old layout against the new tree.
 section `45 CFR 260.20` returns text with `is_current: true`; unknown citation
 `45 CFR 999.999` still bare `found: false`. `python -m unittest discover -s tests -t .`:
 12 passed, 1 error — the error is `tests/test_smoke.py` failing to `import mcp`
-(package not installed in sandbox); full stdio smoke test still unverified, same caveat
-as 2026-10-13.
+in an environment without the package installed; full stdio smoke test unverified
+in that environment, same caveat as 2026-10-13. (Resolved 2026-10-22: the full
+suite, smoke test included, passes 13/13 in a complete environment.)
