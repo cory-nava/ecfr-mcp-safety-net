@@ -121,18 +121,24 @@ for f in cur:
     texts.append(f"{title}\n{body}".strip())
     paths.append(str(f.relative_to(corpus)))
 
-use_cuda = torch.cuda.is_available()
-print(f"loading {model_id} ({'cuda' if use_cuda else 'cpu, fp16'})...", flush=True)
+if torch.cuda.is_available():
+    device, model_kwargs, batch_size = "cuda", {}, 32
+elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    device, model_kwargs, batch_size = "mps", {}, 32
+else:
+    device, model_kwargs, batch_size = "cpu", {"torch_dtype": torch.float16}, 16
+
+print(f"loading {model_id} ({device})...", flush=True)
 m = SentenceTransformer(
     model_id,
     trust_remote_code=True,
-    model_kwargs={"torch_dtype": torch.float16} if not use_cuda else {},
-    device="cuda" if use_cuda else "cpu",
+    model_kwargs=model_kwargs,
+    device=device,
 )
 print(f"dims: {m.get_sentence_embedding_dimension()}", flush=True)
 
 encode_kw = {
-    "batch_size": 32 if use_cuda else 16,
+    "batch_size": batch_size,
     "show_progress_bar": True,
     "normalize_embeddings": True,
 }
