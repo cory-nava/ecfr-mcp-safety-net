@@ -28,6 +28,8 @@ def main() -> int:
     ap.add_argument("--model", default=None, help="query encoder (default: the model in manifest.json next to the index)")
     ap.add_argument("--query-prompt", default=None,
                     help="prompt_name for query encoding (e.g. 'SearchQuery' for google/embeddinggemma-2)")
+    ap.add_argument("--db", default=None,
+                    help="path to meta.sqlite for citation fast-path (default: <vectors_dir>/meta.sqlite)")
     ap.add_argument("--cite", action="store_true",
                     help="resolve exact-citation queries by direct lookup first, as the server's free tier does")
     args = ap.parse_args()
@@ -45,9 +47,9 @@ def main() -> int:
     cite_re = re.compile(r"(\d+)\s+CFR\s+([\w.]+)", re.IGNORECASE)  # same as ecfr_mcp.retrieval.CITATION_RE
     by_cite = {}
     if args.cite:
-        with sqlite3.connect(Path(args.vectors).parent / "meta.sqlite") as con:
+        db_path = Path(args.db) if args.db else Path(args.vectors).parent / "meta.sqlite"
+        with sqlite3.connect(db_path) as con:
             by_cite = dict(con.execute("SELECT citation, path FROM docs WHERE is_current=1"))
-        con.close()
 
     goldens = json.load(open(args.golden))
     results = []

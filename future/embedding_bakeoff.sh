@@ -140,7 +140,7 @@ print(f"saved {out} {vecs.shape}", flush=True)
 PYEOF
 
 echo "==> Evaluating (dense + citation fast-path = free tier)"
-EVAL_ARGS=(--vectors "$OUT/vectors_${SLUG}.npz" --cite --model "$MODEL_ID")
+EVAL_ARGS=(--vectors "$OUT/vectors_${SLUG}.npz" --cite --model "$MODEL_ID" --db data/meta.sqlite)
 [[ -n "$QUERY_PROMPT" ]] && EVAL_ARGS+=(--query-prompt "$QUERY_PROMPT")
 python3 golden/eval.py "${EVAL_ARGS[@]}"
 
