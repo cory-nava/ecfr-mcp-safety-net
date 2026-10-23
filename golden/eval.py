@@ -26,6 +26,8 @@ def main() -> int:
     ap.add_argument("--vectors", required=True, help="vectors.npz from build_vectors.py")
     ap.add_argument("--golden", default=str(Path(__file__).parent / "eval.json"))
     ap.add_argument("--model", default=None, help="query encoder (default: the model in manifest.json next to the index)")
+    ap.add_argument("--query-prompt", default=None,
+                    help="prompt_name for query encoding (e.g. 'SearchQuery' for google/embeddinggemma-2)")
     ap.add_argument("--cite", action="store_true",
                     help="resolve exact-citation queries by direct lookup first, as the server's free tier does")
     args = ap.parse_args()
@@ -39,7 +41,7 @@ def main() -> int:
     Vn = V / np.linalg.norm(V, axis=1, keepdims=True)
     path_to_idx = {p: i for i, p in enumerate(paths)}
 
-    model = SentenceTransformer(args.model)
+    model = SentenceTransformer(args.model, trust_remote_code=True)
     cite_re = re.compile(r"(\d+)\s+CFR\s+([\w.]+)", re.IGNORECASE)  # same as ecfr_mcp.retrieval.CITATION_RE
     by_cite = {}
     if args.cite:
@@ -50,7 +52,10 @@ def main() -> int:
     goldens = json.load(open(args.golden))
     results = []
     for g in goldens:
-        q = model.encode([g["query"]], normalize_embeddings=True)[0]
+        encode_kw = {"normalize_embeddings": True}
+        if args.query_prompt:
+            encode_kw["prompt_name"] = args.query_prompt
+        q = model.encode([g["query"]], **encode_kw)[0]
         sims = Vn @ q
         ranked = np.argsort(-sims)
         want = g["expected_path"]
