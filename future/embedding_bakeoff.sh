@@ -54,8 +54,15 @@ if [[ "$FIRST" == "--suite" ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "  SUITE: $m"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    result=$(bash "$0" "$m" "$CORPUS" "$OUT" 2>&1 | tee /dev/stderr \
-      | grep -E "^recall@[135]:" | tr '\n' '  ' | sed 's/  $//')
+    tmpout=$(mktemp)
+    # Run model; stream output live AND capture to tmpout for result grep.
+    # The inner bash call exits non-zero on model failure; || true keeps the
+    # suite running. With tee writing to both stdout and tmpout, live progress
+    # appears in the log while we still have the output to grep.
+    bash "$0" "$m" "$CORPUS" "$OUT" 2>&1 | tee "$tmpout" || true
+    result=$(grep -E "^recall@[135]:" "$tmpout" | tr '\n' '  ' | sed 's/  $//')
+    [ -z "$result" ] && result="FAILED (see log above)"
+    rm -f "$tmpout"
     RESULTS+=("$(printf '%-45s  %s' "$m" "$result")")
   done
   echo ""
@@ -78,10 +85,9 @@ mkdir -p "$OUT"
 
 echo "==> Model: $MODEL_ID (slug: $SLUG)"
 [[ -n "$DOC_PROMPT" ]] && echo "    doc_prompt=$DOC_PROMPT  query_prompt=$QUERY_PROMPT"
-python3 -c "import sentence_transformers, torch, numpy" 2>/dev/null || {
-  echo "Installing sentence-transformers + torch (CPU)..."
-  pip install -q "sentence-transformers" "numpy" \
-    --index-url https://download.pytorch.org/whl/cpu \
+python3 -c "import sentence_transformers, torch, numpy, einops" 2>/dev/null || {
+  echo "Installing dependencies..."
+  pip install -q "sentence-transformers" "numpy" "einops" \
     --extra-index-url https://pypi.org/simple
 }
 
