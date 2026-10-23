@@ -33,9 +33,10 @@ set -euo pipefail
 SUITE=(
   "BAAI/bge-small-en-v1.5"           # shipped baseline
   "BAAI/bge-large-en-v1.5"           # direct upgrade, same family
-  "nomic-ai/nomic-embed-text-v1.5"   # competitive at bge-small size
   "Qwen/Qwen3-Embedding-0.6B"        # strong MTEB, larger download
   "google/embeddinggemma-2"          # Google DeepMind, 768d, MTEB 68.46
+  # nomic-ai/nomic-embed-text-v1.5 removed: fails with current transformers
+  #   (AttributeError: NomicBertModel has no get_extended_attention_mask)
 )
 
 # Per-model prompt names for asymmetric embedding models.
@@ -60,7 +61,7 @@ if [[ "$FIRST" == "--suite" ]]; then
     # suite running. With tee writing to both stdout and tmpout, live progress
     # appears in the log while we still have the output to grep.
     bash "$0" "$m" "$CORPUS" "$OUT" 2>&1 | tee "$tmpout" || true
-    result=$(grep -E "^recall@[135]:" "$tmpout" | tr '\n' '  ' | sed 's/  $//')
+    result=$(grep -E "^recall@[135]:" "$tmpout" | tr '\n' '  ' | sed 's/  $//' || true)
     [ -z "$result" ] && result="FAILED (see log above)"
     rm -f "$tmpout"
     RESULTS+=("$(printf '%-45s  %s' "$m" "$result")")
