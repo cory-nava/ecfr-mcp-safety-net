@@ -39,14 +39,9 @@ SUITE=(
 )
 
 # Per-model prompt names for asymmetric embedding models.
-# DOC_PROMPTS: used when encoding corpus documents.
-# QUERY_PROMPTS: passed as --query-prompt to eval.py for query encoding.
-declare -A DOC_PROMPTS=(
-  ["google/embeddinggemma-2"]="Document"
-)
-declare -A QUERY_PROMPTS=(
-  ["google/embeddinggemma-2"]="SearchQuery"
-)
+# Using case statements instead of declare -A for bash 3.x compatibility (macOS default).
+_doc_prompt()   { case "$1" in google/embeddinggemma-2) echo "Document"    ;; *) echo "" ;; esac; }
+_query_prompt() { case "$1" in google/embeddinggemma-2) echo "SearchQuery" ;; *) echo "" ;; esac; }
 # ─────────────────────────────────────────────────────────────────────────────
 
 FIRST="${1:-}"
@@ -76,8 +71,8 @@ MODEL_ID="${FIRST:?usage: $0 <hf-model-id>|--suite [corpus_dir] [out_dir]}"
 CORPUS="${2:-../ecfr-markdown/corpus}"
 OUT="${3:-build/embed}"
 SLUG=$(echo "$MODEL_ID" | tr '[:upper:]' '[:lower:]' | tr '/-' '__')
-DOC_PROMPT="${DOC_PROMPTS[$MODEL_ID]:-}"
-QUERY_PROMPT="${QUERY_PROMPTS[$MODEL_ID]:-}"
+DOC_PROMPT=$(_doc_prompt "$MODEL_ID")
+QUERY_PROMPT=$(_query_prompt "$MODEL_ID")
 
 mkdir -p "$OUT"
 
