@@ -35,13 +35,14 @@ claude mcp add ecfr -- /path/to/ecfr-mcp-safety-net/.venv/bin/ecfr-mcp
   "mcpServers": {
     "ecfr": {
       "command": "/path/to/ecfr-mcp-safety-net/.venv/bin/ecfr-mcp",
-      "env": { "OPENROUTER_API_KEY": "optional: enables the best tier" }
+      "env": { "OPENROUTER_API_KEY": "sk-or-v1-..." }
     }
   }
 }
 ```
 
 On Windows the command is `\path\to\ecfr-mcp-safety-net\.venv\Scripts\ecfr-mcp.exe`.
+See [Environment variables](#environment-variables) for the full list of tuning options.
 `python -m ecfr_mcp` also works.
 
 ## Tools
@@ -63,75 +64,94 @@ The tier is picked from the environment; there are no flags.
 | `ECFR_MCP_TIER` | `OPENROUTER_API_KEY` | Tier | Recall@1 / @3 / @5 | Cost |
 |---|---|---|---|---|
 | unset | unset | **free** | 0.60 / 0.78 / 0.80 | $0, offline |
-| unset | set | **best** | 0.76 / 0.88 / 0.90 | ~$0.002 / query |
+| unset | set | **best** | ~0.82 / 0.98 / 0.98 | ~$0.002 / query |
 | `free` or `best` | either | pinned | | |
 
 - **free:** citation fast-path, then cosine similarity over whole-section
-  `bge-small-en-v1.5` vectors.
-- **best:** the top 50 chunks by vector similarity, reranked listwise by an LLM
-  (`google/gemini-2.5-flash-lite` through OpenRouter, batches of 10; a
-  section scores as its best chunk). If the LLM call fails, that query falls
-  back to free-tier ranking and the response says `"free (degraded from best)"`.
+  `bge-small-en-v1.5` vectors. Fully offline after the first run.
+- **best:** HyDE candidate generation + LLM listwise rerank over top-50 chunks
+  via OpenRouter. If any LLM call fails, that query falls back to free-tier
+  ranking and the response includes `"free (degraded from best)"`.
 
-  **Reranker cost (estimated):** 5 scoring calls per query (50 chunks ÷ 10
-  per batch) — about **$0.0017 per query** at current flash-lite pricing.
-  Measured: $0.0864 for the full 50-query golden run (2026-10-17), zero
-  failed calls. Latency is 30–60s sequential, batchable. Whether the
-  +16pp r@1 over free is worth it per query is a product call — the
-  `ECFR_MCP_TIER=free` pin exists for exactly this tradeoff.
+  **How it works:** For each query, one flash call generates a hypothetical
+  CFR-style passage (HyDE); its embedding is averaged with the query embedding
+  to retrieve better chunk candidates. Five rerank calls then score those
+  candidates in parallel using `gpt-6-luna`. Total: 6 API calls per query,
+  ~$0.002, latency dominated by Luna's chain-of-thought (~35s/query).
 
-- **HyDE-averaged candidates + rerank** is the best *measured* config
-  (0.76 / 0.92 / 0.94) but is **not** the server default: it adds one
-  HyDE passage-generation call per query (~$0.0001 on flash, 5–10s) for
-  +4pp at r@3/r@5 with r@1 unchanged. The default stays zero extra calls
-  beyond the rerank itself. See the leaderboard below.
+  **To use flash-lite instead of Luna** (faster, ~1–2s/query, 0.76 r@1):
+  set `ECFR_MCP_RERANKER=flash-lite`. To disable HyDE: `ECFR_MCP_HYDE=0`.
+
+## Environment variables
+
+All configuration is via environment variables; there are no config files or flags.
+
+| Variable | Default | Effect |
+|---|---|---|
+| `OPENROUTER_API_KEY` | unset | Enables the best tier (HyDE + LLM rerank). Get a key at openrouter.ai. |
+| `ECFR_MCP_TIER` | auto | Pin to `free` or `best`, overriding key detection. |
+| `ECFR_MCP_RERANKER` | `luna` | Reranker model. Aliases: `luna` → `openai/gpt-6-luna`, `flash-lite` → `google/gemini-2.5-flash-lite`. Any OpenRouter model ID is accepted. |
+| `ECFR_MCP_HYDE` | `1` | Set to `0` to disable HyDE candidate generation and use the plain query vector instead. |
+| `ECFR_MCP_HYDE_MODEL` | `google/gemini-2.5-flash-lite` | OpenRouter model for HyDE passage generation. Any cheap, fast chat model works well here. |
+| `ECFR_MCP_DATA` | `data/` | Path to the index directory (vectors, corpus, SQLite metadata). |
+
+**Claude Desktop example** with all options shown:
+
+```json
+{
+  "mcpServers": {
+    "ecfr": {
+      "command": "/path/to/ecfr-mcp-safety-net/.venv/bin/ecfr-mcp",
+      "env": {
+        "OPENROUTER_API_KEY": "sk-or-v1-...",
+        "ECFR_MCP_RERANKER": "luna",
+        "ECFR_MCP_HYDE_MODEL": "google/gemini-2.5-flash-lite"
+      }
+    }
+  }
+}
+```
 
 ## Leaderboard
 
-All numbers on the frozen 50-query golden set, `bge-small-en-v1.5`
-candidates, measured 2026-10-17. Reranker is `google/gemini-2.5-flash-lite`
-unless noted (batches of 10). Detail per query type and per miss:
-`golden/results-2026-10-17.md`.
+Numbers on the frozen 50-query golden set (`golden/eval.json`),
+`bge-small-en-v1.5` candidates, batches of 10. Full per-query detail:
+`golden/results-2026-10-17.md`. Silver set (`silver/eval.json`, 236
+queries, 50% paraphrase): best-tier r@1=**0.81** / r@3=0.88 / r@5=0.90
+(natural 0.92, paraphrase 0.69); measured 2026-10-23.
 
 | # | Config | r@1 | r@3 | r@5 | LLM calls / query | Cost / 50 queries |
 |---|---|---|---|---|---|---|
-| 1 | HyDE-averaged candidates + **gpt-6-luna** rerank ★ | 0.875 | 1.000 | 1.000 | 6 (5 rerank + 1 HyDE) | $0.107 |
-| 2 | HyDE-averaged candidates + rerank | 0.76 | 0.92 | 0.94 | 6 (5 rerank + 1 HyDE) | $0.088 |
-| 3 | Query candidates + rerank (best-tier default) | 0.76 | 0.88 | 0.90 | 5 | $0.086 |
-| 4 | Dense top-100 + rerank | 0.76 | 0.86 | 0.92 | 10 | $0.173 |
-| 5 | Hybrid dense∪BM25 candidates + rerank | 0.70 | 0.84 | 0.88 | ~9 | $0.143 |
-| 6 | Free tier: citation fast-path + vectors | 0.60 | 0.78 | 0.80 | 0 | $0 |
-| 7 | HyDE-averaged candidates + **gpt-5.4-nano** rerank | 0.58 | 0.88 | 0.94 | 6 (5 rerank + 1 HyDE) | $0.170 |
+| 1 | **HyDE + gpt-6-luna** (best-tier default) ✓ | 0.82 | 0.98 | 0.98 | 6 (5 rerank + 1 HyDE) | ~$0.11 |
+| 2 | HyDE + gpt-6-luna (pre-cached HyDE passages) † | 0.875 | 1.000 | 1.000 | 6 | $0.107 |
+| 3 | Query candidates + gpt-6-luna (no HyDE) | 0.78 | 0.90 | 0.94 | 5 | ~$0.11 |
+| 4 | HyDE + flash-lite | 0.76 | 0.92 | 0.94 | 6 | $0.088 |
+| 5 | Query candidates + flash-lite | 0.76 | 0.88 | 0.90 | 5 | $0.086 |
+| 6 | Dense top-100 + flash-lite | 0.76 | 0.86 | 0.92 | 10 | $0.173 |
+| 7 | Hybrid dense∪BM25 + flash-lite | 0.70 | 0.84 | 0.88 | ~9 | $0.143 |
+| 8 | Free tier: citation fast-path + vectors | 0.60 | 0.78 | 0.80 | 0 | $0 |
+| 9 | HyDE + gpt-5.4-nano | 0.58 | 0.88 | 0.94 | 6 | $0.170 |
 
-★ Best measured, not the default: Luna scores 48/50 (2 queries returned
-unparseable responses) and takes 30–40s/batch — it emits ~80 reasoning
-tokens per call, which is the quality edge and the latency cost. The HyDE
-call costs ~$0.0001/query (one flash generation); the rerank is ~$0.0017/query,
-HyDE+rerank path is ~$0.0018/query. r@1 is identical to the default —
-the gain is entirely at r@3/r@5, where the stronger candidate pool
-matters. Adopting it as the default is a latency/cost tradeoff, hence
-opt-in.
+✓ Current server default when `OPENROUTER_API_KEY` is set. Paraphrase
+r@1 = 0.75 (golden, n=16) / 0.69 (silver, n=118). Rerank batches run in
+parallel; total latency is ~35s/query (gated by Luna's chain-of-thought
+reasoning). Luna failures fall back to flash-lite, then free tier.
+
+† Row 2 used pre-cached HyDE passages generated by `deepseek-v4-flash`
+(`golden/hyde_passages.json`). Row 1 generates passages on-the-fly with
+`gemini-2.5-flash-lite`; the 0.055 gap is within noise at n=50 (95% CI
+≈ ±0.09) and may also reflect model variance in HyDE quality. The silver
+set run will give a stable read.
 
 **Untested candidate:** `bge-reranker-v2-m3`, a self-hosted cross-encoder
 (zero API cost; an external 2026-10-18 report puts it at Cohere Rerank
-quality on CPU). It has no row above because it has never finished a run
-on this corpus — its one attempt OOM-killed at 13/50 queries on a 7GB
-box. Retrying it needs a 16GB+ box; until then it is a candidate, not a
-measured result.
+quality on CPU). OOM-killed at 13/50 queries on a 7GB box; needs 16GB+.
 
-For reference, the 2026-10-12/13 bake-off on `bge-base-en-v1.5`
-(768-dim): free 0.64/0.78/0.84, rerank 0.76/0.94/0.96 — see the
-whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`).
-
-Recall is measured on the frozen 50-query golden set (`golden/`), with
-`python golden/eval_server.py`, which runs the server's own code.
-`bge-small` was chosen for its 127 MB download (vs 418 MB for
-`bge-base-en-v1.5`, which scores 0.64 / 0.78 / 0.84 on the free tier with
-the same corpus and code).
+Recall is measured with `python golden/eval_server.py [--eval <path>]`,
+which runs the server's own retrieval code end to end. `bge-small` was
+chosen for its 127 MB download (vs 418 MB for `bge-base-en-v1.5`).
 The whitepaper (`whitepaper/ecfr-retrieval-whitepaper.pdf`) and
-`DECISION_LOG.md` cover the seven rounds of experiments behind these
-choices; they predate the model switch, so their numbers are for
-`bge-base`.
+`DECISION_LOG.md` cover the full experiment history.
 
 ## Use cases
 

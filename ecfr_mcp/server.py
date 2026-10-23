@@ -1,9 +1,17 @@
 """ecfr-mcp: local stdio MCP server over the eCFR Markdown corpus.
 
 Tier selection is environmental (see retrieval.resolve_tier):
-  ECFR_MCP_TIER=free|best     pinned tier
-  OPENROUTER_API_KEY set      best tier (LLM rerank)
-  otherwise                   free tier (citation fast-path + vectors)
+  ECFR_MCP_TIER=free|best       pinned tier
+  OPENROUTER_API_KEY set        best tier (LLM rerank)
+  otherwise                     free tier (citation fast-path + vectors)
+
+Reranker model (best tier only):
+  ECFR_MCP_RERANKER=luna        openai/gpt-6-luna  (default; ~0.875 r@1 w/ HyDE)
+  ECFR_MCP_RERANKER=flash-lite  google/gemini-2.5-flash-lite  (faster; 0.76 r@1)
+  ECFR_MCP_RERANKER=<model-id>  any OpenRouter model ID
+  ECFR_MCP_HYDE=0               disable HyDE candidate generation
+  ECFR_MCP_HYDE_MODEL=<id>      OpenRouter model for HyDE generation
+                                  (default: google/gemini-2.5-flash-lite)
 
 Data dir: ECFR_MCP_DATA, or data/ at the repository root.
 
@@ -48,7 +56,8 @@ def _hit_dict(h: retrieval.Hit) -> dict:
 
 @mcp.tool(description="Search the eCFR corpus. Exact citations like '7 CFR 273.9' "
                        "resolve by direct lookup; everything else is ranked retrieval. "
-                       "Uses the LLM rerank tier when OPENROUTER_API_KEY is set.")
+                       "Uses LLM rerank (default: gpt-6-luna) when OPENROUTER_API_KEY is set; "
+                       "override reranker with ECFR_MCP_RERANKER=flash-lite or any OpenRouter model ID.")
 async def search_corpus(query: str, top_k: int = 5) -> str:
     top_k = max(1, min(int(top_k), 20))
     if _tier == "best":

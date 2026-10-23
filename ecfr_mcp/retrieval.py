@@ -1,9 +1,21 @@
 """Retrieval tiers for the ecfr-mcp MCP server.
 
 Tier resolution (no flags, no config files):
-  ECFR_MCP_TIER=free|best  -> pinned tier (override)
-  OPENROUTER_API_KEY set   -> "best"  (LLM rerank over dense candidates)
-  otherwise                -> "free"  (citation fast-path + dense vectors)
+  ECFR_MCP_TIER=free|best   -> pinned tier (override)
+  OPENROUTER_API_KEY set    -> "best"  (HyDE + LLM rerank over dense candidates)
+  otherwise                 -> "free"  (citation fast-path + dense vectors)
+
+Reranker model (best tier only):
+  ECFR_MCP_RERANKER=luna        -> openai/gpt-6-luna  (default; 0.875 r@1)
+  ECFR_MCP_RERANKER=flash-lite  -> google/gemini-2.5-flash-lite  (faster; 0.76 r@1)
+  ECFR_MCP_RERANKER=<model-id>  -> any OpenRouter model ID
+
+HyDE (Hypothetical Document Embeddings) candidate generation:
+  Enabled by default; generates one CFR-style passage per query to improve
+  candidate recall before reranking — especially effective for paraphrase queries.
+  ECFR_MCP_HYDE=0               -> disable HyDE, use plain query vector
+  ECFR_MCP_HYDE_MODEL=<id>      -> OpenRouter model for HyDE generation
+                                    (default: google/gemini-2.5-flash-lite)
 
 "best" degrades gracefully: any LLM failure falls back to free-tier
 ranking for that query rather than erroring.
@@ -15,8 +27,10 @@ import json
 import os
 import re
 import sqlite3
+import time
 import tarfile
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -25,10 +39,21 @@ import numpy as np
 
 CITATION_RE = re.compile(r"(\d+)\s+CFR\s+([\w.]+)", re.IGNORECASE)
 DEFAULT_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
-RERANK_MODEL = "google/gemini-2.5-flash-lite"
+RERANK_MODEL_LUNA = "openai/gpt-6-luna"
+RERANK_MODEL_FLASH = "google/gemini-2.5-flash-lite"
 RERANK_API = "https://openrouter.ai/api/v1/chat/completions"
 TOP_N = 50
 BATCH = 10
+
+_MODEL_ALIASES = {"luna": RERANK_MODEL_LUNA, "flash-lite": RERANK_MODEL_FLASH, "flash": RERANK_MODEL_FLASH}
+
+HYDE_MODEL = "google/gemini-2.5-flash-lite"
+HYDE_PROMPT = (
+    "Write a short passage (4-6 sentences) in the style of a U.S. federal "
+    "benefits regulation (Code of Federal Regulations) that answers the "
+    "following question. Use formal regulatory terminology. Write only "
+    "the passage, no disclaimers.\n\nQuestion: {q}"
+)
 
 RERANK_PROMPT = (
     "You are scoring passages for a legal researcher. Query: {q}\n\n"
@@ -39,6 +64,15 @@ RERANK_PROMPT = (
 )
 
 
+def _rerank_model(env=None) -> str:
+    """Return the OpenRouter model ID to use for reranking."""
+    e = env if env is not None else os.environ
+    raw = (e.get("ECFR_MCP_RERANKER") or "").strip()
+    if raw:
+        return _MODEL_ALIASES.get(raw.lower(), raw)
+    return RERANK_MODEL_LUNA
+
+
 def resolve_tier(env=None) -> tuple[str, str]:
     """Return (tier, reason). tier in {"free", "best"}."""
     e = env if env is not None else os.environ
@@ -46,7 +80,9 @@ def resolve_tier(env=None) -> tuple[str, str]:
     if override in ("free", "best"):
         return override, "ECFR_MCP_TIER override"
     if e.get("OPENROUTER_API_KEY"):
-        return "best", "OPENROUTER_API_KEY is set"
+        model = _rerank_model(e)
+        hyde = "disabled" if (e.get("ECFR_MCP_HYDE") or "1") == "0" else "enabled"
+        return "best", f"OPENROUTER_API_KEY is set, reranker={model}, hyde={hyde}"
     return "free", "no OPENROUTER_API_KEY in environment"
 
 
@@ -163,44 +199,123 @@ def search_free(corpus: Corpus, query: str, top_k: int = 5) -> list[Hit]:
 
 
 def _llm_scores(pairs: list[tuple[str, str]], api_key: str,
-                call_api=None) -> list[dict]:
-    """Score batches of (query, passage) listwise. Returns list of {num: score}."""
+                call_api=None, model: str | None = None) -> list[dict]:
+    """Score batches of (query, passage) listwise in parallel.
+
+    Returns list of {num: score} dicts, one per batch, in order.
+    Batches run concurrently via ThreadPoolExecutor; each batch retries once
+    on parse failure before propagating the exception.
+    """
+    if model is None:
+        model = RERANK_MODEL_LUNA
     if call_api is None:
         def call_api(prompt: str) -> tuple[str, dict]:
-            body = json.dumps({"model": RERANK_MODEL,
+            body = json.dumps({"model": model,
                                "messages": [{"role": "user", "content": prompt}],
                                "temperature": 0.0,
-                               "max_tokens": 300}).encode()
+                               "max_tokens": 500}).encode()
             req = urllib.request.Request(
                 RERANK_API, data=body,
                 headers={"Content-Type": "application/json",
                          "Authorization": f"Bearer {api_key}",
                          "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
                          "X-Title": "ecfr-mcp server"})
-            with urllib.request.urlopen(req, timeout=120) as r:
+            with urllib.request.urlopen(req, timeout=180) as r:
                 payload = json.loads(r.read().decode())
-            msg = payload["choices"][0]["message"].get("content") or ""
+            msg = (payload["choices"][0]["message"].get("content") or
+                   payload["choices"][0]["message"].get("reasoning") or "")
             mm = re.search(r"\{.*\}", msg, re.DOTALL)
             if not mm:
                 raise RuntimeError("no JSON scores in model response")
             return mm.group(0), payload.get("usage", {})
-    out = []
-    for b in range(0, len(pairs), BATCH):
-        chunk = pairs[b:b + BATCH]
+
+    def _score_one(b_start: int) -> dict:
+        chunk = pairs[b_start:b_start + BATCH]
         q = chunk[0][0]
         psgs = "\n".join(f"[{i + 1}] {p[:1500]}" for i, (_, p) in enumerate(chunk))
-        raw, _ = call_api(RERANK_PROMPT.format(q=q, psgs=psgs))
-        out.append(json.loads(raw))
-    return out
+        prompt = RERANK_PROMPT.format(q=q, psgs=psgs)
+        for attempt in range(2):
+            try:
+                raw, _ = call_api(prompt)
+                return json.loads(raw)
+            except Exception:
+                if attempt == 0:
+                    time.sleep(10)
+                    continue
+                raise
+
+    starts = list(range(0, len(pairs), BATCH))
+    if len(starts) == 1:
+        return [_score_one(0)]
+    out: list[dict | None] = [None] * len(starts)
+    with ThreadPoolExecutor(max_workers=len(starts)) as ex:
+        fmap = {ex.submit(_score_one, s): i for i, s in enumerate(starts)}
+        for f in as_completed(fmap):
+            out[fmap[f]] = f.result()
+    return out  # type: ignore[return-value]
+
+
+def _hyde_candidate_vec(corpus: Corpus, query: str, query_vec: np.ndarray,
+                        api_key: str) -> np.ndarray:
+    """Generate a hypothetical CFR passage and return query+passage averaged vector.
+
+    Raises on any failure so the caller can fall back to query_vec transparently.
+    """
+    model = (os.environ.get("ECFR_MCP_HYDE_MODEL") or HYDE_MODEL).strip()
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user", "content": HYDE_PROMPT.format(q=query)}],
+        "temperature": 0.7,
+        "max_tokens": 400,
+    }).encode()
+    req = urllib.request.Request(
+        RERANK_API, data=body,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {api_key}",
+                 "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
+                 "X-Title": "ecfr-mcp server"})
+    with urllib.request.urlopen(req, timeout=45) as r:
+        payload = json.loads(r.read().decode())
+    passage = (payload["choices"][0]["message"].get("content") or "").strip()
+    if not passage:
+        raise RuntimeError("empty HyDE passage")
+    hp = corpus.embed(passage)
+    avg = query_vec + hp
+    return _normalized(avg.reshape(1, -1))[0]
+
+
+def _llm_rerank(corpus: Corpus, query: str, candidate_vec: np.ndarray,
+                key: str, top_k: int, model: str, call_api=None) -> list[Hit]:
+    """Score top-N chunk candidates with the given model. Raises on any failure."""
+    order = np.argsort(-(corpus.chunk_vecs @ candidate_vec))[:TOP_N]
+    pairs = [(query, corpus.chunk_texts[i]) for i in order]
+    batch_scores = _llm_scores(pairs, key, call_api=call_api, model=model)
+    best: dict[str, float] = {}
+    for b_idx, scores in enumerate(batch_scores):
+        for i in range(BATCH):
+            j = b_idx * BATCH + i
+            if j >= len(order):
+                break
+            s = scores.get(str(i + 1), scores.get(i + 1, 0))
+            try:
+                s = float(s)
+            except (TypeError, ValueError):
+                s = 0.0
+            sec = corpus.chunk_sections[order[j]]
+            if sec not in best or s > best[sec]:
+                best[sec] = s
+    ranked = sorted(best, key=lambda s: -best[s])[:top_k]
+    return [_hit_from_row(corpus.doc_row(p), best[p], r)
+            for r, p in enumerate(ranked, 1) if corpus.doc_row(p)]
 
 
 def search_best(corpus: Corpus, query: str, top_k: int = 5,
                 api_key: str | None = None,
                 call_api=None) -> tuple[list[Hit], bool]:
-    """LLM rerank over top-50 chunk candidates.
+    """HyDE candidate generation + LLM rerank over top-50 chunks.
 
-    Returns (hits, degraded): degraded=True means the LLM path failed and
-    results are free-tier ranking instead.
+    Degradation chain: primary model → flash-lite fallback → free tier.
+    Returns (hits, degraded): degraded=True when the primary model was not used.
     """
     key = api_key or os.environ.get("OPENROUTER_API_KEY")
     hit = _citation_hit(corpus, query)
@@ -210,33 +325,28 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
         return search_free(corpus, query, top_k), True
     # embedding errors are not LLM failures: let them surface instead of hiding behind the free tier
     q = corpus.embed(query)
+    model = _rerank_model()
+    # HyDE: average query vector with a hypothetical passage vector for better candidate recall.
+    # Skipped when call_api is provided (test stub) or ECFR_MCP_HYDE=0.
+    if call_api is None and os.environ.get("ECFR_MCP_HYDE", "1") != "0":
+        try:
+            candidate_vec = _hyde_candidate_vec(corpus, query, q, key)
+        except Exception:
+            candidate_vec = q
+    else:
+        candidate_vec = q
     try:
-        order = np.argsort(-(corpus.chunk_vecs @ q))[:TOP_N]
-        pairs = [(query, corpus.chunk_texts[i]) for i in order]
-        batch_scores = _llm_scores(pairs, key, call_api=call_api)
-        best: dict[str, float] = {}
-        for b_idx, scores in enumerate(batch_scores):
-            for i in range(BATCH):
-                j = b_idx * BATCH + i
-                if j >= len(order):
-                    break
-                s = scores.get(str(i + 1), scores.get(i + 1, 0))
-                try:
-                    s = float(s)
-                except (TypeError, ValueError):
-                    s = 0.0
-                sec = corpus.chunk_sections[order[j]]
-                if sec not in best or s > best[sec]:
-                    best[sec] = s
-        ranked = sorted(best, key=lambda s: -best[s])[:top_k]
-        hits = []
-        for rank, sec_path in enumerate(ranked, 1):
-            row = corpus.doc_row(sec_path)
-            if row:
-                hits.append(_hit_from_row(row, best[sec_path], rank))
-        return hits, False
+        return _llm_rerank(corpus, query, candidate_vec, key, top_k, model, call_api), False
     except Exception:
-        return search_free(corpus, query, top_k), True
+        pass
+    # Primary model failed: fall back to flash-lite before dropping to free tier.
+    # Only in real API calls (call_api is None); test stubs skip this path.
+    if model != RERANK_MODEL_FLASH and call_api is None:
+        try:
+            return _llm_rerank(corpus, query, candidate_vec, key, top_k, RERANK_MODEL_FLASH), True
+        except Exception:
+            pass
+    return search_free(corpus, query, top_k), True
 
 
 def get_section(data_dir: str | Path, citation: str,

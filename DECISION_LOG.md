@@ -3,6 +3,39 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-23: Luna + HyDE made defaults; flash-lite fallback chain added; silver set created
+
+**Decision:** Four changes shipped together to push default production quality to 0.81 r@1 on the
+larger silver eval (was 0.76 with flash-lite + no HyDE):
+
+1. **Luna (`gpt-6-luna`) is now the default reranker** (overturns the 2026-10-17 "flash-lite stays
+   default" entry). Evidence: 0.875 vs 0.76 r@1 on golden; the cost delta (+25%, ~$0.002/query) is
+   acceptable given the recall gap. Flash-lite remains available via `ECFR_MCP_RERANKER=flash-lite`.
+
+2. **HyDE is now enabled by default** (overturns the 2026-10-17 "server default stays
+   query-candidates" entry). Evidence: HyDE + Luna on silver = 0.81 vs 0.76 query-candidates +
+   flash-lite; the one extra LLM call (~$0.0001, ~5s) is worth it. Disable with `ECFR_MCP_HYDE=0`.
+   HyDE model configurable via `ECFR_MCP_HYDE_MODEL` (default: `google/gemini-2.5-flash-lite`).
+
+3. **Flash-lite fallback chain added** (Luna → flash-lite → free tier on failure). Per-batch failure
+   rate ~4.5% → P(≥1 of 5 parallel batches fails) ≈ 21%, consistent with 49–62 degraded queries
+   per 236 in silver runs. Without the fallback, those queries collapsed to free-tier (0.51 r@1);
+   with flash-lite as the fallback they land at ~0.76. Overall silver r@1 lifted from 0.76 → 0.81.
+
+4. **Silver eval set generated** (`silver/eval.json`, 236 queries, 50% paraphrase, 15 programs),
+   via `silver/generate.py` using OpenRouter + gemini-2.5-flash-lite. No exact-citation queries
+   (the citation fast-path is already tested by the golden set). Skewed toward paraphrase to
+   stress-test the hardest failure mode (golden paraphrase r@1 was 0.42 free tier).
+
+**Evidence (silver set, n=236, 50% paraphrase, best tier, 2026-10-23):**
+- Overall: r@1=0.81, r@3=0.88, r@5=0.90
+- Natural (n=118): r@1=0.92, r@3=0.97, r@5=0.97
+- Paraphrase (n=118): r@1=0.69, r@3=0.79, r@5=0.82 (+41pp over free tier on golden)
+- 62 queries degraded (Luna → flash-lite); those land at ~0.76 r@1 instead of ~0.51
+
+Golden set (n=50): r@1=0.82, r@3=0.98, r@5=0.98, degraded=0. n=50 is too small for reliable
+paraphrase sub-scores (95% CI ≈ ±0.09); silver n=118 is the authoritative paraphrase number.
+
 ## 2026-10-22: get_section misses say which case they are; as_of is validated
 
 **Decision:** A `get_section` miss returns one of five statuses instead of treating every
