@@ -33,10 +33,11 @@ set -euo pipefail
 SUITE=(
   "BAAI/bge-small-en-v1.5"           # shipped baseline
   "BAAI/bge-large-en-v1.5"           # direct upgrade, same family
-  "Qwen/Qwen3-Embedding-0.6B"        # strong MTEB, larger download
   "google/embeddinggemma-2"          # Google DeepMind, 768d, MTEB 68.46
   # nomic-ai/nomic-embed-text-v1.5 removed: fails with current transformers
   #   (AttributeError: NomicBertModel has no get_extended_attention_mask)
+  # Qwen/Qwen3-Embedding-0.6B removed: decoder-only arch, ~12h/run on MPS
+  #   (584s/batch × 73 batches — causal attention gives no inference speedup)
 )
 
 # Per-model prompt names for asymmetric embedding models.
