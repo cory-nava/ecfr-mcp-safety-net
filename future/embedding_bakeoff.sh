@@ -145,7 +145,9 @@ if not force_cpu and torch.cuda.is_available():
 elif not force_cpu and hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device, model_kwargs, batch_size = "mps", {}, mps_batch
 else:
-    device, model_kwargs, batch_size = "cpu", {"torch_dtype": torch.float16}, 16
+    # float16 on CPU causes NaN / degraded embeddings on some models (e.g.
+    # embeddinggemma-2); float32 is the safe default for CPU inference.
+    device, model_kwargs, batch_size = "cpu", {"torch_dtype": torch.float32}, 16
 
 print(f"loading {model_id} ({device})...", flush=True)
 m = SentenceTransformer(
