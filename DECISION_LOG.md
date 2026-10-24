@@ -3,6 +3,48 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-23: Embedding bakeoff — bge-small stays; embedder is not the bottleneck
+
+**Decision:** `BAAI/bge-small-en-v1.5` remains the shipped embedding model. No tested alternative
+improved r@1 on the golden set; the bottleneck is the reranker, not the embedder.
+
+**Evidence (golden set, n=50, dense + citation fast-path, Mac Studio M3 Ultra):**
+
+| Model | r@1 | r@3 | r@5 | Encode time | Notes |
+|---|---|---|---|---|---|
+| bge-small-en-v1.5 (shipped) | 0.600 | 0.780 | 0.800 | 3.5 min (MPS) | baseline |
+| bge-large-en-v1.5 | 0.600 | 0.780 | 0.860 | 32 min (CPU¹) | no r@1 gain |
+| google/embeddinggemma-2 | — | — | — | impractical² | untested |
+| nomic-embed-text-v1.5 | — | — | — | crashes³ | untested |
+| Qwen3-Embedding-0.6B | — | — | — | ~12 h (MPS)⁴ | untested |
+
+¹ bge-large ran before MPS support was added; with MPS it would be ~3 min, but r@1
+  is still 0.600 — identical to bge-small.  
+² EmbeddingGemma 2: crashes on MPS (MPSNDArrayMatrixMultiplication fails on
+  4.9B-element per_layer_projection_norm tensor — 64-bit indexing not supported).
+  CPU is infeasible because the model uses 8192-token context; quadratic attention
+  over long CFR sections makes each batch take several minutes on M3 Ultra CPU.  
+³ nomic-embed-text-v1.5: `AttributeError: NomicBertModel has no
+  get_extended_attention_mask` with the current transformers version.  
+⁴ Qwen3-Embedding-0.6B: decoder-only architecture, 584 s/batch on MPS → ~12 h total.
+  Causal attention provides no inference speedup over CPU for embedding tasks.
+
+**Why bge-small stays:**
+- r@1 is the only metric that matters for the free tier (user sees the top result).
+  bge-large ties at 0.600; no tested model beats it.
+- The +6pp at r@5 from bge-large is real but irrelevant: the LLM reranker (Luna)
+  reorders top-50 candidates anyway, so r@5 of the raw embedding pool doesn't
+  drive end-to-end quality.
+- bge-small: 127 MB download, 3.5 min encoding. bge-large: 335 MB, 32 min. A 2.6×
+  heavier model for identical r@1 is not a trade-off worth making for users.
+- The free-tier ceiling appears to be ~0.60–0.64 r@1 regardless of embedder. What
+  moves the needle is the LLM reranker: Luna + HyDE brings that to 0.82 (golden) /
+  0.81 (silver). Invest in the reranker, not the embedder.
+
+Eval script: `future/embedding_bakeoff.sh` (single model or `--suite` mode).
+Known omissions: nomic needs a transformers pin; EmbeddingGemma 2 needs CUDA;
+Qwen3 needs a GPU with decoder-optimized inference (vLLM / TensorRT).
+
 ## 2026-10-23: Luna + HyDE made defaults; flash-lite fallback chain added; silver set created
 
 **Decision:** Four changes shipped together to push default production quality to 0.81 r@1 on the
