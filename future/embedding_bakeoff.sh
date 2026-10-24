@@ -44,6 +44,9 @@ SUITE=(
 # Using case statements instead of declare -A for bash 3.x compatibility (macOS default).
 _doc_prompt()   { case "$1" in google/embeddinggemma-2) echo "Document"    ;; *) echo "" ;; esac; }
 _query_prompt() { case "$1" in google/embeddinggemma-2) echo "SearchQuery" ;; *) echo "" ;; esac; }
+# MPS batch size override: embeddinggemma-2 has a 12288 hidden dim and hits
+# MPSNDArrayMatrixMultiplication "too large for kernel" at batch_size=32.
+_mps_batch()    { case "$1" in google/embeddinggemma-2) echo "4"           ;; *) echo "32" ;; esac; }
 # ─────────────────────────────────────────────────────────────────────────────
 
 FIRST="${1:-}"
@@ -82,6 +85,7 @@ OUT="${3:-build/embed}"
 SLUG=$(echo "$MODEL_ID" | tr '[:upper:]' '[:lower:]' | tr '/-' '__')
 DOC_PROMPT=$(_doc_prompt "$MODEL_ID")
 QUERY_PROMPT=$(_query_prompt "$MODEL_ID")
+MPS_BATCH=$(_mps_batch "$MODEL_ID")
 
 mkdir -p "$OUT"
 
@@ -102,14 +106,15 @@ case "$MODEL_ID" in
 esac
 
 echo "==> Building vectors"
-python3 - "$CORPUS" "$OUT" "$MODEL_ID" "$SLUG" "$DOC_PROMPT" <<'PYEOF'
+python3 - "$CORPUS" "$OUT" "$MODEL_ID" "$SLUG" "$DOC_PROMPT" "$MPS_BATCH" <<'PYEOF'
 import sys
 from pathlib import Path
 import numpy as np
 import torch
 from sentence_transformers import SentenceTransformer
 
-corpus_dir, out_dir, model_id, slug, doc_prompt = sys.argv[1:6]
+corpus_dir, out_dir, model_id, slug, doc_prompt, mps_batch = sys.argv[1:7]
+mps_batch = int(mps_batch)
 
 sys.path.insert(0, "build")
 import importlib.util
@@ -133,7 +138,7 @@ for f in cur:
 if torch.cuda.is_available():
     device, model_kwargs, batch_size = "cuda", {}, 32
 elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-    device, model_kwargs, batch_size = "mps", {}, 32
+    device, model_kwargs, batch_size = "mps", {}, mps_batch
 else:
     device, model_kwargs, batch_size = "cpu", {"torch_dtype": torch.float16}, 16
 
