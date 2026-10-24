@@ -92,6 +92,14 @@ python3 -c "import sentence_transformers, torch, numpy, einops" 2>/dev/null || {
   pip install -q "sentence-transformers" "numpy" "einops" \
     --extra-index-url https://pypi.org/simple
 }
+# google/embeddinggemma-2 requires a recent transformers that registers
+# the embedding_gemma2 architecture; upgrade unconditionally (no-op if current).
+case "$MODEL_ID" in
+  google/embeddinggemma-2)
+    echo "==> Upgrading transformers for embeddinggemma-2 support..."
+    pip install -q --upgrade transformers
+    ;;
+esac
 
 echo "==> Building vectors"
 python3 - "$CORPUS" "$OUT" "$MODEL_ID" "$SLUG" "$DOC_PROMPT" <<'PYEOF'
