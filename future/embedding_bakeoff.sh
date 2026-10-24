@@ -47,6 +47,9 @@ _query_prompt() { case "$1" in google/embeddinggemma-2) echo "SearchQuery" ;; *)
 # MPS batch size override: embeddinggemma-2 has a 12288 hidden dim and hits
 # MPSNDArrayMatrixMultiplication "too large for kernel" at batch_size=32.
 _mps_batch()    { case "$1" in google/embeddinggemma-2) echo "4"           ;; *) echo "32" ;; esac; }
+# Models that must use CPU: MPS hits 64-bit indexing limits on large internal
+# tensors (numel > ~2B). embeddinggemma-2 per_layer_projection_norm = 4.9B.
+_force_cpu()    { case "$1" in google/embeddinggemma-2) echo "1"           ;; *) echo "0" ;; esac; }
 # ─────────────────────────────────────────────────────────────────────────────
 
 FIRST="${1:-}"
@@ -86,6 +89,7 @@ SLUG=$(echo "$MODEL_ID" | tr '[:upper:]' '[:lower:]' | tr '/-' '__')
 DOC_PROMPT=$(_doc_prompt "$MODEL_ID")
 QUERY_PROMPT=$(_query_prompt "$MODEL_ID")
 MPS_BATCH=$(_mps_batch "$MODEL_ID")
+FORCE_CPU=$(_force_cpu "$MODEL_ID")
 
 mkdir -p "$OUT"
 
@@ -106,15 +110,16 @@ case "$MODEL_ID" in
 esac
 
 echo "==> Building vectors"
-python3 - "$CORPUS" "$OUT" "$MODEL_ID" "$SLUG" "$DOC_PROMPT" "$MPS_BATCH" <<'PYEOF'
+python3 - "$CORPUS" "$OUT" "$MODEL_ID" "$SLUG" "$DOC_PROMPT" "$MPS_BATCH" "$FORCE_CPU" <<'PYEOF'
 import sys
 from pathlib import Path
 import numpy as np
 import torch
 from sentence_transformers import SentenceTransformer
 
-corpus_dir, out_dir, model_id, slug, doc_prompt, mps_batch = sys.argv[1:7]
+corpus_dir, out_dir, model_id, slug, doc_prompt, mps_batch, force_cpu = sys.argv[1:8]
 mps_batch = int(mps_batch)
+force_cpu = force_cpu == "1"
 
 sys.path.insert(0, "build")
 import importlib.util
@@ -135,9 +140,9 @@ for f in cur:
     texts.append(f"{title}\n{body}".strip())
     paths.append(str(f.relative_to(corpus)))
 
-if torch.cuda.is_available():
+if not force_cpu and torch.cuda.is_available():
     device, model_kwargs, batch_size = "cuda", {}, 32
-elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+elif not force_cpu and hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device, model_kwargs, batch_size = "mps", {}, mps_batch
 else:
     device, model_kwargs, batch_size = "cpu", {"torch_dtype": torch.float16}, 16
