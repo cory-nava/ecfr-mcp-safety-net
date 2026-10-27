@@ -3,6 +3,26 @@
 Data-driven decisions made while building ecfr-mcp. Each entry: the decision,
 the evidence, the date. Decisions are revisited when new evidence contradicts them.
 
+## 2026-10-27: Best tier can run on a local LLM; Gemma 4 12B matches Luna at r@1
+
+**Decision:** Added `ECFR_MCP_LLM_URL` (+ `ECFR_MCP_LLM_MODEL`, `ECFR_MCP_LLM_REASONING`) so HyDE and
+rerank can run on any local OpenAI-compatible server. OpenRouter defaults are unchanged. Local mode
+runs requests one at a time and never falls back to OpenRouter, so queries stay on the machine.
+
+**Evidence (golden set, n=50, Apple M4 Pro 24 GB, LM Studio):** HyDE + `google/gemma-4-12b`,
+thinking off: **0.84 / 0.94 / 0.94**, 0 degraded, ~102s/query, $0. Luna on OpenRouter: 0.82 / 0.98 / 0.98.
+Natural 0.91 r@1; paraphrase 0.58 r@1 (n=12), the weak spot. Full detail in
+`golden/results-2026-10-27.md`.
+
+**Why thinking off by default:** Gemma 4 thinks unless told not to. On a 2-passage probe it spent
+443 of 465 tokens reasoning (17s); `reasoning_effort: "none"` answered in 1.5s. With thinking on, the
+500-token rerank budget runs out before the JSON, so `_chat()` raises it to 4096 for local thinking runs.
+
+**Why one request at a time:** five parallel rerank batches made the laptop unusable. LM Studio also
+splits its context across parallel slots: at 8k context and 4 slots each slot had ~2k tokens, every
+rerank prompt (~4k) failed with "Context size has been exceeded" and the first eval run silently
+degraded to the free tier. Load the model with at least 8k context per slot.
+
 ## 2026-10-23: Embedding bakeoff — bge-small stays; embedder is not the bottleneck
 
 **Decision:** `BAAI/bge-small-en-v1.5` remains the shipped embedding model. No tested alternative
