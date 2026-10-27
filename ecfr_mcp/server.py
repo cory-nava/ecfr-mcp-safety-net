@@ -2,6 +2,7 @@
 
 Tier selection is environmental (see retrieval.resolve_tier):
   ECFR_MCP_TIER=free|best       pinned tier
+  ECFR_MCP_LLM_URL set          best tier on a local OpenAI-compatible server (LM Studio)
   OPENROUTER_API_KEY set        best tier (LLM rerank)
   otherwise                     free tier (citation fast-path + vectors)
 
@@ -12,6 +13,8 @@ Reranker model (best tier only):
   ECFR_MCP_HYDE=0               disable HyDE candidate generation
   ECFR_MCP_HYDE_MODEL=<id>      OpenRouter model for HyDE generation
                                   (default: google/gemini-2.5-flash-lite)
+  ECFR_MCP_LLM_MODEL=<id>       local model for HyDE and rerank (default: google/gemma-4-12b)
+  ECFR_MCP_LLM_REASONING=<lvl>  local reasoning_effort (default: none)
 
 Data dir: ECFR_MCP_DATA, or data/ at the repository root.
 

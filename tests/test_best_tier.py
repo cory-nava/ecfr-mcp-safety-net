@@ -4,9 +4,12 @@ The query embedder is stubbed with a vector taken from the index itself, so no m
 download is needed; test_data.py checks that the indexes and the model agree on dimensions.
 """
 import json
+import os
 import re
+import time
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from ecfr_mcp import retrieval
 
@@ -54,6 +57,86 @@ class BestTierTests(unittest.TestCase):
         corpus.embed = lambda text: (_ for _ in ()).throw(ValueError("dimension mismatch"))
         with self.assertRaises(ValueError):
             retrieval.search_best(corpus, QUERY, api_key="stub", call_api=lambda p: ("{}", {}))
+
+
+
+class _Resp:
+    def __init__(self, payload):
+        self._body = json.dumps(payload).encode()
+
+    def read(self):
+        return self._body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class LocalLLMTests(unittest.TestCase):
+    def test_local_url_enables_best_tier_without_key(self):
+        tier, reason = retrieval.resolve_tier({"ECFR_MCP_LLM_URL": "http://localhost:1234/v1/"})
+        self.assertEqual(tier, "best")
+        self.assertIn("http://localhost:1234/v1,", reason)
+        self.assertIn(retrieval.LOCAL_MODEL, reason)
+        self.assertEqual(retrieval._rerank_model({"ECFR_MCP_LLM_URL": "x", "ECFR_MCP_LLM_MODEL": "qwen"}), "qwen")
+
+    def test_chat_posts_to_local_server(self):
+        sent = []
+
+        def fake_urlopen(req, timeout):
+            sent.append((req, json.loads(req.data)))
+            return _Resp({"choices": [{"message": {"content": '{"1": 7}'}}], "usage": {}})
+
+        env = {"ECFR_MCP_LLM_URL": "http://localhost:1234/v1"}
+        with mock.patch.dict(os.environ, env), \
+                mock.patch.object(retrieval.urllib.request, "urlopen", fake_urlopen):
+            text, _ = retrieval._chat("hi", "google/gemma-4-12b", None, 0.0, 500, 180)
+        req, body = sent[0]
+        self.assertEqual(text, '{"1": 7}')
+        self.assertEqual(req.full_url, "http://localhost:1234/v1/chat/completions")
+        self.assertNotIn("Authorization", req.headers)
+        self.assertEqual(body["reasoning_effort"], "none")
+        self.assertEqual(body["max_tokens"], 500)
+
+    def test_local_batches_run_one_at_a_time(self):
+        import threading
+        lock, active, peak = threading.Lock(), [0], [0]
+
+        def fake_api(prompt: str):
+            with lock:
+                active[0] += 1
+                peak[0] = max(peak[0], active[0])
+            time.sleep(0.01)
+            with lock:
+                active[0] -= 1
+            return "{}", {}
+
+        pairs = [("q", f"passage {i}") for i in range(retrieval.TOP_N)]
+        with mock.patch.dict(os.environ, {"ECFR_MCP_LLM_URL": "http://localhost:1234/v1"}):
+            out = retrieval._llm_scores(pairs, None, call_api=fake_api)
+        self.assertEqual(len(out), retrieval.TOP_N // retrieval.BATCH)
+        self.assertEqual(peak[0], 1)
+
+    def test_local_failure_never_falls_back_to_cloud(self):
+        corpus = retrieval.Corpus(DATA)
+        q = corpus.sec_vecs[0]
+        corpus.embed = lambda text: q
+        urls = []
+
+        def refuse(req, timeout):
+            urls.append(req.full_url)
+            raise OSError("connection refused")
+
+        env = {"ECFR_MCP_LLM_URL": "http://localhost:1234/v1", "OPENROUTER_API_KEY": "sk-test"}
+        with mock.patch.dict(os.environ, env), \
+                mock.patch.object(retrieval.urllib.request, "urlopen", refuse), \
+                mock.patch.object(retrieval.time, "sleep", lambda s: None):
+            hits, degraded = retrieval.search_best(corpus, QUERY, top_k=3)
+        self.assertTrue(degraded and hits)
+        self.assertTrue(urls)
+        self.assertTrue(all(u.startswith("http://localhost:1234/") for u in urls))
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 
 Tier resolution (no flags, no config files):
   ECFR_MCP_TIER=free|best   -> pinned tier (override)
+  ECFR_MCP_LLM_URL set      -> "best"  via a local OpenAI-compatible server (LM Studio)
   OPENROUTER_API_KEY set    -> "best"  (HyDE + LLM rerank over dense candidates)
   otherwise                 -> "free"  (citation fast-path + dense vectors)
 
@@ -16,6 +17,13 @@ HyDE (Hypothetical Document Embeddings) candidate generation:
   ECFR_MCP_HYDE=0               -> disable HyDE, use plain query vector
   ECFR_MCP_HYDE_MODEL=<id>      -> OpenRouter model for HyDE generation
                                     (default: google/gemini-2.5-flash-lite)
+
+Local LLM (LM Studio, Ollama, llama.cpp: any OpenAI-compatible endpoint):
+  ECFR_MCP_LLM_URL=<base-url>   -> e.g. http://localhost:1234/v1; HyDE and rerank both run
+                                    there, OpenRouter is never called
+  ECFR_MCP_LLM_MODEL=<id>       -> model for both (default: google/gemma-4-12b)
+  ECFR_MCP_LLM_REASONING=<lvl>  -> reasoning_effort sent to the server (default: none;
+                                    "off" sends nothing and lets the model decide)
 
 "best" degrades gracefully: any LLM failure falls back to free-tier
 ranking for that query rather than erroring.
@@ -42,6 +50,7 @@ DEFAULT_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_LUNA = "openai/gpt-6-luna"
 RERANK_MODEL_FLASH = "google/gemini-2.5-flash-lite"
 RERANK_API = "https://openrouter.ai/api/v1/chat/completions"
+LOCAL_MODEL = "google/gemma-4-12b"
 TOP_N = 50
 BATCH = 10
 
@@ -64,9 +73,17 @@ RERANK_PROMPT = (
 )
 
 
-def _rerank_model(env=None) -> str:
-    """Return the OpenRouter model ID to use for reranking."""
+def _local_url(env=None) -> str:
+    """Base URL of a local OpenAI-compatible server, or "" when unset."""
     e = env if env is not None else os.environ
+    return (e.get("ECFR_MCP_LLM_URL") or "").strip().rstrip("/")
+
+
+def _rerank_model(env=None) -> str:
+    """Return the model ID to use for reranking."""
+    e = env if env is not None else os.environ
+    if _local_url(e):
+        return (e.get("ECFR_MCP_LLM_MODEL") or LOCAL_MODEL).strip()
     raw = (e.get("ECFR_MCP_RERANKER") or "").strip()
     if raw:
         return _MODEL_ALIASES.get(raw.lower(), raw)
@@ -79,9 +96,11 @@ def resolve_tier(env=None) -> tuple[str, str]:
     override = (e.get("ECFR_MCP_TIER") or "").strip().lower()
     if override in ("free", "best"):
         return override, "ECFR_MCP_TIER override"
+    hyde = "disabled" if (e.get("ECFR_MCP_HYDE") or "1") == "0" else "enabled"
+    if _local_url(e):
+        return "best", f"ECFR_MCP_LLM_URL={_local_url(e)}, model={_rerank_model(e)}, hyde={hyde}"
     if e.get("OPENROUTER_API_KEY"):
         model = _rerank_model(e)
-        hyde = "disabled" if (e.get("ECFR_MCP_HYDE") or "1") == "0" else "enabled"
         return "best", f"OPENROUTER_API_KEY is set, reranker={model}, hyde={hyde}"
     return "free", "no OPENROUTER_API_KEY in environment"
 
@@ -198,36 +217,58 @@ def search_free(corpus: Corpus, query: str, top_k: int = 5) -> list[Hit]:
     return hits
 
 
+def _chat(prompt: str, model: str, api_key: str | None, temperature: float,
+          max_tokens: int, timeout: float) -> tuple[str, dict]:
+    """One chat completion against the local server or OpenRouter. Returns (text, usage).
+
+    Falls back to the reasoning field when content is empty (reasoning models put
+    their answer there when they run out of tokens).
+    """
+    local = _local_url()
+    body = {"model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+            "max_tokens": max_tokens}
+    if local:
+        url = f"{local}/chat/completions"
+        headers = {"Content-Type": "application/json"}
+        effort = (os.environ.get("ECFR_MCP_LLM_REASONING") or "none").strip().lower()
+        if effort != "off":
+            body["reasoning_effort"] = effort
+        if effort != "none":
+            # thinking models spend most of the budget before answering
+            body["max_tokens"] = max(max_tokens, 4096)
+        timeout = max(timeout, 300)  # local servers queue parallel requests
+    else:
+        url = RERANK_API
+        headers = {"Content-Type": "application/json",
+                   "Authorization": f"Bearer {api_key}",
+                   "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
+                   "X-Title": "ecfr-mcp server"}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        payload = json.loads(r.read().decode())
+    msg = payload["choices"][0]["message"]
+    return (msg.get("content") or msg.get("reasoning") or ""), payload.get("usage", {})
+
+
 def _llm_scores(pairs: list[tuple[str, str]], api_key: str,
                 call_api=None, model: str | None = None) -> list[dict]:
     """Score batches of (query, passage) listwise in parallel.
 
     Returns list of {num: score} dicts, one per batch, in order.
-    Batches run concurrently via ThreadPoolExecutor; each batch retries once
-    on parse failure before propagating the exception.
+    Batches run concurrently via ThreadPoolExecutor (one at a time against a local
+    server); each batch retries once on parse failure before propagating the exception.
     """
     if model is None:
         model = RERANK_MODEL_LUNA
     if call_api is None:
         def call_api(prompt: str) -> tuple[str, dict]:
-            body = json.dumps({"model": model,
-                               "messages": [{"role": "user", "content": prompt}],
-                               "temperature": 0.0,
-                               "max_tokens": 500}).encode()
-            req = urllib.request.Request(
-                RERANK_API, data=body,
-                headers={"Content-Type": "application/json",
-                         "Authorization": f"Bearer {api_key}",
-                         "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
-                         "X-Title": "ecfr-mcp server"})
-            with urllib.request.urlopen(req, timeout=180) as r:
-                payload = json.loads(r.read().decode())
-            msg = (payload["choices"][0]["message"].get("content") or
-                   payload["choices"][0]["message"].get("reasoning") or "")
+            msg, usage = _chat(prompt, model, api_key, 0.0, 500, 180)
             mm = re.search(r"\{.*\}", msg, re.DOTALL)
             if not mm:
                 raise RuntimeError("no JSON scores in model response")
-            return mm.group(0), payload.get("usage", {})
+            return mm.group(0), usage
 
     def _score_one(b_start: int) -> dict:
         chunk = pairs[b_start:b_start + BATCH]
@@ -245,8 +286,9 @@ def _llm_scores(pairs: list[tuple[str, str]], api_key: str,
                 raise
 
     starts = list(range(0, len(pairs), BATCH))
-    if len(starts) == 1:
-        return [_score_one(0)]
+    if len(starts) == 1 or _local_url():
+        # one request at a time on a local server: parallel batches swamp a laptop
+        return [_score_one(s) for s in starts]
     out: list[dict | None] = [None] * len(starts)
     with ThreadPoolExecutor(max_workers=len(starts)) as ex:
         fmap = {ex.submit(_score_one, s): i for i, s in enumerate(starts)}
@@ -256,27 +298,17 @@ def _llm_scores(pairs: list[tuple[str, str]], api_key: str,
 
 
 def _hyde_candidate_vec(corpus: Corpus, query: str, query_vec: np.ndarray,
-                        api_key: str) -> np.ndarray:
+                        api_key: str | None) -> np.ndarray:
     """Generate a hypothetical CFR passage and return query+passage averaged vector.
 
     Raises on any failure so the caller can fall back to query_vec transparently.
     """
-    model = (os.environ.get("ECFR_MCP_HYDE_MODEL") or HYDE_MODEL).strip()
-    body = json.dumps({
-        "model": model,
-        "messages": [{"role": "user", "content": HYDE_PROMPT.format(q=query)}],
-        "temperature": 0.7,
-        "max_tokens": 400,
-    }).encode()
-    req = urllib.request.Request(
-        RERANK_API, data=body,
-        headers={"Content-Type": "application/json",
-                 "Authorization": f"Bearer {api_key}",
-                 "HTTP-Referer": "https://github.com/ctrimm/ecfr-mcp",
-                 "X-Title": "ecfr-mcp server"})
-    with urllib.request.urlopen(req, timeout=45) as r:
-        payload = json.loads(r.read().decode())
-    passage = (payload["choices"][0]["message"].get("content") or "").strip()
+    if _local_url():
+        model = _rerank_model()
+    else:
+        model = (os.environ.get("ECFR_MCP_HYDE_MODEL") or HYDE_MODEL).strip()
+    passage, _ = _chat(HYDE_PROMPT.format(q=query), model, api_key, 0.7, 400, 45)
+    passage = passage.strip()
     if not passage:
         raise RuntimeError("empty HyDE passage")
     hp = corpus.embed(passage)
@@ -285,7 +317,7 @@ def _hyde_candidate_vec(corpus: Corpus, query: str, query_vec: np.ndarray,
 
 
 def _llm_rerank(corpus: Corpus, query: str, candidate_vec: np.ndarray,
-                key: str, top_k: int, model: str, call_api=None) -> list[Hit]:
+                key: str | None, top_k: int, model: str, call_api=None) -> list[Hit]:
     """Score top-N chunk candidates with the given model. Raises on any failure."""
     order = np.argsort(-(corpus.chunk_vecs @ candidate_vec))[:TOP_N]
     pairs = [(query, corpus.chunk_texts[i]) for i in order]
@@ -318,10 +350,11 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
     Returns (hits, degraded): degraded=True when the primary model was not used.
     """
     key = api_key or os.environ.get("OPENROUTER_API_KEY")
+    local = bool(_local_url())
     hit = _citation_hit(corpus, query)
     if hit:
         return [hit], False
-    if not key:
+    if not key and not local:
         return search_free(corpus, query, top_k), True
     # embedding errors are not LLM failures: let them surface instead of hiding behind the free tier
     q = corpus.embed(query)
@@ -340,8 +373,9 @@ def search_best(corpus: Corpus, query: str, top_k: int = 5,
     except Exception:
         pass
     # Primary model failed: fall back to flash-lite before dropping to free tier.
-    # Only in real API calls (call_api is None); test stubs skip this path.
-    if model != RERANK_MODEL_FLASH and call_api is None:
+    # Only in real OpenRouter calls: test stubs skip this path, and a local setup never
+    # sends queries to the cloud.
+    if model != RERANK_MODEL_FLASH and call_api is None and not local:
         try:
             return _llm_rerank(corpus, query, candidate_vec, key, top_k, RERANK_MODEL_FLASH), True
         except Exception:

@@ -94,6 +94,9 @@ All configuration is via environment variables; there are no config files or fla
 | `ECFR_MCP_HYDE` | `1` | Set to `0` to disable HyDE candidate generation and use the plain query vector instead. |
 | `ECFR_MCP_HYDE_MODEL` | `google/gemini-2.5-flash-lite` | OpenRouter model for HyDE passage generation. Any cheap, fast chat model works well here. |
 | `ECFR_MCP_DATA` | `data/` | Path to the index directory (vectors, corpus, SQLite metadata). |
+| `ECFR_MCP_LLM_URL` | unset | Base URL of a local OpenAI-compatible server, e.g. `http://localhost:1234/v1` for LM Studio. Enables the best tier with HyDE and rerank both running locally, one request at a time; OpenRouter is never called, even if a key is set. Load the model with at least 8k context. |
+| `ECFR_MCP_LLM_MODEL` | `google/gemma-4-12b` | Model on the local server, used for both HyDE and rerank. |
+| `ECFR_MCP_LLM_REASONING` | `none` | `reasoning_effort` sent to the local server. `none` turns thinking off (Gemma 4: ~1.5s vs ~17s per call); `low`/`medium`/`high` let it think; `off` sends nothing. |
 
 **Claude Desktop example** with all options shown:
 
